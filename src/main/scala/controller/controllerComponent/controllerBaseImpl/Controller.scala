@@ -41,7 +41,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     publish(GBSizeChanged(newSize))
     publish(new FieldChanged)
     publish(new PrintTui)
-    newSize
+    //newSize
   }
 
   def createGameBoard(size: Int): Unit = {

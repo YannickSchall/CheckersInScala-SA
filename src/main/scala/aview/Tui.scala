@@ -57,7 +57,7 @@ class Tui(controller: ControllerInterface) extends Reactor {
         print("\u001B[32mgetColor\u001B[0m: Returns the color of a piece at a specified location; mainly used for debugging purposes. \u001B[35mUsage\u001B[0m: \"\u001B[33mgetColor XX\u001B[0m\", where XX = a field name, such as \"A1\".\n")
         print("\u001B[32mhelp\u001B[0m: At this point you probably already know about it, but it prints information about possible TUI inputs.\n\n")
 
-      case "TRY" => print(controller.movePossible(args(1), args(2)) + "\n")
+      case "TRY" => print(controller.movePossible(args(1), args(2)).toString + "\n")
       case "GETCOLOR" => print(controller.getPiece(args(1).charAt(1).toInt - 49, args(1).charAt(0).toInt - 65).get.getColor + "\n")
       case _ => print("Try something else, for possible inputs, type \"help\"\n")
     }

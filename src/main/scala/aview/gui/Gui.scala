@@ -14,7 +14,7 @@ class Gui(controller: ControllerInterface) extends Frame {
   title = "Checkers"
   resizable = false
   minimumSize = new Dimension(800, 800)
-  centerOnScreen
+  centerOnScreen()
   var fields = Array.ofDim[FieldPanel](controller.gameBoardSize, controller.gameBoardSize)
   var flagTest = 0
   var fieldStart = ""
@@ -153,7 +153,7 @@ class Gui(controller: ControllerInterface) extends Frame {
       row <- 0 until controller.gameBoardSize
       column <- 0 until controller.gameBoardSize
     } fields(row)(column).redraw
-    repaint
+    repaint()
     visible = true
   }
 

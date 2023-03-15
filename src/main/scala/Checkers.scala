@@ -3,7 +3,7 @@ import com.google.inject.Guice
 import aview.Tui
 import aview.gui.Gui
 import controller.controllerComponent.ControllerInterface
-
+import scala.compiletime.{summonFrom, erasedValue}
 import scala.io.StdIn.readLine
 
 object Checkers {
@@ -13,11 +13,17 @@ object Checkers {
   val gui = new Gui(controller)
   controller.createGameBoard(8)
 
+  //def main(args: Array[String]): Unit = {
+  //  var input: String = ""
+  //  do {
+  //    input = readLine()
+  //    tui.tuiEntry(input)
+  //  } while (input != "quit")
+  //}
+
   def main(args: Array[String]): Unit = {
     var input: String = ""
-    do {
-      input = readLine()
-      tui.tuiEntry(input)
-    } while (input != "quit")
+    while ({input = readLine(); tui.tuiEntry(input); input != "quit"}) ()
   }
+
 }

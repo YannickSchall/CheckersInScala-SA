@@ -63,14 +63,14 @@ class FileIO extends FileIOInterface{
 
 
 
-  implicit val fieldWrites = new Writes[FieldInterface] {
+  implicit val fieldWrites: Writes[FieldInterface] = new Writes[FieldInterface] {
     def writes(field: FieldInterface) = Json.obj(
     "pos" -> field.getPos,
       "piece" -> pieceWrites.writes(field.getPiece)
     )
   }
 
-  implicit val pieceWrites = new Writes[Option[Piece]] {
+  implicit val pieceWrites: Writes[Option[Piece]] = new Writes[Option[Piece]] {
     def writes(piece: Option[Piece]): JsValue = piece match {
       case Some(t) => Json.obj(
       "state" -> t.state,

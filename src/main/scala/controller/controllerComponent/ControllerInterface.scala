@@ -5,13 +5,14 @@ import model.gameBoardComponent.gameBoardBaseImpl.Piece
 import util.Mover
 import scala.swing.Publisher
 import scala.swing.event.Event
+import scala.compiletime.erasedValue
 
 trait ControllerInterface extends Publisher {
 
   def gameState: GameState
   var cap: String
   var destTemp: String
-  def createNewGameBoard: Unit
+  def createNewGameBoard(): Unit
   def resize(newSize: Int): Unit
   def createGameBoard(size: Int): Unit
   def setGameState(newGameState: GameState): Unit
