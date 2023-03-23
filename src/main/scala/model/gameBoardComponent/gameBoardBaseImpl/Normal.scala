@@ -108,6 +108,7 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
         } else new Mover(false, "", false)
 
 
+
       case _ =>
 
         if ((col != 1) && capturable("left", gameBoard)) {
