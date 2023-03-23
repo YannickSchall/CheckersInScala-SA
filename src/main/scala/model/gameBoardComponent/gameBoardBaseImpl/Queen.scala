@@ -169,6 +169,8 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
         if (((col - toCol) - (x - 1) <= 0) && ((x - 1) >= (row - toRow)) && ((col - toCol) - (row - toRow) == 0) && (toCol - col < 0) && (toRow - row < 0)) return new Mover(true, "", false) //mitte nach links oben
 
 
+
+
         x = 0
         while ((col - x >= 0 && row + x <= Last) && gameBoard.field(row + x, col - x).piece.isEmpty || (x == 0)) {
           x += 1
