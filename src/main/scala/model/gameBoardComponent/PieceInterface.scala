@@ -15,12 +15,12 @@ trait PieceInterface {
 
   def getColor: String
 
-  def whiteMovePossible(to: String, gameBoard: GameBoard): Mover
-  def blackMovePossible(to: String, gameBoard: GameBoard): Mover
+  def fillList(to: String, gameBoard: GameBoard, row_offset: Int, col_offset: Int): ListBuffer[String]
+  def capturable(to: String, gameBoard: GameBoard): Boolean
+  def getMover(to: String, gameBoard: GameBoard): Mover
+  def movePossible(to: String, gameBoard: GameBoard): Mover
 
   def posToStr(row: Int, col: Int): String
   def movStrToInt(s: String): (Int, Int, Int, Int)
-
-
 
 }

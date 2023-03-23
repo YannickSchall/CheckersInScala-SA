@@ -204,7 +204,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     }
 
 
-  override def blackMovePossible(to: String, gameBoard: GameBoard): Mover = {
+  override def movePossible(to: String, gameBoard: GameBoard): Mover = {
 
     var x = 1
     var toRow: Int = Integer.parseInt(to.tail) - 1
