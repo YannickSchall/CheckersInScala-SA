@@ -14,16 +14,60 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
     (col + 65).toChar.toString + (row + 49).toChar.toString
   }
 
+
+  //def mvePossible(to: String, gameBoard: GameBoard, row, col, piece, color)
+  // def white move(mvePossible)
+  /*
+  def mvePossible(piece.color): Mover = {
+  col match {
+    if (
+       boolean capturable(row, col, gameboard)
+     )
+       fillList()
+       returnMover()
+
+    }
+  }
+
+  def whtMvePossible(): Mover = mvePossible(white)_
+  def whtMvePossible(): Mover = mvePossible(white)_
+
+  def fillList(to: String, gameBoard): Boolean = {
+    sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row - 2, col + 2).pos
+  }
+  */
+
+  def fillList(to: String, gameBoard: GameBoard, row_offset: Int, col_offset: Int): ListBuffer[String] = {
+    sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row + row_offset, col + col_offset).pos
+  }
+
+
+  //if ((row != 0 && row != 1) && (col != 0 && col != 1) && gameBoard.field(row - 1, col - 1).piece.isDefined && gameBoard.field(row - 1, col - 1).piece.get.getColor == "black" && gameBoard.field(row - 2, col - 2).piece.isEmpty) {
+
+
+  def capturable(direction: String, gameBoard: GameBoard): Boolean = {
+
+    val Last: Int = gameBoard.size - 1
+    def help_bool(row_offset: Int, col_offset: Int): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isDefined && gameBoard.field(row + row_offset, col + col_offset).piece.get.getColor == (if (getColor == "black") "white" else "black") && gameBoard.field(row + row_offset*2, col + col_offset*2).piece.isEmpty
+
+    (getColor, direction) match {
+      case ("white", _) if row == 1 || row == 0 => false
+      case ("black", _) if row == Last || row == Last-1 => false
+      case ("white", "left") => help_bool(-1, -1)
+      case ("white", "right") => help_bool(-1, 1)
+      case ("black", "left") => help_bool(1, -1)
+      case ("black", "right") => help_bool(1, 1)
+    }
+  }
+
   override def whiteMovePossible(to: String, gameBoard: GameBoard): Mover = {
     val Last: Int = gameBoard.size - 1
 
     col match {
 
       case 0 =>
+        if(capturable("right", gameBoard)) sList = fillList( to,gameBoard, -2, 2)
 
-        if ((row != 0 && row != 1) && gameBoard.field(row - 1, col + 1).piece.isDefined && gameBoard.field(row - 1, col + 1).piece.get.getColor == "black" && gameBoard.field(row - 2, col + 2).piece.isEmpty) {
-          sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row - 2, col + 2).pos
-        }
 
         if (sList.isEmpty) {
           if (row != 0 && gameBoard.field(row - 1, col + 1).piece.isEmpty) {
@@ -43,13 +87,14 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
       case Last =>
 
         if ((row != 0 && row != 1) && gameBoard.field(row - 1, col - 1).piece.isDefined && gameBoard.field(row - 1, col - 1).piece.get.getColor == "black" && gameBoard.field(row - 2, col - 2).piece.isEmpty) {
-          sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row - 2, col - 2).pos
+          //sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row - 2, col - 2).pos
+          sList = fillList( to,gameBoard, -2, -2)
         }
 
         if (sList.isEmpty) {
-          if (row != 0 && gameBoard.field(row - 1, col - 1).piece.isEmpty) {
-            if (to == gameBoard.posToStr(row - 1, col - 1)) {
-              if (Integer.parseInt(to.tail) - 1 == 0) {
+          if (row != 0 && gameBoard.field(row - 1, col - 1).piece.isEmpty) { // checkMove
+            if (to == gameBoard.posToStr(row - 1, col - 1)) { //  checkTo
+              if (Integer.parseInt(to.tail) - 1 == 0) { // checkTail
                 return new Mover(true, "", true)
               } else return new Mover(true, "", false)
             } else return new Mover(false, "", false)
@@ -65,13 +110,61 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
 
       case _ =>
 
-        if ((row != 0 && row != 1) && (col != 0 && col != 1) && gameBoard.field(row - 1, col - 1).piece.isDefined && gameBoard.field(row - 1, col - 1).piece.get.getColor == "black" && gameBoard.field(row - 2, col - 2).piece.isEmpty) {
-          sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row - 2, col - 2).pos
+        if ((col != 1) && capturable("left", gameBoard)) {
+          sList = fillList( to,gameBoard, -2, -2)
         }
 
-        if ((row != 0 && row != 1) && (col != Last && col != (Last-1)) && gameBoard.field(row - 1, col + 1).piece.isDefined && gameBoard.field(row - 1, col + 1).piece.get.getColor == "black" && gameBoard.field(row - 2, col + 2).piece.isEmpty) {
-          sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row - 2, col + 2).pos
+        if ((col != Last && col != (Last-1)) && capturable("right", gameBoard)) {
+          //sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row - 2, col + 2).pos
+          sList = fillList( to,gameBoard, -2, 2)
         }
+
+
+        /*
+        def returnMover(to: String, gameboard: GameBoard, row_offset: Int, col_offset: Int): Mover = {
+          if ()
+
+        }
+
+        def actuallyEmpty(Gameboard: GameBoard, row_offset: Int, col_offset: Int): Boolean = {
+            if (true) return new Mover(false, "", false)
+        }
+
+        def matchesPos(to: String) : Boolean = {
+          if (to == gameBoard.posToStr(row - 1, col - 1))
+            actuallyEmpty()
+        }
+
+
+        var isMoveValid = false
+        var shouldPromote = false
+        var emptyString = ""
+
+        def ifFall(): Mover = {
+          if (sList.isEmpty) return checkM
+        }
+
+
+        def checkMove(gameBoard: GameBoard, row_offset: Int, col_offset: Int): = Mover {
+          if ( row != 0 && gameBoard.field(row + row_offset, col + col_offset ).piece.isEmpty()) return checkT0(to, row_offset, col_offset)
+
+          else return new Mover(false, "", false)
+        }
+
+        def checkTo(to: String, row_offset, col_offset): = Mover {
+            if (to == gameBoard.posToStr(row - row_offset, col - col_offset)) return checkTaill(to)
+            else return new Mover(true, "", false)
+        }
+
+        def checkTail(to: String, isValid, emptyString, isQ): = Mover
+            if (Integer.parseInt(to.tail) - 1 == 0) return new Mover(true, "", true)
+        }
+
+
+
+         */
+
+
         if (sList.isEmpty) {
           if (row != 0 && gameBoard.field(row - 1, col - 1).piece.isEmpty && to == gameBoard.posToStr(row - 1, col - 1)) {
             if (Integer.parseInt(to.tail) - 1 == 0) {
@@ -96,7 +189,6 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
           } else new Mover(true, posToStr(row - 1, col + 1), false)
         }
         else new Mover(false, "", false)
-
     }
   }
 

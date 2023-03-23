@@ -11,4 +11,3 @@ libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0-RC7"
 libraryDependencies += "org.scalafx" %% "scalafx" % "16.0.0-R24"
 scalaVersion := "3.2.0"
 
-//comment

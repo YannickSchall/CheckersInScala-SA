@@ -21,6 +21,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
       case 0 =>
 
         x = 0
+        // def m(col, row, peice, x) : while (col && row) && piece || x
         while ((col + x < Last && row - x > 0) && gameBoard.field(row - x, col + x).piece.isEmpty || (x == 0)) {
           x += 1
         }
