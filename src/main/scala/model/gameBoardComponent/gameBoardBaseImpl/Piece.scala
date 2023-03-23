@@ -13,8 +13,7 @@ abstract class Piece @Inject() (state: String, row: Int, col: Int, color: String
   def getColor: String
   def posToStr(row: Int, col: Int): String = {(col + 65).toChar.toString + (row + 49).toChar.toString}
 
-  def whiteMovePossible(to: String, gameBoard: GameBoard): Mover
-  def blackMovePossible(to: String, gameBoard: GameBoard): Mover
+  def movePossible(to: String, gameBoard: GameBoard): Mover
 
   def movStrToInt(s: String): (Int, Int, Int, Int) = {
     val startCol = col

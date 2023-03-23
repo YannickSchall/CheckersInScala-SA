@@ -11,6 +11,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
   override def toString: String = if (getColor == "black") "\u001B[37mQ\u001B[0m"//"\uD83D\uDFE0" //orange/black
   else "\u001B[30mQ\u001B[0m"//"\uD83D\uDFE3" //purple/white
 
+  /*
   override def whiteMovePossible(to: String, gameBoard: GameBoard): Mover = {
     var x = 1
     val toRow: Int = Integer.parseInt(to.tail) - 1
@@ -202,7 +203,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
         else new Mover(false, "", false)
       }
     }
-
+*/
 
   override def movePossible(to: String, gameBoard: GameBoard): Mover = {
 

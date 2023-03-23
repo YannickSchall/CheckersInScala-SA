@@ -196,8 +196,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     }
 
     if (gameBoard.getField(start).piece.isDefined) {
-      if (gameBoard.getField(start).piece.get.getColor == "black") gameBoard.blackMovePossible(start, dest)
-      else gameBoard.whiteMovePossible(start, dest)
+      gameBoard.movePossible(start, dest)
     } else new Mover(false, "", false)
   }
 
