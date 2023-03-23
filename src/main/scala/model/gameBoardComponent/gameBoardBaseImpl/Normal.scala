@@ -15,7 +15,7 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
   }
 
 
-  override def fillList(to: String, gameBoard: GameBoard, row_offset: Int, col_offset: Int): ListBuffer[String] = {
+  override def fillList(to: String, gameBoard: GameBoard, row_offset: Int, col_offset: Int, x: Int): ListBuffer[String] = {
     sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row + row_offset, col + col_offset).pos
   }
 
@@ -81,16 +81,16 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
     col match {
 
       case 0 =>
-        if (capturable("right", gameBoard)) fillList(to, gameBoard, -2, 2)
+        if (capturable("right", gameBoard)) fillList(to, gameBoard, -2, 2, 0)
         getMover(to, gameBoard)
 
       case Last =>
-        if (capturable("left", gameBoard)) fillList(to, gameBoard, -2, -2)
+        if (capturable("left", gameBoard)) fillList(to, gameBoard, -2, -2, 0)
         getMover(to, gameBoard)
 
       case _ =>
-        if ((col != 1) && capturable("left", gameBoard)) fillList(to, gameBoard, -2, -2)
-        if ((col != Last && col != (Last-1)) && capturable("right", gameBoard)) fillList(to, gameBoard, -2, 2)
+        if ((col != 1) && capturable("left", gameBoard)) fillList(to, gameBoard, -2, -2, 0)
+        if ((col != Last && col != (Last-1)) && capturable("right", gameBoard)) fillList(to, gameBoard, -2, 2, 0)
         getMover(to, gameBoard)
 
     }
