@@ -207,17 +207,47 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     }
 */
 
-  override def capturable(to: String, gameBoard: GameBoard): Boolean = ???
+// ok
+  override def capturable(to: String, gameBoard: GameBoard): Boolean = {
 
-  override def fillList(to: String, gameBoard: GameBoard, row_offset: Int, col_offset: Int, x: Int): ListBuffer[String] = {
-    sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row + (x + 1), col - (x + 1)).pos
-    // brauchen wir 2 unterschiedliche Listen? früher blackList
+    def help_bool(dist: Int): Boolean = ???
+
+    return false
   }
 
-  override def getMover(to: String, gameBoard: GameBoard): Mover = ???
+  override def fillList(to: String, gameBoard: GameBoard, row_offset: Int, col_offset: Int, dist: Int): ListBuffer[String] = {
+    // brauchen wir 2 unterschiedliche Listen? früher blackList
+    val Last: Int = gameBoard.size - 1
+
+    if (!((col + dist < Last && row + dist > 0) && gameBoard.field(row + dist, col + dist).piece.isEmpty || (dist == 0))) {
+
+
+      /*
+      if ((row != 0 && row-x != 0 && col != Last && col+x != Last) && gameBoard.field(row - x, col + x).piece.isDefined && gameBoard.field(row - x, col + x).piece.get.getColor == "white" && gameBoard.field(row - (x+1), col + (x+1)).piece.isEmpty) {
+        // fill list
+        sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row - (x + 1), col + (x + 1)).pos
+      }
+      */
+
+
+      sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row + (dist + 1), col - (dist + 1)).pos
+
+
+
+    }
+    fillList(to, gameBoard, row_offset, col_offset, dist+1)
+
+
+
+
+
+  }
+
+
 
 
   override def movePossible(to: String, gameBoard: GameBoard): Mover = {
+
 
     var x = 1
     var toRow: Int = Integer.parseInt(to.tail) - 1
@@ -242,6 +272,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
         if ((row != Last && row+x != Last && col != Last && col+x != Last) && gameBoard.field(row + x, col + x).piece.isDefined && gameBoard.field(row + x, col + x).piece.get.getColor == "white" && gameBoard.field(row + (x+1), col + (x+1)).piece.isEmpty) {
           sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row + (x + 1), col + (x + 1)).pos
         }
+
 
         if (sListBlack.isEmpty) {
           x = 0
