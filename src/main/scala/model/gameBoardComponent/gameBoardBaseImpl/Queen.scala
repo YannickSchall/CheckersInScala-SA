@@ -229,6 +229,23 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
       }
       */
 
+      /*
+      iterativ
+      def fact(num):
+          factorial=1
+          for i in range(1, num+1):
+              factorial=factorial*i
+          return factorial
+
+
+      rekursion
+      * def fact(num):
+          if num==1:
+            return num
+          else:
+            return num * fact(num-1)
+      * */
+
 
       sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row + (dist + 1), col - (dist + 1)).pos
 
