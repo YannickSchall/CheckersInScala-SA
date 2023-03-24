@@ -16,7 +16,7 @@ trait PieceInterface {
   def getColor: String
 
   def fillList(to: String, gameBoard: GameBoard, row_offset: Int, col_offset: Int, x: Int): ListBuffer[String]
-  def capturable(to: String, gameBoard: GameBoard): Boolean
+  def capturable(to: String, dist: Int, gameBoard: GameBoard): Boolean
   def getMover(to: String, gameBoard: GameBoard): Mover
   def movePossible(to: String, gameBoard: GameBoard): Mover
 

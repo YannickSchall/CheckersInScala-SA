@@ -245,10 +245,6 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     }
     fillList(to, gameBoard, row_offset, col_offset, dist+1)
 
-
-
-
-
   }
 
 
@@ -266,21 +262,8 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     col match {
       case 0 =>
 
-        x = 0
-        while ((col + x < Last && row - x > 0) && gameBoard.field(row - x, col + x).piece.isEmpty || (x == 0)) {
-          x += 1
-        }
-        if ((row != 0 && row-x != 0 && col != Last && col+x != Last) && gameBoard.field(row - x, col + x).piece.isDefined && gameBoard.field(row - x, col + x).piece.get.getColor == "white" && gameBoard.field(row - (x+1), col + (x+1)).piece.isEmpty) {
-          sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row - (x + 1), col + (x + 1)).pos
-        }
+        fillList("", gameBoard, 0, 0, dist)
 
-        x = 0
-        while ((col + x < Last && row + x < Last) && gameBoard.field(row + x, col + x).piece.isEmpty || (x == 0)) {
-          x += 1
-        }
-        if ((row != Last && row+x != Last && col != Last && col+x != Last) && gameBoard.field(row + x, col + x).piece.isDefined && gameBoard.field(row + x, col + x).piece.get.getColor == "white" && gameBoard.field(row + (x+1), col + (x+1)).piece.isEmpty) {
-          sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row + (x + 1), col + (x + 1)).pos
-        }
 
 
         if (sListBlack.isEmpty) {
@@ -454,3 +437,43 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     }
 
 }
+
+/*
+
+def get_possible_moves(position, board):
+    row, col = position
+    player = board[row][col]
+    opponent = 2 if player == 1 else 1  # determine opponent's stone color
+
+    # define helper function to check if a square is on the board and empty
+    def is_valid_square(r, c):
+        return 0 <= r < 8 and 0 <= c < 8 and board[r][c] == 0
+
+    # define helper function to check if a square is occupied by an opponent's stone
+    def is_opponent_square(r, c):
+        return 0 <= r < 8 and 0 <= c < 8 and board[r][c] == opponent
+
+    # define helper function to recursively check for possible moves/captures in a direction
+    def check_direction(dr, dc, moves, captures):
+        r, c = row + dr, col + dc
+        if is_valid_square(r, c):
+            moves.append((r, c))
+            if not captures:
+                # if no captures have been made yet, continue checking in this direction
+                check_direction(dr, dc, moves, captures)
+        elif is_opponent_square(r, c):
+            r, c = r + dr, c + dc
+            if is_valid_square(r, c):
+                captures.append((r, c))
+                check_direction(dr, dc, moves, captures)
+
+    # check all 4 diagonal directions for moves/captures
+    moves = []
+    captures = []
+    for dr, dc in [(1, 1), (1, -1), (-1, 1), (-1, -1)]:
+        check_direction(dr, dc, moves, captures)
+
+    return captures if captures else moves
+
+
+*/

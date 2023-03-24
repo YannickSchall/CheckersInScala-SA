@@ -7,6 +7,7 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
 
   var sList: ListBuffer[String] = ListBuffer()
   var sListBlack: ListBuffer[String] = ListBuffer()
+ 
 
   override def toString: String = if (getColor == "black") "\u001B[37mO\u001B[0m" //red
   else "\u001B[30mO\u001B[0m" //blue
@@ -35,7 +36,7 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
       case ("black", "right") => help_bool(1, 1)
     }
   }
-
+  
   override def getMover(to: String, gameBoard: GameBoard): Mover = {
 
 
@@ -48,8 +49,7 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
     def cap(row_offset: Int, col_offset: Int): Boolean = (row != 1 && col != 1 && col != 0) && gameBoard.field(row + row_offset, col + col_offset).piece.isDefined && gameBoard.field(row + row_offset, col + col_offset).piece.get.getColor == (if (getColor == "black") "white" else "black") && gameBoard.field(row + row_offset * 2, col + col_offset * 2).piece.isEmpty && to == gameBoard.posToStr(row + row_offset * 2, col + col_offset * 2)
 
     def no_cap(row_offset: Int, col_offset: Int): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isEmpty && to == gameBoard.posToStr(row + row_offset, col + col_offset)
-
-
+    
     if (!can_capture) {
       (getColor, direction) match {
         case ("white", _) if row == 0 => new Mover(false, "", false)
@@ -81,16 +81,16 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
     col match {
 
       case 0 =>
-        if (capturable("right", gameBoard)) fillList(to, gameBoard, -2, 2, 0)
+        if (capturable("right", 0, gameBoard)) fillList(to, gameBoard, -2, 2, 0)
         getMover(to, gameBoard)
 
       case Last =>
-        if (capturable("left", gameBoard)) fillList(to, gameBoard, -2, -2, 0)
+        if (capturable("left", 0, gameBoard)) fillList(to, gameBoard, -2, -2, 0)
         getMover(to, gameBoard)
 
       case _ =>
-        if ((col != 1) && capturable("left", gameBoard)) fillList(to, gameBoard, -2, -2, 0)
-        if ((col != Last && col != (Last-1)) && capturable("right", gameBoard)) fillList(to, gameBoard, -2, 2, 0)
+        if ((col != 1) && capturable("left", 0, gameBoard)) fillList(to, gameBoard, -2, -2, 0)
+        if ((col != Last && col != (Last-1)) && capturable("right", 0, gameBoard)) fillList(to, gameBoard, -2, 2, 0)
         getMover(to, gameBoard)
 
     }
