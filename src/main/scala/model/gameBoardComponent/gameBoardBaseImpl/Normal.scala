@@ -20,7 +20,7 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
   }
 
 
-  override def capturable(direction: String, gameBoard: GameBoard): Boolean = {
+  override def capturable(direction: String, dist: Int, gameBoard: GameBoard): Boolean = {
 
     val Last: Int = gameBoard.size - 1
 

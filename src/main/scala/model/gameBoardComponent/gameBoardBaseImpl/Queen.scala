@@ -208,10 +208,30 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
 */
 
 // ok
-  override def capturable(to: String, gameBoard: GameBoard): Boolean = {
 
-    def help_bool(dist: Int): Boolean = ???
 
+  override def capturable(to: String, dist: Int, gameBoard: GameBoard): Boolean = {
+    val Last: Int = gameBoard.size - 1
+    val toRow: Int = Integer.parseInt(to.tail) - 1
+    val toCol: Int = to.charAt(0).toInt - 65
+
+    def direction: String = {
+      var str: String = ""
+      str = if (toRow < row) "up" else "down"
+      str = if (toCol < col) str+"_left" else str+"_right"
+      str
+    }
+  //def help_bool(dist: Int): Boolean = (row != 0 && row + dist != 0 && col != 0 && col-x != 0) && gameBoard.field(row - x, col - x).piece.isDefined && gameBoard.field(row - x, col - x).piece.get.getColor == "white" && gameBoard.field(row - (x+1), col - (x+1)).piece.isEmpty
+    def help_bool(dist: Int): Boolean = (row != 0 && row + dist != 0 && col != Last && col + dist != Last) && gameBoard.field(row + dist, col + dist).piece.isDefined && gameBoard.field(row + dist, col + dist).piece.get.getColor == (if (getColor == "black") "white" else "black") && gameBoard.field(row + (dist + 1), col + (dist + 1)).piece.isEmpty
+
+    (getColor, direction) match {
+      case ("white", _) if row == 1 || row == 0 => false
+      case ("black", _) if row == Last || row == Last - 1 => false
+      case ("white", "left") => help_bool(1)
+      case ("white", "right") => help_bool(-1)
+      case ("black", "left") => help_bool(1)
+      case ("black", "right") => help_bool(1)
+    }
     return false
   }
 
@@ -220,37 +240,8 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     val Last: Int = gameBoard.size - 1
 
     if (!((col + dist < Last && row + dist > 0) && gameBoard.field(row + dist, col + dist).piece.isEmpty || (dist == 0))) {
-
-
-      /*
-      if ((row != 0 && row-x != 0 && col != Last && col+x != Last) && gameBoard.field(row - x, col + x).piece.isDefined && gameBoard.field(row - x, col + x).piece.get.getColor == "white" && gameBoard.field(row - (x+1), col + (x+1)).piece.isEmpty) {
-        // fill list
-        sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row - (x + 1), col + (x + 1)).pos
-      }
-      */
-
-      /*
-      iterativ
-      def fact(num):
-          factorial=1
-          for i in range(1, num+1):
-              factorial=factorial*i
-          return factorial
-
-
-      rekursion
-      * def fact(num):
-          if num==1:
-            return num
-          else:
-            return num * fact(num-1)
-      * */
-
-
-      sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row + (dist + 1), col - (dist + 1)).pos
-
-
-
+      if (capturable(to, dist, gameBoard))
+        sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row + (dist + 1), col + (dist + 1)).pos
     }
     fillList(to, gameBoard, row_offset, col_offset, dist+1)
 
@@ -262,34 +253,12 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
 
 
 
-
-  /*
-  -------------
-  case 0
-  while ((col + x < Last && row - x > 0) && gameBoard.field(row - x, col + x).piece.isEmpty || (x == 0)) {
-    x += 1
-  }
-  -------------
-  case Last
-  x = 0
-  while ((col - x > 0 && row - x > 0) && gameBoard.field(row - x, col - x).piece.isEmpty || (x == 0)) {
-    x += 1
-  }
-  -------------
-  case _
-  while ((col + x < Last && row - x > 0) && gameBoard.field(row - x, col + x).piece.isEmpty || (x == 0)) {
-    x += 1
-    print("\nx: "+x+"\n")
-  }
-  -------------
-  */
-
-
   override def getMover(to: String, gameBoard: GameBoard): Mover = ???
   override def movePossible(to: String, gameBoard: GameBoard): Mover = {
 
 
     var x = 1
+    val dist: Int = 0
     var toRow: Int = Integer.parseInt(to.tail) - 1
     var toCol: Int = to.charAt(0).toInt - 65
     val Last: Int = gameBoard.size - 1
