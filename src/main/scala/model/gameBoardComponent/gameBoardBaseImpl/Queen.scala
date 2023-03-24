@@ -246,6 +246,29 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
 
 
 
+  /*
+  -------------
+  case 0
+  while ((col + x < Last && row - x > 0) && gameBoard.field(row - x, col + x).piece.isEmpty || (x == 0)) {
+    x += 1
+  }
+  -------------
+  case Last
+  x = 0
+  while ((col - x > 0 && row - x > 0) && gameBoard.field(row - x, col - x).piece.isEmpty || (x == 0)) {
+    x += 1
+  }
+  -------------
+  case _
+  while ((col + x < Last && row - x > 0) && gameBoard.field(row - x, col + x).piece.isEmpty || (x == 0)) {
+    x += 1
+    print("\nx: "+x+"\n")
+  }
+  -------------
+  */
+
+
+  override def getMover(to: String, gameBoard: GameBoard): Mover = ???
   override def movePossible(to: String, gameBoard: GameBoard): Mover = {
 
 
