@@ -15,6 +15,7 @@ trait GameBoardInterface {
   def getPiece(row: Int, col: Int): Option[PieceInterface]
   def move(start: String, dest: String): GameBoardInterface
   def movePossible(start: String, dest: String): Mover
+  
 }
 
 trait FieldInterface {

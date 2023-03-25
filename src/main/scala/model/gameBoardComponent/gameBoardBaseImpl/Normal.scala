@@ -7,16 +7,14 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
 
   var sList: ListBuffer[String] = ListBuffer()
   var sListBlack: ListBuffer[String] = ListBuffer()
- 
-
+  
   override def toString: String = if (getColor == "black") "\u001B[37mO\u001B[0m" //red
   else "\u001B[30mO\u001B[0m" //blue
   override def posToStr(row: Int, col: Int): String = {
     (col + 65).toChar.toString + (row + 49).toChar.toString
   }
-
-
-  override def fillList(to: String, gameBoard: GameBoard, direction: String, x: Int): ListBuffer[String] = {
+  
+  override def fillList(to: String, gameBoard: GameBoard, direction: String, dist_count: Int): ListBuffer[String] = {
     val row_offset: Int = if (getColor == "black") 2 else -2
     val col_offset: Int = if (direction == "right") 2 else -2
     sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row + row_offset, col + col_offset).pos

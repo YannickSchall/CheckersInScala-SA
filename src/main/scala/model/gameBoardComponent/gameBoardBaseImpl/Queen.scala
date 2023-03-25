@@ -207,8 +207,8 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     }
 */
 
-// ok
-
+  // ok
+  override def cap_cond(row_offset: Int, col_offset: Int, gameBoard: GameBoard): Boolean = ???
 
   override def capturable(to: String, dist: Int, gameBoard: GameBoard): Boolean = {
     val Last: Int = gameBoard.size - 1
@@ -234,7 +234,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     }
   }
 
-  override def fillList(to: String, gameBoard: GameBoard, dist: Int): ListBuffer[String] = {
+  override def fillList(to: String, gameBoard: GameBoard, direction: String, dist_count: Int): ListBuffer[String] = {
     // brauchen wir 2 unterschiedliche Listen? früher blackList
     val Last: Int = gameBoard.size - 1
     val row_dist: Int = dist_count * (if direction.split("_")(0) == "down" then 1 else -1)
@@ -248,7 +248,6 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     }
     fillList(to, gameBoard, direction, dist_count+1)
   }
-
 
 
   override def getMover(to: String, gameBoard: GameBoard): Mover = ???
