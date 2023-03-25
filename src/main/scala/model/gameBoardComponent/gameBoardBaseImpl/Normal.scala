@@ -41,8 +41,7 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
   }
   
   override def getMover(to: String, gameBoard: GameBoard): Mover = {
-
-
+    
     val Last: Int = gameBoard.size - 1
     val toRow: Int = Integer.parseInt(to.tail) - 1
     val toCol: Int = to.charAt(0).toInt - 65
@@ -67,10 +66,10 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
       }
     } else {
       (getColor, direction) match {
-        case ("white", _) if row == (0 || 1) => new Mover(false, "", false)
-        case ("black", _) if row == (Last || Last-1) => new Mover(false, "", false)
-        case (_, "left") if col == (0 || 1) => new Mover(false, "", false)
-        case (_, "right") if col == (Last || Last-1) => new Mover(false, "", false)
+        case ("white", _) if row == 0 || row == 1 => new Mover(false, "", false) 
+        case ("black", _) if row == Last || row == Last-1 => new Mover(false, "", false)
+        case (_, "left") if col == 0 || col == 1 => new Mover(false, "", false)
+        case (_, "right") if col == Last || col == Last-1 => new Mover(false, "", false)
         case ("white", "left") if cap(-1, -1) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
         case ("white", "right") if cap(-1, 1) => new Mover(true, posToStr(row - 1, col + 1), if toRow == 0 then true else false)
         case ("black", "left") if cap(1, -1) => new Mover(true, posToStr(row + 1, col - 1), if toRow == Last then true else false)

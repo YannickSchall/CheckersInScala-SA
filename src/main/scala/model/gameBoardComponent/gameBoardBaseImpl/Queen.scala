@@ -221,8 +221,8 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
       str = if (toCol < col) str+"_left" else str+"_right"
       str
     }
-  //def help_bool(dist: Int): Boolean = (row != 0 && row + dist != 0 && col != 0 && col-x != 0) && gameBoard.field(row - x, col - x).piece.isDefined && gameBoard.field(row - x, col - x).piece.get.getColor == "white" && gameBoard.field(row - (x+1), col - (x+1)).piece.isEmpty
-    def help_bool(dist: Int): Boolean = (row != 0 && row + dist != 0 && col != Last && col + dist != Last) && gameBoard.field(row + dist, col + dist).piece.isDefined && gameBoard.field(row + dist, col + dist).piece.get.getColor == (if (getColor == "black") "white" else "black") && gameBoard.field(row + (dist + 1), col + (dist + 1)).piece.isEmpty
+
+    def help_bool(dist: Int): Boolean = (row + dist != 0 && row + dist != Last && col + dist != Last && col + dist != 0) && gameBoard.field(row + dist, col + dist).piece.isDefined && gameBoard.field(row + dist, col + dist).piece.get.getColor == (if (getColor == "black") "white" else "black") && gameBoard.field(row + (if dist < 0 then dist-1 else dist+1), col + (if dist < 0 then dist-1 else dist+1)).piece.isEmpty
 
     (getColor, direction) match {
       case ("white", _) if row == 1 || row == 0 => false
@@ -232,19 +232,21 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
       case ("black", "left") => help_bool(1)
       case ("black", "right") => help_bool(1)
     }
-    return false
   }
 
   override def fillList(to: String, gameBoard: GameBoard, dist: Int): ListBuffer[String] = {
     // brauchen wir 2 unterschiedliche Listen? früher blackList
     val Last: Int = gameBoard.size - 1
-
-    if (!((col + dist < Last && row + dist > 0) && gameBoard.field(row + dist, col + dist).piece.isEmpty || (dist == 0))) {
-      if (capturable(to, dist, gameBoard))
-        sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row + (dist + 1), col + (dist + 1)).pos
+    val row_dist: Int = dist_count * (if direction.split("_")(0) == "down" then 1 else -1)
+    val col_dist: Int = dist_count * (if direction.split("_")(1) == "right" then 1 else -1)
+    val row_dist2: Int = row_dist + (if row_dist>0 then 1 else -1)
+    val col_dist2: Int = col_dist + (if col_dist>0 then 1 else -1)
+    
+    if (!((col + col_dist < Last && row + row_dist > 0) && gameBoard.field(row + row_dist, col + col_dist).piece.isEmpty || (dist_count == 0))) {
+      if (capturable(to, dist_count, gameBoard))
+        sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row + row_dist2, col + col_dist2).pos
     }
-    fillList(to, gameBoard, dist+1)
-
+    fillList(to, gameBoard, direction, dist_count+1)
   }
 
 
@@ -261,8 +263,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
 
     col match {
       case 0 =>
-
-        fillList("", gameBoard, dist)
+        fillList("", gameBoard, "", dist)
 
 
 
