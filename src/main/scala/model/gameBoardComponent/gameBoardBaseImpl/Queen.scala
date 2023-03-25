@@ -235,7 +235,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     return false
   }
 
-  override def fillList(to: String, gameBoard: GameBoard, row_offset: Int, col_offset: Int, dist: Int): ListBuffer[String] = {
+  override def fillList(to: String, gameBoard: GameBoard, dist: Int): ListBuffer[String] = {
     // brauchen wir 2 unterschiedliche Listen? früher blackList
     val Last: Int = gameBoard.size - 1
 
@@ -243,7 +243,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
       if (capturable(to, dist, gameBoard))
         sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row + (dist + 1), col + (dist + 1)).pos
     }
-    fillList(to, gameBoard, row_offset, col_offset, dist+1)
+    fillList(to, gameBoard, dist+1)
 
   }
 
@@ -262,7 +262,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     col match {
       case 0 =>
 
-        fillList("", gameBoard, 0, 0, dist)
+        fillList("", gameBoard, dist)
 
 
 

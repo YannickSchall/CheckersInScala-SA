@@ -16,16 +16,19 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
   }
 
 
-  override def fillList(to: String, gameBoard: GameBoard, row_offset: Int, col_offset: Int, x: Int): ListBuffer[String] = {
+  override def fillList(to: String, gameBoard: GameBoard, direction: String, x: Int): ListBuffer[String] = {
+    val row_offset: Int = if (getColor == "black") 2 else -2
+    val col_offset: Int = if (direction == "right") 2 else -2
     sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row + row_offset, col + col_offset).pos
   }
 
+  override def cap_cond(row_offset: Int, col_offset: Int, gameBoard: GameBoard): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isDefined && gameBoard.field(row + row_offset, col + col_offset).piece.get.getColor == (if (getColor == "black") "white" else "black") && gameBoard.field(row + row_offset*2, col + col_offset*2).piece.isEmpty
 
   override def capturable(direction: String, dist: Int, gameBoard: GameBoard): Boolean = {
 
     val Last: Int = gameBoard.size - 1
 
-    def help_bool(row_offset: Int, col_offset: Int): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isDefined && gameBoard.field(row + row_offset, col + col_offset).piece.get.getColor == (if (getColor == "black") "white" else "black") && gameBoard.field(row + row_offset*2, col + col_offset*2).piece.isEmpty
+    def help_bool(row_offset: Int, col_offset: Int): Boolean = cap_cond(row_offset, col_offset, gameBoard)
 
     (getColor, direction) match {
       case ("white", _) if row == 1 || row == 0 => false
@@ -46,7 +49,7 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
     val direction = if (toCol < col) "left" else "right"
     val can_capture = sList.nonEmpty
 
-    def cap(row_offset: Int, col_offset: Int): Boolean = (row != 1 && col != 1 && col != 0) && gameBoard.field(row + row_offset, col + col_offset).piece.isDefined && gameBoard.field(row + row_offset, col + col_offset).piece.get.getColor == (if (getColor == "black") "white" else "black") && gameBoard.field(row + row_offset * 2, col + col_offset * 2).piece.isEmpty && to == gameBoard.posToStr(row + row_offset * 2, col + col_offset * 2)
+    def cap(row_offset: Int, col_offset: Int): Boolean = cap_cond(row_offset, col_offset, gameBoard) && to == gameBoard.posToStr(row + row_offset * 2, col + col_offset * 2)
 
     def no_cap(row_offset: Int, col_offset: Int): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isEmpty && to == gameBoard.posToStr(row + row_offset, col + col_offset)
     
@@ -54,6 +57,8 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
       (getColor, direction) match {
         case ("white", _) if row == 0 => new Mover(false, "", false)
         case ("black", _) if row == Last => new Mover(false, "", false)
+        case (_, "left") if col == 0 => new Mover(false, "", false)
+        case (_, "right") if col == Last => new Mover(false, "", false)
         case ("white", "left") if no_cap(-1, -1) => new Mover(true, "", if toRow == 0 then true else false)
         case ("white", "right") if no_cap(-1, 1) => new Mover(true, "", if toRow == 0 then true else false)
         case ("black", "left") if no_cap(1, -1) => new Mover(true, "", if toRow == Last then true else false)
@@ -62,8 +67,10 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
       }
     } else {
       (getColor, direction) match {
-        case ("white", _) if row == 0 => new Mover(false, "", false)
-        case ("black", _) if row == Last => new Mover(false, "", false)
+        case ("white", _) if row == (0 || 1) => new Mover(false, "", false)
+        case ("black", _) if row == (Last || Last-1) => new Mover(false, "", false)
+        case (_, "left") if col == (0 || 1) => new Mover(false, "", false)
+        case (_, "right") if col == (Last || Last-1) => new Mover(false, "", false)
         case ("white", "left") if cap(-1, -1) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
         case ("white", "right") if cap(-1, 1) => new Mover(true, posToStr(row - 1, col + 1), if toRow == 0 then true else false)
         case ("black", "left") if cap(1, -1) => new Mover(true, posToStr(row + 1, col - 1), if toRow == Last then true else false)
@@ -81,16 +88,16 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
     col match {
 
       case 0 =>
-        if (capturable("right", 0, gameBoard)) fillList(to, gameBoard, -2, 2, 0)
+        if (capturable("right", 0, gameBoard)) fillList(to, gameBoard, "right", 0)
         getMover(to, gameBoard)
 
       case Last =>
-        if (capturable("left", 0, gameBoard)) fillList(to, gameBoard, -2, -2, 0)
+        if (capturable("left", 0, gameBoard)) fillList(to, gameBoard,"left", 0)
         getMover(to, gameBoard)
 
       case _ =>
-        if ((col != 1) && capturable("left", 0, gameBoard)) fillList(to, gameBoard, -2, -2, 0)
-        if ((col != Last && col != (Last-1)) && capturable("right", 0, gameBoard)) fillList(to, gameBoard, -2, 2, 0)
+        if ((col != (Last-1)) && capturable("right", 0, gameBoard)) fillList(to, gameBoard, "right", 0)
+        if ((col != 1) && capturable("left", 0, gameBoard)) fillList(to, gameBoard, "left", 0)
         getMover(to, gameBoard)
 
     }
