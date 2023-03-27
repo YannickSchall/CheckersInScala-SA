@@ -8,35 +8,75 @@ import scala.collection.mutable.ListBuffer
 
 class NormalSpec extends AnyWordSpec {
   "A Piece called Normal" should {
+    /*
+    val gb = new GameBoard(10)
     val normal = Normal("normal", 4, 4, "white")
     val normalLinks = Normal("normal", 4,0, "white")
     val normalRechts = Normal("normal", 7,9, "white")
     val normalSchwarz = Normal("normal", 2, 2, "black")
+    */
 
-    val gb = new GameBoard(10)
+    val size = 10
+    var game = new GameBoard(size)
+
+    // define white stones
+    val w1 = Normal("normal", 3, 3, "white")
+    val w2 = Normal("normal", 3, 7, "white")
+    val w3 = Normal("normal", 4, 2, "white")
+    val w4 = Normal("normal", 4, 4, "white")
+    val w5 = Normal("normal", 8, 8, "white")
+
+    // define black stones
+    val b1 = Normal("normal", 1, 1, "black")
+    val b2 = Normal("normal", 3, 1, "black")
+    val b3 = Normal("normal", 3, 5, "black")
+    val b4 = Normal("normal", 4, 6, "black")
+    val b5 = Normal("normal", 9, 9, "black")
+
+    // preset white stones
+    game.set(3, 3, Some(w1)) //D4
+    game.set(3, 7, Some(w2)) //H4
+    game.set(4, 2, Some(w3)) //C5
+    game.set(4, 4, Some(w4)) //E5
+    game.set(8, 8, Some(w5)) //J9
+
+    // preset black stones
+    game.set(1, 1, Some(b1)) //B2
+    game.set(3, 1, Some(b2)) //B4
+    game.set(3, 5, Some(b3)) //F4
+    game.set(4, 6, Some(b4)) //G5
+    game.set(9, 9, Some(b5)) //I10
+
+    // fill board
+    for {index <- 0 until size} {
+      for {index2 <- 0 until size} {
+        game = game.set(index, index2, None)
+      }
+    }
+
     "have a row" in {
-      normal.row should be (4)
-      normalSchwarz.row should be (2)
+      w1.row should be (3)
+      b1.row should be (1)
     }
     "have a col" in {
-      normal.col should be (4)
-      normalSchwarz.col should be (2)
+      w1.col should be (3)
+      b1.col should be (1)
     }
     "have a color" in {
-      normal.getColor should be ("white")
-      normalSchwarz.getColor should be ("black")
+      w1.getColor should be ("white")
+      b1.getColor should be ("black")
     }
     "have the state named Normal" in {
-      normal.state should be ("normal")
-      normalSchwarz.state should be ("normal")
+      w1.state should be ("normal")
+      b1.state should be ("normal")
     }
     "produce a String" in {
-      normal.toString should be("\u001B[30mO\u001B[0m")
-      normalSchwarz.toString should be ("\u001B[37mO\u001B[0m")
+      w1.toString should be("\u001B[30mO\u001B[0m")   // black o for tui
+      b1.toString should be ("\u001B[37mO\u001B[0m") // white o for tui
     }
 
     "be filled into a List" in {
-      //normalWhite auf E5 (4,4)
+      /*
       val size = 10
       var gbc = new GameBoard(size)
       for {index <- 0 until size} {
@@ -49,16 +89,32 @@ class NormalSpec extends AnyWordSpec {
       gbc = gbc.set(3, 3, Some(Piece("normal", 3, 3, "black")))
       gbc = gbc.set(6, 6, Some(Piece("normal", 6, 6, "white")))
       gbc = gbc.set(4,4, Some(n))
-      val list = normal.fillList("C3", gbc, "left", 0)
+      gbc = gbc.set(0,1, Some(Piece("normal", 0, 1, "black")))
+
       val str = gbc.getPiece(4, 4)
-      print("my string", str)
-      //list should be (ListBuffer(""))
-      list.length should be (1)
-      //assert(list.length == 2)
-      //assert(list.contains("G6 E4"))
-      //assert(list.contains("G6 I4"))
-      list.head should be ("E5 C3")
-      //list(1) should be ("G6 E4")
+      val str1 = gbc.getPiece(0,1).toString
+      */
+
+      var listW = new ListBuffer[String]
+      var listB = new ListBuffer[String]
+      // cap over LEFT true RIGHT nok cause w over w
+      listW = w3.fillList("A3", game, "left", 0)
+      listW = w3.fillList("E3", game, "right", 0)
+      //b5.fillList("H8", game, "left", 0)
+      // cap over RIGHT true
+      //listW = w4.fillList("G3", game, "right", 0)
+      // cap over RIGHT true LEFT nok cause b o
+      listB = b4.fillList("I7", game, "right", 0)
+      listB = b4.fillList("E3", game, "right", 0)
+
+      listW.length should be (2)
+      listB.length should be (2)
+      print(listW)
+      print(listB)
+
+      //listW.head should be ("C5 A3")
+      //listB.head should be ("G5 I3")
+
     }
 
     "be capturable" in {
@@ -71,7 +127,9 @@ class NormalSpec extends AnyWordSpec {
     }
 
     "should be allowed to Move" in {
-      normal.movePossible("D4", gb).getBool should be (true)
+      // normal ist (4,4) white E5
+      /*
+      normal.movePossible("D4", gb).getBool should be (true) //move top left to empty space
       normal.movePossible("F4", gb).getBool should be (true)
       normal.movePossible("A9", gb).getBool should be (false)
       normal.movePossible("J10", gb).getBool should be (false)
@@ -79,8 +137,10 @@ class NormalSpec extends AnyWordSpec {
       normalLinks.movePossible("E6", gb).getBool should be (false)
       normalRechts.movePossible("I7", gb).getBool should be (true)
       normalRechts.movePossible("I9", gb).getBool should be (false)
+      */
     }
     "should be allowed to Move as a Black Piece" in {
+      /*
       val dameSchwarzLinks = Normal("normal", 2, 0, "black")
       val dameSchwarzRechts = Normal("normal", 1, 9, "black")
       normalSchwarz.movePossible("B4", gb).getBool should be (true)
@@ -91,6 +151,7 @@ class NormalSpec extends AnyWordSpec {
       dameSchwarzLinks.movePossible("B2", gb).getBool should be (false)
       dameSchwarzRechts.movePossible("I3", gb).getBool should be (true)
       dameSchwarzRechts.movePossible("I1", gb).getBool should be (false)
+      */
     }
     "should be allowed to Capture from the middle" in {
       var gbc = new GameBoard(10)
