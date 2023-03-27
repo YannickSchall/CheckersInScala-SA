@@ -25,15 +25,17 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
 
   override def cap_cond(row_offset: Int, col_offset: Int, gameBoard: GameBoard): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isDefined && gameBoard.field(row + row_offset, col + col_offset).piece.get.getColor == (if (getColor == "black") "white" else "black") && gameBoard.field(row + row_offset*2, col + col_offset*2).piece.isEmpty
 
-  override def capturable(direction: String, dist: Int, gameBoard: GameBoard): Boolean = {
+  override def capturable(direction: String, row_dist: Int, col_dist: Int, gameBoard: GameBoard): Boolean = {
 
     val Last: Int = gameBoard.size - 1
 
     def help_bool(row_offset: Int, col_offset: Int): Boolean = cap_cond(row_offset, col_offset, gameBoard)
 
     (getColor, direction) match {
-      case ("white", _) if row == 1 || row == 0 => false
-      case ("black", _) if row == Last || row == Last-1 => false
+      case ("white", _) if row == 0 || row == 1 => false
+      case ("black", _) if row == Last || row == Last - 1 => false
+      case (_, "left") if col == 0 || col == 1 => false
+      case (_, "right") if col == Last || col == Last - 1 => false
       case ("white", "left") => help_bool(-1, -1)
       case ("white", "right") => help_bool(-1, 1)
       case ("black", "left") => help_bool(1, -1)
@@ -88,12 +90,11 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
     col match {
 
       case 0 =>
-        if (capturable("right", 0, gameBoard))
-          fillList(to, gameBoard, "right", 0)
+        if (capturable("right", 0, 0, gameBoard)) fillList(to, gameBoard, "right", 0)
         getMover(to, gameBoard)
 
       case Last =>
-        if (capturable("left", 0, gameBoard)) fillList(to, gameBoard,"left", 0)
+        if (capturable("left", 0, 0, gameBoard)) fillList(to, gameBoard,"left", 0)
         getMover(to, gameBoard)
 
       case _ =>
