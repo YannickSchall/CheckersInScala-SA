@@ -1,5 +1,5 @@
 package model
-import model.gameBoardComponent.gameBoardBaseImpl.{GameBoard, Normal, Piece}
+import model.gameBoardComponent.gameBoardBaseImpl.{GameBoard, GameBoardCreator, Normal, Piece}
 import org.scalatest.*
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.*
@@ -35,7 +35,15 @@ class NormalSpec extends AnyWordSpec {
       normalSchwarz.toString should be ("\u001B[37mO\u001B[0m")
     }
     "be filled into a List" in {
-      var gbc = new GameBoard(10)
+      //normalWhite auf E5 (4,4)
+      val size = 10
+      var gbc = new GameBoard(size)
+      for {index <- 0 until size} {
+        for {index2 <- 0 until size} {
+          gbc = gbc.set(index, index2, None)
+        }
+      }
+      val n = Normal("normal", 4, 4, "white")
       gbc = gbc.set(5, 5, Some(Piece("normal", 5, 5, "black")))
       gbc = gbc.set(5, 7, Some(Piece("normal", 5, 7, "black")))
       gbc = gbc.set(6, 6, Some(Piece("normal", 6, 6, "white")))
@@ -46,6 +54,10 @@ class NormalSpec extends AnyWordSpec {
       //assert(list.contains("G6 I4"))
       list.head should be ("G6 E4")
       list(1) should be ("G6 E4")
+    }
+
+    "be capturable" in {
+      normalLinks.capturable("left", 0, gb) should be (true)
     }
 
     "should be allowed to Move" in {
