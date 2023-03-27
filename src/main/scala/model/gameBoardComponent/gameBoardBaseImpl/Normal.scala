@@ -88,7 +88,8 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
     col match {
 
       case 0 =>
-        if (capturable("right", 0, gameBoard)) fillList(to, gameBoard, "right", 0)
+        if (capturable("right", 0, gameBoard))
+          fillList(to, gameBoard, "right", 0)
         getMover(to, gameBoard)
 
       case Last =>

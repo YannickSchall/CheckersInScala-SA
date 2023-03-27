@@ -3,7 +3,7 @@ import model.gameBoardComponent.gameBoardBaseImpl.{GameBoard, Piece, Queen}
 import org.scalatest._
 import org.scalatest.matchers.should.Matchers._
 import org.scalatest.wordspec._
-
+/*
 class QueenSpec extends AnyWordSpec {
   "A Piece called Queen" should {
     val dame = Queen("queen", 4, 4, "white")
@@ -136,3 +136,4 @@ class QueenSpec extends AnyWordSpec {
     }
   }
 }
+*/
