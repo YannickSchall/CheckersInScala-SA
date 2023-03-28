@@ -17,9 +17,6 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: String
   override def fillList(to: String, gameBoard: GameBoard, direction: String, dist_count: Int): ListBuffer[String] = {
     val row_offset: Int = if (getColor == "black") 2 else -2
     val col_offset: Int = if (direction == "right") 2 else -2
-    print("pos1", gameBoard.field(row, col).pos)
-    print("field", gameBoard.getField(posToStr(row, col)))
-    print("pos2", gameBoard.field(row + row_offset, col + col_offset).pos)
     sList += gameBoard.field(row, col).pos + " " + gameBoard.field(row + row_offset, col + col_offset).pos
   }
 

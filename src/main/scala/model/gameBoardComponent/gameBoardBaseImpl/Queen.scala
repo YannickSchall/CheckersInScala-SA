@@ -2,6 +2,7 @@ package model.gameBoardComponent.gameBoardBaseImpl
 
 import util.Mover
 
+import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
 
 case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) extends Piece(state, row, col, getColor) {
@@ -208,7 +209,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
 */
 
   // ok
-  override def cap_cond(row_offset: Int, col_offset: Int, gameBoard: GameBoard): Boolean = {false}
+  override def cap_cond(row_offset: Int, col_offset: Int, gameBoard: GameBoard): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isDefined && gameBoard.field(row + row_offset, col + col_offset).piece.get.getColor == (if (getColor == "black") "white" else "black")
 
   override def capturable(to: String, row_dist: Int, col_dist: Int, gameBoard: GameBoard): Boolean = {
     val Last: Int = gameBoard.size - 1
@@ -248,22 +249,57 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     fillList(to, gameBoard, direction, dist_count+1)
   }
 
+  // funktion höheren ordnungs
+  def calcDist(direction: String): Int => (Int, Int) = dist_count => {
+    val row_dist: Int = dist_count * (if direction.split("_")(0) == "down" then 1 else -1)
+    val col_dist: Int = dist_count * (if direction.split("_")(1) == "right" then 1 else -1)
+    (row_dist, col_dist)
+  }
+
+  // pattern matching
+  def increaseOffset(offset: Int): Int = offset match {
+    case x if x > 0 => x + 1
+    case x if x < 0 => x - 1
+    case _ => 0
+  }
+
+  // funktionale Komposition
+  def calcNextDist(direction: String): Int => (Int, Int) =
+    calcDist(direction) andThen { case (rd, cd) => (rd + increaseOffset(rd), cd + increaseOffset(cd)) }
+
 
   override def getMover(to: String, gameBoard: GameBoard): Mover = {
     val Last: Int = gameBoard.size - 1
     val toRow: Int = Integer.parseInt(to.tail) - 1
     val toCol: Int = to.charAt(0).toInt - 65
 
-    def direction: String = {
+    def direction: String = { //Change to 2 variables instead
       var str: String = ""
       str = if (toRow < row) "up" else "down"
       str = if (toCol < col) str + "_left" else str + "_right"
       str
     }
+
+    @tailrec
+    def getDist(dist_count: Int): Int = {
+      val row_dist: Int = calcDist(direction)(dist_count)(0)
+      val col_dist: Int = calcDist(direction)(dist_count)(1)
+      if (!((col + col_dist < Last && row + row_dist > 0) && gameBoard.field(row + row_dist, col + col_dist).piece.isEmpty || (dist_count == 0))) {
+        if (capturable(to, row_dist, col_dist, gameBoard))
+          return dist_count
+      }
+      getDist(dist_count + 1)
+    }
+
+
+
+    val dist = getDist(0)
     //  if (((toCol - col) - (x - 1) <= 0) && ((x - 1) >= (row - toRow)) && ((toCol - col) - (row - toRow) == 0) && (toCol - col > 0) && (toRow - row < 0)) return new Mover(true, "", false) //mitte nach rechts oben
     val can_capture = sList.nonEmpty
-
-    def cap(row_offset: Int, col_offset: Int): Boolean = cap_cond(row_offset, col_offset, gameBoard) && to == gameBoard.posToStr(row + row_offset * 2, col + col_offset * 2)
+    def cap(row_offset: Int, col_offset: Int): Boolean = {
+      val row_offset2: Int = calcNextDist(direction)(row_offset)(0)
+      val col_offset2: Int = calcNextDist(direction)(col_offset)(1)
+      cap_cond(row_offset, col_offset, gameBoard) && to == gameBoard.posToStr(row + row_offset2, col + col_offset2) && gameBoard.field(row + row_offset2, col + col_offset2).piece.isEmpty}
 
     def no_cap(row_offset: Int, col_offset: Int): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isEmpty && to == gameBoard.posToStr(row + row_offset, col + col_offset)
 
@@ -273,7 +309,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
         case ("black", _) if row == Last => new Mover(false, "", false)
         case (_, "left") if col == 0 => new Mover(false, "", false)
         case (_, "right") if col == Last => new Mover(false, "", false)
-        case ("white", "left") if no_cap(-1, -1) => new Mover(true, "", if toRow == 0 then true else false)
+        case ("white", "left") if no_cap(-dist, -dist) => new Mover(true, "", if toRow == 0 then true else false)
         case ("white", "right") if no_cap(-1, 1) => new Mover(true, "", if toRow == 0 then true else false)
         case ("black", "left") if no_cap(1, -1) => new Mover(true, "", if toRow == Last then true else false)
         case ("black", "right") if no_cap(1, 1) => new Mover(true, "", if toRow == Last then true else false)
@@ -281,11 +317,11 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
       }
     } else {
       (getColor, direction) match {
-        case ("white", _) if row == 0 || row == 1 => new Mover(false, "", false)
-        case ("black", _) if row == Last || row == Last - 1 => new Mover(false, "", false)
+        case (_, _) if col == 0 || col == 1 => new Mover(false, "", false)
+        case (_, _) if col == Last || col == Last - 1 => new Mover(false, "", false)
         case (_, "left") if col == 0 || col == 1 => new Mover(false, "", false)
         case (_, "right") if col == Last || col == Last - 1 => new Mover(false, "", false)
-        case ("white", "left") if cap(-1, -1) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
+        case ("white", "left") if cap(-dist, -dist) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
         case ("white", "right") if cap(-1, 1) => new Mover(true, posToStr(row - 1, col + 1), if toRow == 0 then true else false)
         case ("black", "left") if cap(1, -1) => new Mover(true, posToStr(row + 1, col - 1), if toRow == Last then true else false)
         case ("black", "right") if cap(1, 1) => new Mover(true, posToStr(row + 1, col + 1), if toRow == Last then true else false)

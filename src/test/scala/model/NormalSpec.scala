@@ -117,42 +117,6 @@ class NormalSpec extends AnyWordSpec {
 
     }
 
-    "be capturable" in {
-      //print(gb.getPiece(7, 9)) // white
-      //print(gb.getPiece(2, 2)) // black
-      /*
-      normalLinks.capturable("left", 0, 0, gb) should be (false)
-      normalRechts.capturable("right", 0, 0, gb) should be (false) // wenn rechts am rand
-      */
-    }
-
-    "should be allowed to Move" in {
-      // normal ist (4,4) white E5
-      /*
-      normal.movePossible("D4", gb).getBool should be (true) //move top left to empty space
-      normal.movePossible("F4", gb).getBool should be (true)
-      normal.movePossible("A9", gb).getBool should be (false)
-      normal.movePossible("J10", gb).getBool should be (false)
-      normalLinks.movePossible("B4", gb).getBool should be (true)
-      normalLinks.movePossible("E6", gb).getBool should be (false)
-      normalRechts.movePossible("I7", gb).getBool should be (true)
-      normalRechts.movePossible("I9", gb).getBool should be (false)
-      */
-    }
-    "should be allowed to Move as a Black Piece" in {
-      /*
-      val dameSchwarzLinks = Normal("normal", 2, 0, "black")
-      val dameSchwarzRechts = Normal("normal", 1, 9, "black")
-      normalSchwarz.movePossible("B4", gb).getBool should be (true)
-      normalSchwarz.movePossible("D4", gb).getBool should be (true)
-      normalSchwarz.movePossible("A5", gb).getBool should be (false)
-      normalSchwarz.movePossible("H8", gb).getBool should be (false)
-      dameSchwarzLinks.movePossible("B4", gb).getBool should be (true)
-      dameSchwarzLinks.movePossible("B2", gb).getBool should be (false)
-      dameSchwarzRechts.movePossible("I3", gb).getBool should be (true)
-      dameSchwarzRechts.movePossible("I1", gb).getBool should be (false)
-      */
-    }
     "should be allowed to Capture from the middle" in {
       var gbc = new GameBoard(10)
       gbc = gbc.set(3, 3, Some(Piece("normal", 3, 3, "black")))
