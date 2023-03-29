@@ -5,6 +5,7 @@ import java.awt.Color
 import scala.swing._
 import scala.swing.event._
 import controller.controllerComponent.ControllerInterface
+import model.gameBoardComponent.gameBoardBaseImpl.Color.*
 import javax.swing.{BorderFactory, Icon, ImageIcon}
 import model.gameBoardComponent.gameBoardBaseImpl.Piece
 import java.io.File
@@ -33,7 +34,7 @@ class FieldPanel(row: Int, col: Int, controller: ControllerInterface, background
   def fieldText(): String = {
     color = "white"
     if (myField.isSet) {
-      if (controller.getPiece(row, col).get.getColor == "white") print("")
+      if (controller.getPiece(row, col).get.getColor == White) print("")
       controller.getPiece(row, col).get.toString
     } else " "
   }
@@ -48,7 +49,7 @@ class FieldPanel(row: Int, col: Int, controller: ControllerInterface, background
   def pieceMatcher(labelX: Label): Unit = {
     var fcolor = ""
     var fstate = ""
-    if (myField.getPiece.isDefined) fcolor = myField.getPiece.get.getColor
+    if (myField.getPiece.isDefined) fcolor = myField.getPiece.get.getColor.toString
     if (myField.getPiece.isDefined) fstate = myField.getPiece.get.state
 
     fcolor match {
@@ -96,9 +97,9 @@ class FieldPanel(row: Int, col: Int, controller: ControllerInterface, background
             val col = gui.fieldDest.charAt(0).toInt - 65
             var rem = false
             var which = ""
-            if (controller.movePossible(gui.fieldStart, gui.fieldDest).getRem.nonEmpty && controller.gameState.toString.charAt(0).toString.toLowerCase == controller.getPiece(Integer.parseInt(gui.fieldStart.tail) - 1, gui.fieldStart.charAt(0).toInt - 65).get.getColor.charAt(0).toString) rem = true; which = controller.movePossible(gui.fieldStart, gui.fieldDest).getRem
-            if (controller.movePossible(gui.fieldStart, gui.fieldDest).getQ && controller.gameState.toString.charAt(0).toString.toLowerCase == controller.getPiece(Integer.parseInt(gui.fieldStart.tail) - 1, gui.fieldStart.charAt(0).toInt - 65).get.getColor.charAt(0).toString) {
-              print(controller.getPiece(Integer.parseInt(gui.fieldStart.tail) - 1, gui.fieldStart.charAt(0).toInt - 65).get.getColor.charAt(0).toString)
+            if (controller.movePossible(gui.fieldStart, gui.fieldDest).getRem.nonEmpty && controller.gameState.toString.charAt(0).toString.toLowerCase == controller.getPiece(Integer.parseInt(gui.fieldStart.tail) - 1, gui.fieldStart.charAt(0).toInt - 65).get.getColor.toString.charAt(0).toString) rem = true; which = controller.movePossible(gui.fieldStart, gui.fieldDest).getRem
+            if (controller.movePossible(gui.fieldStart, gui.fieldDest).getQ && controller.gameState.toString.charAt(0).toString.toLowerCase == controller.getPiece(Integer.parseInt(gui.fieldStart.tail) - 1, gui.fieldStart.charAt(0).toInt - 65).get.getColor.toString.charAt(0).toString) {
+              print(controller.getPiece(Integer.parseInt(gui.fieldStart.tail) - 1, gui.fieldStart.charAt(0).toInt - 65).get.getColor.toString.charAt(0).toString)
               controller.move(gui.fieldStart, gui.fieldDest)
               controller.set(row, col, Piece("queen", row, col, controller.getPiece(row, col).get.getColor))
               if (rem) controller.remove(Integer.parseInt(which.tail)-1, which.charAt(0).toInt - 65)

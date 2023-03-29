@@ -4,12 +4,12 @@ import com.google.inject.Guice
 import com.google.inject.name.Names
 import model.fileIoComponent.FileIOInterface
 import model.gameBoardComponent.{FieldInterface, GameBoardInterface, PieceInterface}
-import model.gameBoardComponent.gameBoardBaseImpl.{Field, Piece}
+import model.gameBoardComponent.gameBoardBaseImpl.{Color, Field, Piece}
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 
 import scala.io.Source
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class FileIO extends FileIOInterface{
   override def load: GameBoardInterface = {
@@ -61,7 +61,15 @@ class FileIO extends FileIOInterface{
       (JsPath \ "piece").readNullable[Piece]
     ) (Field.apply _)
 
+  implicit val colorReads: Reads[Color] = (
+    (JsPath \ "color").read[String]
+  ) (Color.apply _)
 
+  implicit val colorWrites: Writes[Color] = new Writes[Color] {
+    def writes(color: Color) = Json.obj(
+      "color" -> color
+    )
+  }
 
   implicit val fieldWrites: Writes[FieldInterface] = new Writes[FieldInterface] {
     def writes(field: FieldInterface) = Json.obj(

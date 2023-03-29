@@ -2,6 +2,7 @@ package model.gameBoardComponent
 import com.google.inject.ImplementedBy
 import model.gameBoardComponent.gameBoardBaseImpl.{GameBoard, Piece}
 import util.Mover
+import model.gameBoardComponent.gameBoardBaseImpl.Color
 
 import scala.collection.mutable.ListBuffer
 
@@ -12,7 +13,7 @@ trait PieceInterface {
   def state: String
   def row: Int
   def col: Int
-  def getColor: String
+  def getColor: Color
   def fillList(to: String, gameBoard: GameBoard, direction: String, dist_count: Int): ListBuffer[String]
   def cap_cond(row_offset: Int, col_offset: Int, gameBoard: GameBoard): Boolean
   def capturable(to: String, row_dist: Int, col_dist: Int, gameBoard: GameBoard): Boolean

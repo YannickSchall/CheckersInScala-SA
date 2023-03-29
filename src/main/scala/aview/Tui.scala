@@ -4,6 +4,7 @@ import java.awt.GraphicsEnvironment
 import controller.controllerComponent._
 import controller.controllerComponent.controllerBaseImpl.PrintTui
 import model.gameBoardComponent.gameBoardBaseImpl.Piece
+import model.gameBoardComponent.gameBoardBaseImpl.Color.*
 
 import scala.swing.Reactor
 import scala.util.{Failure, Success, Try}
@@ -35,9 +36,9 @@ class Tui(controller: ControllerInterface) extends Reactor {
         val col = args(2).charAt(0).toInt - 65
         var rem = false
         var which = ""
-        if (!controller.movePossible(args(1), args(2)).getRem.isEmpty && controller.gameState.toString.charAt(0).toString.toLowerCase == controller.getPiece(Integer.parseInt(args(1).tail) - 1, args(1).charAt(0).toInt - 65).get.getColor.charAt(0).toString) rem = true; which = controller.movePossible(args(1), args(2)).getRem
-        if (controller.movePossible(args(1), args(2)).getQ && controller.gameState.toString.charAt(0).toString.toLowerCase == controller.getPiece(Integer.parseInt(args(1).tail) - 1, args(0).charAt(1).toInt - 65).get.getColor.charAt(0).toString) {
-          print(controller.getPiece(Integer.parseInt(args(1).tail) - 1, args(1).charAt(0).toInt - 65).get.getColor.charAt(0).toString)
+        if (!controller.movePossible(args(1), args(2)).getRem.isEmpty && controller.gameState.toString.charAt(0).toString.toLowerCase == controller.getPiece(Integer.parseInt(args(1).tail) - 1, args(1).charAt(0).toInt - 65).get.getColor.toString.charAt(0).toString) rem = true; which = controller.movePossible(args(1), args(2)).getRem
+        if (controller.movePossible(args(1), args(2)).getQ && controller.gameState.toString.charAt(0).toString.toLowerCase == controller.getPiece(Integer.parseInt(args(1).tail) - 1, args(0).charAt(1).toInt - 65).get.getColor.toString.charAt(0).toString) {
+          print(controller.getPiece(Integer.parseInt(args(1).tail) - 1, args(1).charAt(0).toInt - 65).get.getColor.toString.charAt(0).toString)
           controller.move(args(1), args(2))
           controller.set(row, col, Piece("queen", row, col, controller.getPiece(row, col).get.getColor))
           if (rem) controller.remove(Integer.parseInt(which.tail)-1, which.charAt(0).toInt - 65)
@@ -58,7 +59,7 @@ class Tui(controller: ControllerInterface) extends Reactor {
         print("\u001B[32mhelp\u001B[0m: At this point you probably already know about it, but it prints information about possible TUI inputs.\n\n")
 
       case "TRY" => print(controller.movePossible(args(1), args(2)).toString + "\n")
-      case "GETCOLOR" => print(controller.getPiece(args(1).charAt(1).toInt - 49, args(1).charAt(0).toInt - 65).get.getColor + "\n")
+      case "GETCOLOR" => print(controller.getPiece(args(1).charAt(1).toInt - 49, args(1).charAt(0).toInt - 65).get.getColor.toString + "\n")
       case _ => print("Try something else, for possible inputs, type \"help\"\n")
     }
   }

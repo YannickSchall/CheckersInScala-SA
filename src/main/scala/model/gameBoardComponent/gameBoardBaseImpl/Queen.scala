@@ -4,17 +4,18 @@ import util.Mover
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
+import model.gameBoardComponent.gameBoardBaseImpl.Color.*
 
-case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) extends Piece(state, row, col, getColor) {
+case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) extends Piece(state, row, col, getColor) {
 
   var sList: ListBuffer[String] = ListBuffer()
   var sListBlack: ListBuffer[String] = ListBuffer()
-  override def toString: String = if (getColor == "black") "\u001B[37mQ\u001B[0m"//"\uD83D\uDFE0" //orange/black
+  override def toString: String = if (getColor == Black) "\u001B[37mQ\u001B[0m"//"\uD83D\uDFE0" //orange/black
   else "\u001B[30mQ\u001B[0m"//"\uD83D\uDFE3" //purple/white
 
 
   // ok
-  override def cap_cond(row_offset: Int, col_offset: Int, gameBoard: GameBoard): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isDefined && gameBoard.field(row + row_offset, col + col_offset).piece.get.getColor == (if (getColor == "black") "white" else "black")
+  override def cap_cond(row_offset: Int, col_offset: Int, gameBoard: GameBoard): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isDefined && gameBoard.field(row + row_offset, col + col_offset).piece.get.getColor == (if (getColor == Black) White else Black)
 
   override def capturable(to: String, row_dist: Int, col_dist: Int, gameBoard: GameBoard): Boolean = {
     val Last: Int = gameBoard.size - 1
@@ -28,7 +29,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
       str
     }
 
-    def help_bool(row_dist: Int, col_dist: Int): Boolean = (row + row_dist != 0 && row + row_dist != Last && col + col_dist != Last && col + col_dist != 0) && gameBoard.field(row + row_dist, col + col_dist).piece.isDefined && gameBoard.field(row + row_dist, col + col_dist).piece.get.getColor == (if (getColor == "black") "white" else "black") && gameBoard.field(row + (if row_dist < 0 then row_dist-1 else row_dist+1), col + (if col_dist < 0 then col_dist-1 else col_dist+1)).piece.isEmpty
+    def help_bool(row_dist: Int, col_dist: Int): Boolean = (row + row_dist != 0 && row + row_dist != Last && col + col_dist != Last && col + col_dist != 0) && gameBoard.field(row + row_dist, col + col_dist).piece.isDefined && gameBoard.field(row + row_dist, col + col_dist).piece.get.getColor == (if (getColor == Black) White else Black) && gameBoard.field(row + (if row_dist < 0 then row_dist-1 else row_dist+1), col + (if col_dist < 0 then col_dist-1 else col_dist+1)).piece.isEmpty
 
     (getColor, direction) match {
       case (_, "up_left") => help_bool(-row_dist, -col_dist)
@@ -110,14 +111,14 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
 
     if (!can_capture) {
       (getColor, direction) match {
-        case ("white", _) if row == 0 => new Mover(false, "", false)
-        case ("black", _) if row == Last => new Mover(false, "", false)
+        case (White, _) if row == 0 => new Mover(false, "", false)
+        case (Black, _) if row == Last => new Mover(false, "", false)
         case (_, "left") if col == 0 => new Mover(false, "", false)
         case (_, "right") if col == Last => new Mover(false, "", false)
-        case ("white", "left") if no_cap(-dist, -dist) => new Mover(true, "", if toRow == 0 then true else false)
-        case ("white", "right") if no_cap(-1, 1) => new Mover(true, "", if toRow == 0 then true else false)
-        case ("black", "left") if no_cap(1, -1) => new Mover(true, "", if toRow == Last then true else false)
-        case ("black", "right") if no_cap(1, 1) => new Mover(true, "", if toRow == Last then true else false)
+        case (White, "left") if no_cap(-dist, -dist) => new Mover(true, "", if toRow == 0 then true else false)
+        case (White, "right") if no_cap(-1, 1) => new Mover(true, "", if toRow == 0 then true else false)
+        case (Black, "left") if no_cap(1, -1) => new Mover(true, "", if toRow == Last then true else false)
+        case (Black, "right") if no_cap(1, 1) => new Mover(true, "", if toRow == Last then true else false)
         case _ => new Mover(false, "", false)
       }
     } else {
@@ -126,10 +127,10 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
         case (_, _) if col == Last || col == Last - 1 => new Mover(false, "", false)
         case (_, "left") if col == 0 || col == 1 => new Mover(false, "", false)
         case (_, "right") if col == Last || col == Last - 1 => new Mover(false, "", false)
-        case ("white", "left") if cap(-dist, -dist) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
-        case ("white", "right") if cap(-1, 1) => new Mover(true, posToStr(row - 1, col + 1), if toRow == 0 then true else false)
-        case ("black", "left") if cap(1, -1) => new Mover(true, posToStr(row + 1, col - 1), if toRow == Last then true else false)
-        case ("black", "right") if cap(1, 1) => new Mover(true, posToStr(row + 1, col + 1), if toRow == Last then true else false)
+        case (White, "left") if cap(-dist, -dist) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
+        case (White, "right") if cap(-1, 1) => new Mover(true, posToStr(row - 1, col + 1), if toRow == 0 then true else false)
+        case (Black, "left") if cap(1, -1) => new Mover(true, posToStr(row + 1, col - 1), if toRow == Last then true else false)
+        case (Black, "right") if cap(1, 1) => new Mover(true, posToStr(row + 1, col + 1), if toRow == Last then true else false)
         case _ => new Mover(false, "", false)
       }
     }

@@ -8,6 +8,7 @@ import controller.controllerComponent.{ControllerInterface, FieldChanged, GBSize
 import model.fileIoComponent.FileIOInterface
 import model.gameBoardComponent.{FieldInterface, GameBoardInterface, PieceInterface}
 import model.gameBoardComponent.gameBoardBaseImpl.{Field, GameBoard, GameBoardCreator, Piece}
+import model.gameBoardComponent.gameBoardBaseImpl.Color.*
 import util.{Mover, UndoManager}
 import scala.Checkers.{controller, gui}
 import scala.swing.Publisher
@@ -76,7 +77,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
 
   def move(start: String, dest: String): Unit = {
 
-    if (gameState == WHITE_TURN && gameBoard.getField(start).getPiece.get.getColor == "white") {
+    if (gameState == WHITE_TURN && gameBoard.getField(start).getPiece.get.getColor == White) {
       cap = ""
       gameBoard.getField(start).getPiece.get.sListBlack.clear
       gameBoard.getField(start).getPiece.get.sList.clear
@@ -101,7 +102,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
       return
     }
 
-    if (gameState == BLACK_TURN && gameBoard.getField(start).getPiece.get.getColor == "black") {
+    if (gameState == BLACK_TURN && gameBoard.getField(start).getPiece.get.getColor == Black) {
       cap = ""
       gameBoard.getField(start).getPiece.get.sListBlack.clear
       gameBoard.getField(start).getPiece.get.sList.clear
@@ -180,9 +181,9 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
       row <- 0 until gameBoard.size
       col <- 0 until gameBoard.size
     } {
-      if (field(row, col).isSet && field(row, col).getPiece.get.getColor == "white") {
+      if (field(row, col).isSet && field(row, col).getPiece.get.getColor == White) {
         white += 1
-      } else if (field(row, col).isSet && field(row, col).getPiece.get.getColor == "black") {
+      } else if (field(row, col).isSet && field(row, col).getPiece.get.getColor == Black) {
         black += 1
       }
     }
