@@ -4,6 +4,7 @@ import util.Mover
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
+import model.gameBoardComponent.gameBoardBaseImpl.Direction.*
 import model.gameBoardComponent.gameBoardBaseImpl.Color.*
 
 case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) extends Piece(state, row, col, getColor) {
@@ -17,34 +18,38 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
   // ok
   override def cap_cond(row_offset: Int, col_offset: Int, gameBoard: GameBoard): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isDefined && gameBoard.field(row + row_offset, col + col_offset).piece.get.getColor == (if (getColor == Black) White else Black)
 
+  override def getDirection(toRow: Int, toCol: Int): Direction = {
+    (toRow < row, toCol < col) match {
+      case (true, true) => UpLeft
+      case (true, false) => UpRight
+      case (false, true) => DownLeft
+      case (false, false) => DownRight
+    }
+  }
+
   override def capturable(to: String, row_dist: Int, col_dist: Int, gameBoard: GameBoard): Boolean = {
     val Last: Int = gameBoard.size - 1
     val toRow: Int = Integer.parseInt(to.tail) - 1
     val toCol: Int = to.charAt(0).toInt - 65
+    val direction: Direction = getDirection(toRow, toCol)
 
-    def direction: String = {
-      var str: String = ""
-      str = if (toRow < row) "up" else "down"
-      str = if (toCol < col) str+"_left" else str+"_right"
-      str
-    }
 
     def help_bool(row_dist: Int, col_dist: Int): Boolean = (row + row_dist != 0 && row + row_dist != Last && col + col_dist != Last && col + col_dist != 0) && gameBoard.field(row + row_dist, col + col_dist).piece.isDefined && gameBoard.field(row + row_dist, col + col_dist).piece.get.getColor == (if (getColor == Black) White else Black) && gameBoard.field(row + (if row_dist < 0 then row_dist-1 else row_dist+1), col + (if col_dist < 0 then col_dist-1 else col_dist+1)).piece.isEmpty
 
     (getColor, direction) match {
-      case (_, "up_left") => help_bool(-row_dist, -col_dist)
-      case (_, "up_right") => help_bool(-row_dist, col_dist)
-      case (_, "down_left") => help_bool(row_dist, -col_dist)
-      case (_, "down_right") => help_bool(row_dist, col_dist)
+      case (_, UpLeft) => help_bool(-row_dist, -col_dist)
+      case (_, UpRight) => help_bool(-row_dist, col_dist)
+      case (_, DownLeft) => help_bool(row_dist, -col_dist)
+      case (_, DownRight) => help_bool(row_dist, col_dist)
       case _ => false
     }
   }
 
-  override def fillList(to: String, gameBoard: GameBoard, direction: String, dist_count: Int): ListBuffer[String] = {
+  override def fillList(to: String, gameBoard: GameBoard, direction: Direction, dist_count: Int): ListBuffer[String] = {
     // brauchen wir 2 unterschiedliche Listen? früher blackList
     val Last: Int = gameBoard.size - 1
-    val row_dist: Int = dist_count * (if direction.split("_")(0) == "down" then 1 else -1)
-    val col_dist: Int = dist_count * (if direction.split("_")(1) == "right" then 1 else -1)
+    val row_dist: Int = dist_count * direction.dir._1
+    val col_dist: Int = dist_count * direction.dir._2
     val row_dist2: Int = row_dist + (if row_dist>0 then 1 else -1)
     val col_dist2: Int = col_dist + (if col_dist>0 then 1 else -1)
     
@@ -56,9 +61,9 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
   }
 
   // funktion höheren ordnungs // currying
-  def calcDist(direction: String): Int => (Int, Int) = dist_count => {
-    val row_dist: Int = dist_count * (if direction.split("_")(0) == "down" then 1 else -1)
-    val col_dist: Int = dist_count * (if direction.split("_")(1) == "right" then 1 else -1)
+  def calcDist(direction: Direction): Int => (Int, Int) = dist_count => {
+    val row_dist: Int = dist_count * direction.dir._1
+    val col_dist: Int = dist_count * direction.dir._2
     (row_dist, col_dist)
   }
 
@@ -70,7 +75,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
   }
 
   // funktionale Komposition
-  def calcNextDist(direction: String): Int => (Int, Int) =
+  def calcNextDist(direction: Direction): Int => (Int, Int) =
     calcDist(direction) andThen { case (rd, cd) => (rd + increaseOffset(rd), cd + increaseOffset(cd)) }
 
 
@@ -78,13 +83,8 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
     val Last: Int = gameBoard.size - 1
     val toRow: Int = Integer.parseInt(to.tail) - 1
     val toCol: Int = to.charAt(0).toInt - 65
+    val direction: Direction = getDirection(toRow, toCol)
 
-    def direction: String = { //Change to 2 variables instead
-      var str: String = ""
-      str = if (toRow < row) "up" else "down"
-      str = if (toCol < col) str + "_left" else str + "_right"
-      str
-    }
 
     @tailrec
     def getDist(dist_count: Int): Int = {
@@ -113,24 +113,24 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
       (getColor, direction) match {
         case (White, _) if row == 0 => new Mover(false, "", false)
         case (Black, _) if row == Last => new Mover(false, "", false)
-        case (_, "left") if col == 0 => new Mover(false, "", false)
-        case (_, "right") if col == Last => new Mover(false, "", false)
-        case (White, "left") if no_cap(-dist, -dist) => new Mover(true, "", if toRow == 0 then true else false)
-        case (White, "right") if no_cap(-1, 1) => new Mover(true, "", if toRow == 0 then true else false)
-        case (Black, "left") if no_cap(1, -1) => new Mover(true, "", if toRow == Last then true else false)
-        case (Black, "right") if no_cap(1, 1) => new Mover(true, "", if toRow == Last then true else false)
+        case (_, Left) if col == 0 => new Mover(false, "", false)
+        case (_, Right) if col == Last => new Mover(false, "", false)
+        case (White, Left) if no_cap(-dist, -dist) => new Mover(true, "", if toRow == 0 then true else false)
+        case (White, Right) if no_cap(-1, 1) => new Mover(true, "", if toRow == 0 then true else false)
+        case (Black, Left) if no_cap(1, -1) => new Mover(true, "", if toRow == Last then true else false)
+        case (Black, Right) if no_cap(1, 1) => new Mover(true, "", if toRow == Last then true else false)
         case _ => new Mover(false, "", false)
       }
     } else {
       (getColor, direction) match {
         case (_, _) if col == 0 || col == 1 => new Mover(false, "", false)
         case (_, _) if col == Last || col == Last - 1 => new Mover(false, "", false)
-        case (_, "left") if col == 0 || col == 1 => new Mover(false, "", false)
-        case (_, "right") if col == Last || col == Last - 1 => new Mover(false, "", false)
-        case (White, "left") if cap(-dist, -dist) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
-        case (White, "right") if cap(-1, 1) => new Mover(true, posToStr(row - 1, col + 1), if toRow == 0 then true else false)
-        case (Black, "left") if cap(1, -1) => new Mover(true, posToStr(row + 1, col - 1), if toRow == Last then true else false)
-        case (Black, "right") if cap(1, 1) => new Mover(true, posToStr(row + 1, col + 1), if toRow == Last then true else false)
+        case (_, Left) if col == 0 || col == 1 => new Mover(false, "", false)
+        case (_, Right) if col == Last || col == Last - 1 => new Mover(false, "", false)
+        case (White, Left) if cap(-dist, -dist) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
+        case (White, Right) if cap(-1, 1) => new Mover(true, posToStr(row - 1, col + 1), if toRow == 0 then true else false)
+        case (Black, Left) if cap(1, -1) => new Mover(true, posToStr(row + 1, col - 1), if toRow == Last then true else false)
+        case (Black, Right) if cap(1, 1) => new Mover(true, posToStr(row + 1, col + 1), if toRow == Last then true else false)
         case _ => new Mover(false, "", false)
       }
     }
@@ -143,24 +143,24 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
     col match {
       case 0 =>
         if (sListBlack.isEmpty) {
-          fillList(to, gameBoard, "up_right", dist)
-          fillList(to, gameBoard, "down_right", dist)
+          fillList(to, gameBoard, UpRight, dist)
+          fillList(to, gameBoard, DownRight, dist)
         }
         getMover(to, gameBoard)
 
       case Last =>
         if (sListBlack.isEmpty) {
-          fillList(to, gameBoard, "up_left", dist)
-          fillList(to, gameBoard, "down_left", dist)
+          fillList(to, gameBoard, UpLeft, dist)
+          fillList(to, gameBoard, DownLeft, dist)
         }
         getMover(to, gameBoard)
 
       case _ =>
         if (sListBlack.isEmpty) {
-          fillList(to, gameBoard, "up_right", dist)
-          fillList(to, gameBoard, "down_right", dist)
-          fillList(to, gameBoard, "up_left", dist)
-          fillList(to, gameBoard, "down_left", dist)
+          fillList(to, gameBoard, UpRight, dist)
+          fillList(to, gameBoard, DownRight, dist)
+          fillList(to, gameBoard, UpLeft, dist)
+          fillList(to, gameBoard, DownLeft, dist)
         }
         getMover(to, gameBoard)
     }

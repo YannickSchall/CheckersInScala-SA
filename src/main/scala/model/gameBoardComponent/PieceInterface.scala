@@ -3,7 +3,7 @@ import com.google.inject.ImplementedBy
 import model.gameBoardComponent.gameBoardBaseImpl.{GameBoard, Piece}
 import util.Mover
 import model.gameBoardComponent.gameBoardBaseImpl.Color
-
+import model.gameBoardComponent.gameBoardBaseImpl.Direction
 import scala.collection.mutable.ListBuffer
 
 @ImplementedBy(classOf[Piece])
@@ -21,5 +21,6 @@ trait PieceInterface {
   def movePossible(to: String, gameBoard: GameBoard): Mover
   def posToStr(row: Int, col: Int): String
   def movStrToInt(s: String): (Int, Int, Int, Int)
+  def getDirection(toRow: Int, toCol: Int): Direction
 
 }

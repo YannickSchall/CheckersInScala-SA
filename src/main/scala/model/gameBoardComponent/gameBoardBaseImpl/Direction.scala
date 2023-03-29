@@ -1,10 +1,10 @@
 package model.gameBoardComponent.gameBoardBaseImpl
 
-enum Direction(val dir: String) {
-  case Left extends Direction("left")
-  case Right extends Direction("right")
-  case UpLeft extends Direction("up_left")
-  case UpRight extends Direction("up_right")
-  case DownLeft extends Direction("down_left")
-  case DownRight extends Direction("down_right")
+enum Direction(val dir: (Int,Int)) {
+  case Left extends Direction(0, -1)
+  case Right extends Direction(0, 1)
+  case UpLeft extends Direction(1, -1)
+  case UpRight extends Direction(1, 1)
+  case DownLeft extends Direction(- 1, -1)
+  case DownRight extends Direction(- 1, 1)
 }
