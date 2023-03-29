@@ -2,7 +2,8 @@ package model.gameBoardComponent.gameBoardBaseImpl
 import com.google.inject.Inject
 import model.gameBoardComponent.GameBoardInterface
 import util.Mover
-case class GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
+case class
+GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
 
   def this(size: Int) = this(new Matrix[Field](size, Field("", None)))
 
@@ -34,7 +35,20 @@ case class GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterfac
       col <- 0 until size
     } box = box.replaceFirst("o", field(row, col).toString)
     box
+
+    /*
+    // hier map
+    var box = "\n" + (lineSeparator + (line * size)) + lineSeparator
+    val updatedBox = (0 until size).flatMap { row =>
+      (0 until size).map { col =>
+        box.replaceFirst("o", field(row, col).toString)
+      }
+    }
+    box = updatedBox.last
+
+    * */
   }
+
 
   def getPiece(row: Int, col: Int): Option[Piece] = {
     def pos = posToStr(row, col)

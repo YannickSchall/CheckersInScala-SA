@@ -13,13 +13,6 @@ object Checkers {
   val gui = new Gui(controller)
   controller.createGameBoard(8)
 
-  //def main(args: Array[String]): Unit = {
-  //  var input: String = ""
-  //  do {
-  //    input = readLine()
-  //    tui.tuiEntry(input)
-  //  } while (input != "quit")
-  //}
 
   def main(args: Array[String]): Unit = {
     var input: String = ""
