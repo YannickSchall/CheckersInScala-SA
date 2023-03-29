@@ -4,6 +4,8 @@ import util.Mover
 
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
+import Direction.*
+import Color.*
 
 case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) extends Piece(state, row, col, getColor) {
 
@@ -31,10 +33,10 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     def help_bool(row_dist: Int, col_dist: Int): Boolean = (row + row_dist != 0 && row + row_dist != Last && col + col_dist != Last && col + col_dist != 0) && gameBoard.field(row + row_dist, col + col_dist).piece.isDefined && gameBoard.field(row + row_dist, col + col_dist).piece.get.getColor == (if (getColor == "black") "white" else "black") && gameBoard.field(row + (if row_dist < 0 then row_dist-1 else row_dist+1), col + (if col_dist < 0 then col_dist-1 else col_dist+1)).piece.isEmpty
 
     (getColor, direction) match {
-      case (_, "up_left") => help_bool(-row_dist, -col_dist)
-      case (_, "up_right") => help_bool(-row_dist, col_dist)
-      case (_, "down_left") => help_bool(row_dist, -col_dist)
-      case (_, "down_right") => help_bool(row_dist, col_dist)
+      case (_, UpLeft) => help_bool(-row_dist, -col_dist)
+      case (_, UpRight) => help_bool(-row_dist, col_dist)
+      case (_, DownLeft) => help_bool(row_dist, -col_dist)
+      case (_, DownRight) => help_bool(row_dist, col_dist)
       case _ => false
     }
   }
@@ -112,24 +114,24 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
       (getColor, direction) match {
         case ("white", _) if row == 0 => new Mover(false, "", false)
         case ("black", _) if row == Last => new Mover(false, "", false)
-        case (_, "left") if col == 0 => new Mover(false, "", false)
-        case (_, "right") if col == Last => new Mover(false, "", false)
-        case ("white", "left") if no_cap(-dist, -dist) => new Mover(true, "", if toRow == 0 then true else false)
-        case ("white", "right") if no_cap(-1, 1) => new Mover(true, "", if toRow == 0 then true else false)
-        case ("black", "left") if no_cap(1, -1) => new Mover(true, "", if toRow == Last then true else false)
-        case ("black", "right") if no_cap(1, 1) => new Mover(true, "", if toRow == Last then true else false)
+        case (_, Left) if col == 0 => new Mover(false, "", false)
+        case (_, Right) if col == Last => new Mover(false, "", false)
+        case ("white", Left) if no_cap(-dist, -dist) => new Mover(true, "", if toRow == 0 then true else false)
+        case ("white", Right) if no_cap(-1, 1) => new Mover(true, "", if toRow == 0 then true else false)
+        case ("black", Left) if no_cap(1, -1) => new Mover(true, "", if toRow == Last then true else false)
+        case ("black", Right) if no_cap(1, 1) => new Mover(true, "", if toRow == Last then true else false)
         case _ => new Mover(false, "", false)
       }
     } else {
       (getColor, direction) match {
         case (_, _) if col == 0 || col == 1 => new Mover(false, "", false)
         case (_, _) if col == Last || col == Last - 1 => new Mover(false, "", false)
-        case (_, "left") if col == 0 || col == 1 => new Mover(false, "", false)
-        case (_, "right") if col == Last || col == Last - 1 => new Mover(false, "", false)
-        case ("white", "left") if cap(-dist, -dist) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
-        case ("white", "right") if cap(-1, 1) => new Mover(true, posToStr(row - 1, col + 1), if toRow == 0 then true else false)
-        case ("black", "left") if cap(1, -1) => new Mover(true, posToStr(row + 1, col - 1), if toRow == Last then true else false)
-        case ("black", "right") if cap(1, 1) => new Mover(true, posToStr(row + 1, col + 1), if toRow == Last then true else false)
+        case (_, Left) if col == 0 || col == 1 => new Mover(false, "", false)
+        case (_, Right) if col == Last || col == Last - 1 => new Mover(false, "", false)
+        case ("white", Left) if cap(-dist, -dist) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
+        case ("white", Right) if cap(-1, 1) => new Mover(true, posToStr(row - 1, col + 1), if toRow == 0 then true else false)
+        case ("black", Left) if cap(1, -1) => new Mover(true, posToStr(row + 1, col - 1), if toRow == Last then true else false)
+        case ("black", Right) if cap(1, 1) => new Mover(true, posToStr(row + 1, col + 1), if toRow == Last then true else false)
         case _ => new Mover(false, "", false)
       }
     }
@@ -142,24 +144,24 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: String) 
     col match {
       case 0 =>
         if (sListBlack.isEmpty) {
-          fillList(to, gameBoard, "up_right", dist)
-          fillList(to, gameBoard, "down_right", dist)
+          fillList(to, gameBoard, UpLeft, dist)
+          fillList(to, gameBoard, DownRight, dist)
         }
         getMover(to, gameBoard)
 
       case Last =>
         if (sListBlack.isEmpty) {
-          fillList(to, gameBoard, "up_left", dist)
-          fillList(to, gameBoard, "down_left", dist)
+          fillList(to, gameBoard, UpLeft, dist)
+          fillList(to, gameBoard, DownLeft, dist)
         }
         getMover(to, gameBoard)
 
       case _ =>
         if (sListBlack.isEmpty) {
-          fillList(to, gameBoard, "up_right", dist)
-          fillList(to, gameBoard, "down_right", dist)
-          fillList(to, gameBoard, "up_left", dist)
-          fillList(to, gameBoard, "down_left", dist)
+          fillList(to, gameBoard, UpRight, dist)
+          fillList(to, gameBoard, DownRight, dist)
+          fillList(to, gameBoard, UpLeft, dist)
+          fillList(to, gameBoard, DownLeft, dist)
         }
         getMover(to, gameBoard)
     }
