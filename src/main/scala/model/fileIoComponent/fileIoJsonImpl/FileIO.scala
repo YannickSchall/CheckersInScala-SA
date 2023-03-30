@@ -36,7 +36,7 @@ class FileIO extends FileIOInterface{
     import java.io._
     val pw = new PrintWriter(new File("gameBoard.json"))
     pw.write(Json.prettyPrint(gameBoardToJson(gameBoard)))
-    pw.close
+    pw.close()
   }
 
   implicit def optionFormat[T: Format]: Format[Option[T]] = new Format[Option[T]]{
@@ -54,37 +54,39 @@ class FileIO extends FileIOInterface{
       (JsPath \ "prow").read[Int] and
       (JsPath \ "pcol").read[Int] and
       (JsPath \ "color").read[Color]
-    ) (Piece.apply _)
+    )(Piece.apply _)
 
   implicit val fieldReads: Reads[Field] = (
     (JsPath \ "pos").read[String] and
       (JsPath \ "piece").readNullable[Piece]
     ) (Field.apply _)
 
-  implicit val colorReads: Reads[Color] = (JsPath \ "color").read[String]
-
   implicit val colorWrites: Writes[Color] = new Writes[Color] {
-    def writes(color: Color) = Json.obj(
-      "color" -> color.color
-    )
+    def writes(color: Color) = JsString(color.color)
+  }
+
+  implicit val colorReads: Reads[Color] = Reads { json =>
+    json.validate[String].flatMap {
+      case "white" => JsSuccess(Color.White)
+      case "black" => JsSuccess(Color.Black)
+      case other => JsError(s"Invalid color: $other")
+    }
   }
 
   implicit val fieldWrites: Writes[FieldInterface] = new Writes[FieldInterface] {
     def writes(field: FieldInterface) = Json.obj(
     "pos" -> field.getPos,
-      "piece" -> pieceWrites.writes(field.getPiece)
+      "piece" -> pieceWrites.writes(field.getPiece.get)
     )
   }
 
-  implicit val pieceWrites: Writes[Option[Piece]] = new Writes[Option[Piece]] {
-    def writes(piece: Option[Piece]): JsValue = piece match {
-      case Some(t) => Json.obj(
-      "state" -> t.state,
-      "prow" -> t.row,
-      "pcol" -> t.col,
-      "color" -> t.getColor
-      ) case None => JsNull
-    }
+  implicit val pieceWrites: Writes[Piece] = new Writes[Piece] {
+    def writes(piece: Piece) = Json.obj(
+      "state" -> piece.state,
+      "prow" -> piece.row,
+      "pcol" -> piece.col,
+      "color" -> colorWrites.writes(piece.getColor)
+    )
   }
 
 
