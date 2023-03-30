@@ -1,6 +1,7 @@
 package controller
 import model.gameBoardComponent.gameBoardBaseImpl
 import model.gameBoardComponent.gameBoardBaseImpl.{Field, GameBoard, Piece}
+import model.gameBoardComponent.gameBoardBaseImpl.Color.*
 import org.scalatest._
 import controller.controllerComponent.GameState
 import controller.controllerComponent.GameState.{BLACK_TURN, WHITE_TURN, WHITE_WON, BLACK_WON}
@@ -14,10 +15,10 @@ class ControllerSpec extends AnyWordSpec {
     val controller = new Controller(gb)
     "use undo/redo correctly" in {
       controller.gameBoard.field(0,0).isSet should be (false)
-      controller.set(0,0, Piece.apply("normal", 0, 0, "white"))
-      controller.set(4,4, Piece.apply("normal", 4, 4, "white"))
-      controller.set(5,5, Piece.apply("normal", 5, 5, "white"))
-      controller.set(1,1, Piece.apply("normal", 1, 1, "black"))
+      controller.set(0,0, Piece.apply("normal", 0, 0, White))
+      controller.set(4,4, Piece.apply("normal", 4, 4, White))
+      controller.set(5,5, Piece.apply("normal", 5, 5, White))
+      controller.set(1,1, Piece.apply("normal", 1, 1, Black))
       controller.gameBoard.field(0,0).isSet should be (true)
       controller.isSet(0,0) should be (true)
       controller.undo
@@ -63,14 +64,14 @@ class ControllerSpec extends AnyWordSpec {
     "be able to move" in {
       val gb2 = new GameBoard(8)
       val controller = new Controller(gb2)
-      controller.set(0,0, Piece.apply("normal", 0, 0, "white"))
-      controller.set(4,4, Piece.apply("normal", 4, 4, "white"))
-      controller.set(5,5, Piece.apply("normal", 5, 5, "white"))
-      controller.set(5,5, Piece.apply("normal", 4, 3, "white"))
-      controller.set(1,1, Piece.apply("normal", 1, 1, "black"))
-      controller.set(7,7, Piece.apply("normal", 7, 7, "black"))
-      controller.set(6,7, Piece.apply("normal", 6, 7, "black"))
-      controller.set(6,7, Piece.apply("normal", 6, 7, "black"))
+      controller.set(0,0, Piece.apply("normal", 0, 0, White))
+      controller.set(4,4, Piece.apply("normal", 4, 4, White))
+      controller.set(5,5, Piece.apply("normal", 5, 5, White))
+      controller.set(5,5, Piece.apply("normal", 4, 3, White))
+      controller.set(1,1, Piece.apply("normal", 1, 1, Black))
+      controller.set(7,7, Piece.apply("normal", 7, 7, Black))
+      controller.set(6,7, Piece.apply("normal", 6, 7, Black))
+      controller.set(6,7, Piece.apply("normal", 6, 7, Black))
       controller.gameState should be (WHITE_TURN)
       controller.move("A1", "C3")
       controller.gameState should be (BLACK_TURN)
@@ -79,12 +80,12 @@ class ControllerSpec extends AnyWordSpec {
     }
     "be able to check if a move is possible" in {
       controller.createNewGameBoard()
-      controller.set(0,0, Piece.apply("normal", 0, 0, "black"))
-      controller.set(4,4, Piece.apply("normal", 4, 4, "black"))
-      controller.set(5,5, Piece.apply("normal", 5, 5, "black"))
-      controller.set(1,1, Piece.apply("normal", 1, 1, "white"))
-      controller.set(4,3, Piece.apply("normal", 4, 3, "white"))
-      controller.set(5,3, Piece.apply("normal", 5, 3, "white"))
+      controller.set(0,0, Piece.apply("normal", 0, 0, Black))
+      controller.set(4,4, Piece.apply("normal", 4, 4, Black))
+      controller.set(5,5, Piece.apply("normal", 5, 5, Black))
+      controller.set(1,1, Piece.apply("normal", 1, 1, White))
+      controller.set(4,3, Piece.apply("normal", 4, 3, White))
+      controller.set(5,3, Piece.apply("normal", 5, 3, White))
 
       controller.remove(2, 2)
       controller.gameState = BLACK_TURN

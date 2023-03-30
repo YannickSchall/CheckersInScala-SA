@@ -27,7 +27,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
     }
   }
 
-  override def capturable(to: String, row_dist: Int, col_dist: Int, gameBoard: GameBoard): Boolean = {
+  override def capturable(to: String, direction: Direction, row_dist: Int, col_dist: Int, gameBoard: GameBoard): Boolean = {
     val Last: Int = gameBoard.size - 1
     val toRow: Int = Integer.parseInt(to.tail) - 1
     val toCol: Int = to.charAt(0).toInt - 65
@@ -54,28 +54,28 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
     val col_dist2: Int = col_dist + (if col_dist>0 then 1 else -1)
     
     if (!((col + col_dist < Last && row + row_dist > 0) && gameBoard.field(row + row_dist, col + col_dist).piece.isEmpty || (dist_count == 0))) {
-      if (capturable(to, row_dist, col_dist, gameBoard))
+      if (capturable(to, direction, row_dist, col_dist, gameBoard))
         sListBlack += gameBoard.field(row, col).pos + " " + gameBoard.field(row + row_dist2, col + col_dist2).pos
     }
     fillList(to, gameBoard, direction, dist_count+1)
   }
 
   // funktion höheren ordnungs // currying
-  def calcDist(direction: Direction): Int => (Int, Int) = dist_count => {
+  private def calcDist(direction: Direction): Int => (Int, Int) = dist_count => {
     val row_dist: Int = dist_count * direction.dir._1
     val col_dist: Int = dist_count * direction.dir._2
     (row_dist, col_dist)
   }
 
   // pattern matching
-  def increaseOffset(offset: Int): Int = offset match {
+  private def increaseOffset(offset: Int): Int = offset match {
     case x if x > 0 => x + 1
     case x if x < 0 => x - 1
     case _ => 0
   }
 
   // funktionale Komposition
-  def calcNextDist(direction: Direction): Int => (Int, Int) =
+  private def calcNextDist(direction: Direction): Int => (Int, Int) =
     calcDist(direction) andThen { case (rd, cd) => (rd + increaseOffset(rd), cd + increaseOffset(cd)) }
 
 
@@ -91,7 +91,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
       val row_dist: Int = calcDist(direction)(dist_count)(0)
       val col_dist: Int = calcDist(direction)(dist_count)(1)
       if (!((col + col_dist < Last && row + row_dist > 0) && gameBoard.field(row + row_dist, col + col_dist).piece.isEmpty || (dist_count == 0))) {
-        if (capturable(to, row_dist, col_dist, gameBoard))
+        if (capturable(to, direction, row_dist, col_dist, gameBoard))
           return dist_count
       }
       getDist(dist_count + 1)

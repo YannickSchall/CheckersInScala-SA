@@ -1,5 +1,7 @@
 package model
 import model.gameBoardComponent.gameBoardBaseImpl.{GameBoard, GameBoardCreator, Normal, Piece}
+import model.gameBoardComponent.gameBoardBaseImpl.Color.*
+import model.gameBoardComponent.gameBoardBaseImpl.Direction.*
 import org.scalatest.*
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.*
@@ -14,18 +16,18 @@ class NormalSpec extends AnyWordSpec {
     var game = new GameBoard(size)
 
     // define white stones
-    val w1 = Normal("normal", 3, 3, "white")
-    val w2 = Normal("normal", 3, 7, "white")
-    val w3 = Normal("normal", 4, 2, "white")
-    val w4 = Normal("normal", 4, 4, "white")
-    val w5 = Normal("normal", 8, 8, "white")
+    val w1 = Normal("normal", 3, 3, White)
+    val w2 = Normal("normal", 3, 7, White)
+    val w3 = Normal("normal", 4, 2, White)
+    val w4 = Normal("normal", 4, 4, White)
+    val w5 = Normal("normal", 8, 8, White)
 
     // define black stones
-    val b1 = Normal("normal", 1, 1, "black")
-    val b2 = Normal("normal", 3, 1, "black")
-    val b3 = Normal("normal", 3, 5, "black")
-    val b4 = Normal("normal", 4, 6, "black")
-    val b5 = Normal("normal", 9, 9, "black")
+    val b1 = Normal("normal", 1, 1, Black)
+    val b2 = Normal("normal", 3, 1, Black)
+    val b3 = Normal("normal", 3, 5, Black)
+    val b4 = Normal("normal", 4, 6, Black)
+    val b5 = Normal("normal", 9, 9, Black)
 
     // preset white stones
     game.set(3, 3, Some(w1)) //D4
@@ -57,8 +59,8 @@ class NormalSpec extends AnyWordSpec {
       b1.col should be (1)
     }
     "have a color" in {
-      w1.getColor should be ("white")
-      b1.getColor should be ("black")
+      w1.getColor should be (White)
+      b1.getColor should be (Black)
     }
     "have the state named Normal" in {
       w1.state should be ("normal")
@@ -74,14 +76,14 @@ class NormalSpec extends AnyWordSpec {
       var listW = new ListBuffer[String]
       var listB = new ListBuffer[String]
       // cap over LEFT true RIGHT nok cause w over w
-      listW = w3.fillList("A3", game, "left", 0)
-      listW = w3.fillList("E3", game, "right", 0)
-      //b5.fillList("H8", game, "left", 0)
+      listW = w3.fillList("A3", game, Left, 0)
+      listW = w3.fillList("E3", game, Right, 0)
+      //b5.fillList("H8", game, Left, 0)
       // cap over RIGHT true
-      //listW = w4.fillList("G3", game, "right", 0)
+      //listW = w4.fillList("G3", game, Right, 0)
       // cap over RIGHT true LEFT nok cause b o
-      listB = b4.fillList("I7", game, "right", 0)
-      listB = b4.fillList("E3", game, "left", 0)
+      listB = b4.fillList("I7", game, Right, 0)
+      listB = b4.fillList("E3", game, Left, 0)
 
       listW.length should be (2)
       listB.length should be (2)
@@ -97,15 +99,14 @@ class NormalSpec extends AnyWordSpec {
 
     "should be allowed to Capture from the middle" in {
       var gbc = new GameBoard(10)
-      gbc = gbc.set(3, 3, Some(Piece("normal", 3, 3, "black")))
-      gbc = gbc.set(3, 5, Some(Piece("normal", 3, 5, "black")))
-      gbc = gbc.set(5, 3, Some(Piece("normal", 5, 3, "black")))
-      gbc = gbc.set(5, 5, Some(Piece("normal", 5, 5, "black")))
-      gbc = gbc.set(4, 4, Some(Piece("normal", 4, 4, "white")))
-      var str = ""
-      str = gbc.getPiece(4, 4).get.getColor
+      gbc = gbc.set(3, 3, Some(Piece("normal", 3, 3, Black)))
+      gbc = gbc.set(3, 5, Some(Piece("normal", 3, 5, Black)))
+      gbc = gbc.set(5, 3, Some(Piece("normal", 5, 3, Black)))
+      gbc = gbc.set(5, 5, Some(Piece("normal", 5, 5, Black)))
+      gbc = gbc.set(4, 4, Some(Piece("normal", 4, 4, White)))
+      val color = gbc.getPiece(4, 4).get.getColor
       val normaleWhite = gbc.getPiece(4, 4).get //E5
-      str should be ("white")
+      color should be (White)
       normaleWhite.movePossible("C3", gbc).getBool should be (true)
       normaleWhite.movePossible("G3", gbc).getBool should be (true)
       normaleWhite.movePossible("C7", gbc).getBool should be (false)
@@ -113,39 +114,36 @@ class NormalSpec extends AnyWordSpec {
     }
     "should be allowed to Capture from the right" in {
       var gbc = new GameBoard(10)
-      gbc = gbc.set(4, 8, Some(Piece("normal", 4, 8, "black")))
-      gbc = gbc.set(6, 8, Some(Piece("normal", 6, 8, "black")))
-      gbc = gbc.set(5, 9, Some(Piece("normal", 5, 9, "white")))
-      var str = ""
-      str = gbc.getPiece(5, 9).get.getColor
+      gbc = gbc.set(4, 8, Some(Piece("normal", 4, 8, Black)))
+      gbc = gbc.set(6, 8, Some(Piece("normal", 6, 8, Black)))
+      gbc = gbc.set(5, 9, Some(Piece("normal", 5, 9, White)))
+      val color = gbc.getPiece(5, 9).get.getColor
       val normalWhite = gbc.getPiece(5, 9).get //E5
-      str should be ("white")
+      color should be (White)
       normalWhite.movePossible("H4", gbc).getBool should be (true)
       normalWhite.movePossible("H8", gbc).getBool should be (false)
     }
     "should be allowed to Capture from the left" in {
       var gbc = new GameBoard(10)
-      gbc = gbc.set(8, 2, Some(Piece("normal", 8, 2, "black")))
-      gbc = gbc.set(5, 1, Some(Piece("normal", 5, 1, "black")))
-      gbc = gbc.set(6, 0, Some(Piece("normal", 6, 0, "white")))
-      var str = ""
-      str = gbc.getPiece(6, 0).get.getColor
+      gbc = gbc.set(8, 2, Some(Piece("normal", 8, 2, Black)))
+      gbc = gbc.set(5, 1, Some(Piece("normal", 5, 1, Black)))
+      gbc = gbc.set(6, 0, Some(Piece("normal", 6, 0, White)))
+      val color = gbc.getPiece(6, 0).get.getColor
       val normalWhite = gbc.getPiece(6, 0).get //E5
-      str should be ("white")
+      color should be (White)
       normalWhite.movePossible("C5", gbc).getBool should be (true)
       normalWhite.movePossible("D10", gbc).getBool should be (false)
     }
     "should be allowed to Capture from the middle as Black" in {
       var gbc = new GameBoard(10)
-      gbc = gbc.set(3, 3, Some(Piece("normal", 3, 3, "white")))
-      gbc = gbc.set(3, 5, Some(Piece("normal", 3, 5, "white")))
-      gbc = gbc.set(5, 3, Some(Piece("normal", 5, 3, "white")))
-      gbc = gbc.set(5, 5, Some(Piece("normal", 5, 5, "white")))
-      gbc = gbc.set(4, 4, Some(Piece("normal", 4, 4, "black")))
-      var str = ""
-      str = gbc.getPiece(4, 4).get.getColor
+      gbc = gbc.set(3, 3, Some(Piece("normal", 3, 3, White)))
+      gbc = gbc.set(3, 5, Some(Piece("normal", 3, 5, White)))
+      gbc = gbc.set(5, 3, Some(Piece("normal", 5, 3, White)))
+      gbc = gbc.set(5, 5, Some(Piece("normal", 5, 5, White)))
+      gbc = gbc.set(4, 4, Some(Piece("normal", 4, 4, Black)))
+      val color = gbc.getPiece(4, 4).get.getColor
       val normaleWhite = gbc.getPiece(4, 4).get //E5
-      str should be ("black")
+      color should be (Black)
       normaleWhite.movePossible("C3", gbc).getBool should be (false)
       normaleWhite.movePossible("G3", gbc).getBool should be (false)
       normaleWhite.movePossible("C7", gbc).getBool should be (true)
@@ -153,13 +151,12 @@ class NormalSpec extends AnyWordSpec {
     }
     "should be allowed to Capture from the right as Black" in {
       var gbc = new GameBoard(10)
-      gbc = gbc.set(4, 8, Some(Piece("normal", 4, 8, "white")))
-      gbc = gbc.set(6, 8, Some(Piece("normal", 6, 8, "white")))
-      gbc = gbc.set(5, 9, Some(Piece("normal", 5, 9, "black")))
-      var str = ""
-      str = gbc.getPiece(5, 9).get.getColor
+      gbc = gbc.set(4, 8, Some(Piece("normal", 4, 8, White)))
+      gbc = gbc.set(6, 8, Some(Piece("normal", 6, 8, White)))
+      gbc = gbc.set(5, 9, Some(Piece("normal", 5, 9, Black)))
+      val color = gbc.getPiece(5, 9).get.getColor
       val dame2 = gbc.getPiece(5, 9).get //E5
-      str should be ("black")
+      color should be (Black)
       dame2.movePossible("H8", gbc).getBool should be (true)
       dame2.movePossible("H3", gbc).getBool should be (false)
     }

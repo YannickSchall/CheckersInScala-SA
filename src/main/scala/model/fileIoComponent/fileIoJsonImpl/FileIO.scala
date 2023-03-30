@@ -53,7 +53,7 @@ class FileIO extends FileIOInterface{
     (JsPath \ "state").read[String] and
       (JsPath \ "prow").read[Int] and
       (JsPath \ "pcol").read[Int] and
-      (JsPath \ "color").read[String]
+      (JsPath \ "color").read[Color]
     ) (Piece.apply _)
 
   implicit val fieldReads: Reads[Field] = (
@@ -61,13 +61,11 @@ class FileIO extends FileIOInterface{
       (JsPath \ "piece").readNullable[Piece]
     ) (Field.apply _)
 
-  implicit val colorReads: Reads[Color] = (
-    (JsPath \ "color").read[String]
-  ) (Color.apply _)
+  implicit val colorReads: Reads[Color] = (JsPath \ "color").read[String]
 
   implicit val colorWrites: Writes[Color] = new Writes[Color] {
     def writes(color: Color) = Json.obj(
-      "color" -> color
+      "color" -> color.color
     )
   }
 
