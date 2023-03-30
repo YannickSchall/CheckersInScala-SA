@@ -8,6 +8,7 @@ import model.gameBoardComponent.gameBoardBaseImpl.{Color, Field, Piece}
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 
+
 import scala.io.Source
 import play.api.libs.json.*
 

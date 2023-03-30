@@ -32,13 +32,13 @@ class GameBoardCreator(size: Int) {
     val whitePieceOperations: List[GameBoardInterface => GameBoardInterface] = whitePiecePositions.map {
       case (x, y) => (gb: GameBoardInterface) => gb.set(x, y, Some(Piece.apply("normal", x, y, White)))
     }
-    for {index <- 0 to 2} {
-      for {index2 <- 0 until size} {
-        if ((index2 + index) % 2 == 0) {
-          gameBoard = gameBoard.set(index, index2, Some(Piece.apply("normal", index, index2, Black)))
-        }
-      }
+
+    val blackPieceOperations: List[GameBoardInterface => GameBoardInterface] = blackPiecePositions.map {
+      case (x, y) => (gb: GameBoardInterface) => gb.set(x, y, Some(Piece.apply("normal", x, y, Black)))
     }
-    gameBoard
+
+    val operations: List[GameBoardInterface => GameBoardInterface] = noneOperations ++ whitePieceOperations ++ blackPieceOperations
+
+    operations.foldLeft(gameBoard) { case (gb, op) => op(gb) }
   }
 }
