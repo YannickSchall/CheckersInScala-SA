@@ -8,7 +8,7 @@ import gameboard.gameBoardBaseImpl.*
 import fileIoComponent.fileIoXmlImpl
 import fileIoComponent.fileIoJsonImpl
 import fileIoComponent.FileIOInterface
-import fileIoComponent.fileIoJsonImpl.FileIO
+
 
 
 class CheckersModule extends AbstractModule with ScalaModule {
@@ -23,5 +23,4 @@ class CheckersModule extends AbstractModule with ScalaModule {
     bind[GameBoardInterface].annotatedWithName("10")toInstance(new GameBoard(10))
     bind[FileIOInterface].to[FileIO]
   }
-
 }

@@ -1,32 +1,20 @@
 import sbt.Keys.libraryDependencies
-/*
-name := "CheckersInScala"
-version := "0.1"
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.15"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.15" % "test"
-libraryDependencies += "org.scala-lang.modules" %% "scala-swing" % "3.0.0"
-libraryDependencies += "com.google.inject" % "guice" % "5.1.0"
-libraryDependencies += "net.codingwell" %% "scala-guice" % "5.1.1"
-libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.0.0"
-libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0-RC7"
-libraryDependencies += "org.scalafx" %% "scalafx" % "16.0.0-R24"
-scalaVersion := "3.2.0"
-*/
-
+import dependencies._
 
 
 /** ScalaVersion */
 val scala3Version = "3.2.0"
 
 /** Dependencies */
-lazy val commonDependencies = Seq(
-  dependencies.scalactic("3.2.15"),
-  dependencies.scalatest("3.2.15"),
-  dependencies.scalafx("16.0.0-R24"),
-  dependencies.codingwell("5.1.1"),
-  dependencies.googleinject,
-  dependencies.scalalangmodules,
-  dependencies.typesafeplay
+lazy val allDependencies = Seq(
+ scalatic,
+ scalatest,
+ swing,
+ ginject,
+ well,
+ xml,
+ json,
+ scalafx
 )
 
 /** Model Module */
@@ -35,7 +23,7 @@ lazy val model = (project in file("Model"))
     name := "Checkers-Model",
     version := "0.5.0-SNAPSHOT",
     commonSettings,
-    libraryDependencies ++= commonDependencies,
+    libraryDependencies ++= allDependencies,
   )
 
 /** Persistence Module */
@@ -45,7 +33,7 @@ lazy val io = (project in file("IO"))
     name := "Checkeres-IO",
     version := "0.5.0-SNAPSHOT",
     commonSettings,
-    libraryDependencies ++= commonDependencies,
+    libraryDependencies ++= allDependencies,
   )
 
 /** Helper Module */
@@ -54,7 +42,7 @@ lazy val helper = (project in file("Helper"))
     name := "Checkers-Helper",
     version := "0.5.0-SNAPSHOT",
     commonSettings,
-    libraryDependencies ++= commonDependencies,
+    libraryDependencies ++= allDependencies,
   )
 
 /** Root Module */
@@ -66,24 +54,13 @@ lazy val root = project
     name := "Checkers",
     version := "0.5.0-SNAPSHOT",
     commonSettings,
-    libraryDependencies ++= commonDependencies,
+    libraryDependencies ++= allDependencies,
   )
-  .enablePlugins(JacocoCoverallsPlugin)
+  .enablePlugins(allDependencies)
 
 /** Common Settings */
 lazy val commonSettings = Seq(
   scalaVersion := scala3Version,
-  organization := "de.htwg.se",
-
-  jacocoCoverallsServiceName := "github-actions",
-  jacocoCoverallsBranch := sys.env.get("CI_BRANCH"),
-  jacocoCoverallsPullRequest := sys.env.get("GITHUB_EVENT_NAME"),
-  jacocoCoverallsRepoToken := sys.env.get("COVERALLS_REPO_TOKEN"),
-  jacocoExcludes in Test := Seq(
-    "aview*",
-    "fileIOComponent*",
-    "Checkers"
-  ),
   libraryDependencies ++= {
     // Determine OS version of JavaFX binaries
     lazy val osName = System.getProperty("os.name") match {

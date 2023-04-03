@@ -6,6 +6,10 @@ import controller.controllerComponent.GameState.{BLACK_TURN, BLACK_WON, WHITE_TU
 import controller.controllerComponent.controllerBaseImpl.Controller
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.*
+import gameboard.gameBoardBaseImpl.GameBoard
+import gameboard.gameBoardBaseImpl.Piece
+import gameboard.gameBoardBaseImpl.Color._
+import util.Mover
 
 class ControllerSpec extends AnyWordSpec {
   "A Controller" should {
