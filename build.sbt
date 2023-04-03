@@ -27,6 +27,8 @@ lazy val model = (project in file("Model"))
   )
 
 
+
+
 /** Persistence Module */
 lazy val io = (project in file("IO"))
   .dependsOn(model)
