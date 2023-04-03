@@ -1,9 +1,11 @@
 package aview
 import controller.controllerComponent.controllerBaseImpl.Controller
-import model.gameBoardComponent.gameBoardBaseImpl.{GameBoard, GameBoardCreator}
-import org.scalatest._
-import org.scalatest.matchers.should.Matchers._
-import org.scalatest.wordspec._
+import gameboard.gameBoardBaseImpl.GameBoard
+import org.scalatest.*
+import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.wordspec.*
+
+
 class TuiSpec extends  AnyWordSpec {
   "A tui" should {
     val controller = new Controller(new GameBoard(8))

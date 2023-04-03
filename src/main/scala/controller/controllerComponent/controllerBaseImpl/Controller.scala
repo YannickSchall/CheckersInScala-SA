@@ -2,14 +2,15 @@ package controller.controllerComponent.controllerBaseImpl
 
 import com.google.inject.name.Names
 import com.google.inject.{Guice, Inject}
-import net.codingwell.scalaguice.InjectorExtensions._
-import controller.controllerComponent.GameState._
+import net.codingwell.scalaguice.InjectorExtensions.*
+import controller.controllerComponent.GameState.*
+import gameboard.gameBoardBaseImpl.Color.*
 import controller.controllerComponent.{ControllerInterface, FieldChanged, GBSizeChanged, GameState}
-import model.fileIoComponent.FileIOInterface
-import model.gameBoardComponent.{FieldInterface, GameBoardInterface, PieceInterface}
-import model.gameBoardComponent.gameBoardBaseImpl.{Field, GameBoard, GameBoardCreator, Piece}
-import model.gameBoardComponent.gameBoardBaseImpl.Color.*
-import util.{Mover, UndoManager}
+import gameboard.{FieldInterface, GameBoardInterface, PieceInterface}
+import fileIoComponent.FileIOInterface
+import util.*
+import gameboard.gameBoardBaseImpl.*
+
 import scala.Checkers.{controller, gui}
 import scala.swing.Publisher
 

@@ -1,11 +1,11 @@
 package controller.controllerComponent
 import controller.controllerComponent.GameState.GameState
-import model.gameBoardComponent.{FieldInterface, PieceInterface}
-import model.gameBoardComponent.gameBoardBaseImpl.Piece
-import util.Mover
+import gameboard.{FieldInterface, PieceInterface}
+import gameboard.gameBoardBaseImpl.*
 import scala.swing.Publisher
 import scala.swing.event.Event
 import scala.compiletime.erasedValue
+import util.*
 
 trait ControllerInterface extends Publisher {
 

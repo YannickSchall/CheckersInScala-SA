@@ -8,6 +8,12 @@
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/scala" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/scala" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/Resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../../Helper/src/main/scala" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../Helper/src/test/scala" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../IO/src/main/scala" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../IO/src/test/scala" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../Model/src/main/scala" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../../Model/src/test" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/../../target" />
     </content>
     <orderEntry type="inheritedJdk" />

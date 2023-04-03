@@ -1,11 +1,8 @@
 package aview
 import java.awt.GraphicsEnvironment
-
-import controller.controllerComponent._
+import controller.controllerComponent.*
 import controller.controllerComponent.controllerBaseImpl.PrintTui
-import model.gameBoardComponent.gameBoardBaseImpl.Piece
-import model.gameBoardComponent.gameBoardBaseImpl.Color.*
-
+import gameboard.gameBoardBaseImpl.*
 import scala.swing.Reactor
 import scala.util.{Failure, Success, Try}
 

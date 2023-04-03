@@ -1,15 +1,13 @@
 package aview.gui
 
 import java.awt.Color
-
-import scala.swing._
-import scala.swing.event._
+import scala.swing.*
+import scala.swing.event.*
 import controller.controllerComponent.ControllerInterface
-import model.gameBoardComponent.gameBoardBaseImpl.Color.*
+import gameboard.gameBoardBaseImpl.Color.*
+import gameboard.gameBoardBaseImpl.{Field, Piece}
 import javax.swing.{BorderFactory, Icon, ImageIcon}
-import model.gameBoardComponent.gameBoardBaseImpl.Piece
 import java.io.File
-
 import scala.Checkers.{gui, injector}
 
 class FieldPanel(row: Int, col: Int, controller: ControllerInterface, backgroundColor: Color) extends FlowPanel {
