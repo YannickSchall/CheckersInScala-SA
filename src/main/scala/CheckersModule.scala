@@ -4,9 +4,8 @@ import com.google.inject.name.Names
 import net.codingwell.scalaguice.ScalaModule
 import controller.controllerComponent.*
 import gameboard.GameBoardInterface
-import gameboard.gameBoardBaseImpl.*
-import fileIoComponent.fileIoXmlImpl
-import fileIoComponent.fileIoJsonImpl
+import gameboard.gameBoardAdvImpl.GameBoard
+import fileIoComponent.fileIoJsonImpl.FileIO
 import fileIoComponent.FileIOInterface
 
 
