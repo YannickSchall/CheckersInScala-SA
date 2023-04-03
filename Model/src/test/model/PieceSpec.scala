@@ -3,6 +3,8 @@ package model
 import org.scalatest.*
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.*
+import gameboard.gameBoardBaseImpl.Color.*
+import gameboard.gameBoardBaseImpl.Normal
 
 class PieceSpec extends AnyWordSpec {
   "A trait" should {
