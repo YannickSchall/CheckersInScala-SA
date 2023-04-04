@@ -7,8 +7,8 @@ import controller.controllerComponent.GameState.*
 import gameboard.gameBoardBaseImpl.Color.*
 import controller.controllerComponent.{ControllerInterface, FieldChanged, GBSizeChanged, GameState}
 import gameboard.{FieldInterface, GameBoardInterface, PieceInterface}
-import fileIoComponent.FileIOInterface
-import util.*
+//import fileIoComponent.FileIOInterface
+import utils.*
 import gameboard.gameBoardBaseImpl.*
 
 import scala.Checkers.{controller, gui}
@@ -19,7 +19,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
   private val undoManager = new UndoManager
   var gameState: GameState = WHITE_TURN
   val injector = Guice.createInjector(new CheckersModule)
-  val fileIo = injector.instance[FileIOInterface]
+  //val fileIo = injector.instance[FileIOInterface]
   var cap: String = ""
   var destTemp: String = ""
 
@@ -204,13 +204,13 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
   }
 
   def save: Unit = {
-    fileIo.save(gameBoard)
+    //fileIo.save(gameBoard)
     publish(new FieldChanged)
   }
 
   def load: Unit = {
     val oldSize = gameBoard.size
-    gameBoard = fileIo.load
+    //gameBoard = fileIo.load
     if (gameBoard.size != oldSize) publish(new GBSizeChanged(gameBoard.size))
     publish(new FieldChanged)
     publish(new PrintTui)

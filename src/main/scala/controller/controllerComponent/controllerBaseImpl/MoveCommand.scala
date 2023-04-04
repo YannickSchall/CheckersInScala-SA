@@ -1,7 +1,7 @@
 package controller.controllerComponent.controllerBaseImpl
 import controller.controllerComponent.GameState.GameState
 import gameboard.GameBoardInterface
-import util.Command
+import utils.Command
 
 class MoveCommand(start: String, dest: String, controller: Controller) extends Command {
 

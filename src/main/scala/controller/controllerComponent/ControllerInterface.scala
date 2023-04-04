@@ -5,7 +5,7 @@ import gameboard.gameBoardBaseImpl.*
 import scala.swing.Publisher
 import scala.swing.event.Event
 import scala.compiletime.erasedValue
-import util.*
+import utils.Mover
 
 trait ControllerInterface extends Publisher {
 

@@ -1,7 +1,7 @@
 package controller.controllerComponent.controllerBaseImpl
 import controller.controllerComponent.GameState.GameState
 import gameboard.GameBoardInterface
-import util.*
+import utils.*
 import gameboard.gameBoardBaseImpl.*
 class SetCommand(start: Int, dest: Int, piece: Option[Piece], controller: Controller) extends Command {
 

@@ -1,24 +1,47 @@
 import sbt.Keys.libraryDependencies
 import dependencies._
 
+lazy val ioProjectRef = ProjectRef(file("."), "Checkers-IO")
+lazy val rootProjectRef = ProjectRef(file("."), "Checkers")
 
 /** ScalaVersion */
 val scala3Version = "3.2.0"
 
 /** Dependencies */
 lazy val allDependencies = Seq(
- scalatic,
- scalatest,
- swing,
- ginject,
- well,
- xml,
- json,
- scalafx
+  scalatic,
+  scalatest,
+  swing,
+  ginject,
+  well,
+  xml,
+  json,
+  scalafx
 )
 
+/** Root Module */
+lazy val root: Project = Project(id = "Checkers", base = file("."))
+  .dependsOn(model, helper)
+  .settings(
+    name := "Checkers",
+    version := "0.5.0-SNAPSHOT",
+    commonSettings,
+    libraryDependencies ++= allDependencies,
+  )
+
+/** IO Module */
+lazy val io: Project = Project(id = "Checkers-IO", base = file("io"))
+  .dependsOn(model)
+  .settings(
+    name := "Checkers-IO",
+    version := "0.5.0-SNAPSHOT",
+    commonSettings,
+    libraryDependencies ++= allDependencies,
+  )
+
 /** Model Module */
-lazy val model = (project in file("Model"))
+lazy val model: Project = Project(id = "Checkers-Model", base = file("model"))
+  .dependsOn(helper)
   .settings(
     name := "Checkers-Model",
     version := "0.5.0-SNAPSHOT",
@@ -26,21 +49,8 @@ lazy val model = (project in file("Model"))
     libraryDependencies ++= allDependencies,
   )
 
-
-
-
-/** Persistence Module */
-lazy val io = (project in file("IO"))
-  .dependsOn(model)
-  .settings(
-    name := "Checkeres-IO",
-    version := "0.5.0-SNAPSHOT",
-    commonSettings,
-    libraryDependencies ++= allDependencies,
-  )
-
 /** Helper Module */
-lazy val helper = (project in file("Helper"))
+lazy val helper: Project = Project(id = "Checkers-Helper", base = file("helper"))
   .settings(
     name := "Checkers-Helper",
     version := "0.5.0-SNAPSHOT",
@@ -48,21 +58,8 @@ lazy val helper = (project in file("Helper"))
     libraryDependencies ++= allDependencies,
   )
 
-/** Root Module */
-lazy val root = project
-  .in(file("."))
-  .dependsOn(helper, model, io)
-  .aggregate(helper, model, io)
-  .settings(
-    name := "Checkers",
-    version := "0.5.0-SNAPSHOT",
-    commonSettings,
-    libraryDependencies ++= allDependencies,
-  )
-  .enablePlugins(allDependencies)
-
 /** Common Settings */
-lazy val commonSettings = Seq(
+lazy val commonSettings: Seq[Def.Setting[_]] = Seq(
   scalaVersion := scala3Version,
   libraryDependencies ++= {
     // Determine OS version of JavaFX binaries

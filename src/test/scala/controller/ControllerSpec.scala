@@ -9,7 +9,7 @@ import org.scalatest.wordspec.*
 import gameboard.gameBoardBaseImpl.GameBoard
 import gameboard.gameBoardBaseImpl.Piece
 import gameboard.gameBoardBaseImpl.Color._
-import util.Mover
+import utils.Mover
 
 class ControllerSpec extends AnyWordSpec {
   "A Controller" should {
