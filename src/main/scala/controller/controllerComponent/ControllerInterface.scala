@@ -1,7 +1,8 @@
 package controller.controllerComponent
 import controller.controllerComponent.GameState.GameState
 import gameboard.{FieldInterface, PieceInterface}
-import gameboard.gameBoardBaseImpl.*
+import gameboard.gameBoardBaseImpl.Piece
+import gameboard.gameBoardBaseImpl.Piece
 import scala.swing.Publisher
 import scala.swing.event.Event
 import scala.compiletime.erasedValue
