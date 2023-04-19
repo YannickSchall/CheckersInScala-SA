@@ -4,6 +4,7 @@ import controller.controllerComponent.*
 import controller.controllerComponent.controllerBaseImpl.PrintTui
 import gameboard.gameBoardBaseImpl.Piece
 
+
 import scala.swing.Reactor
 import scala.util.{Failure, Success, Try}
 

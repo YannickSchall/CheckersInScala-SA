@@ -16,7 +16,14 @@ lazy val allDependencies = Seq(
   well,
   xml,
   json,
-  scalafx
+  scalafx,
+  akkaHttp,
+  akkaHttpSpray,
+  akkaHttpCore,
+  akkaActorTyped,
+  akkaStream,
+  akkaActor,
+  slf4jNop
 )
 
 /** Root Module */
