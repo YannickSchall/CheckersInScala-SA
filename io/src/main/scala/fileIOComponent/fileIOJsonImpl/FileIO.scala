@@ -1,4 +1,4 @@
-package fileIoComponent.fileIoJsonImpl
+package fileIOComponent.fileIOJsonImpl
 
 import com.google.inject.Guice
 import com.google.inject.name.Names
@@ -7,13 +7,13 @@ import gameboard.gameBoardBaseImpl.*
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 
-import fileIoComponent.FileIOInterface
+import fileIOComponent.FileIOInterface
 
 import scala.io.Source
 import play.api.libs.json.*
 
 class FileIO extends FileIOInterface{
-  override def load: GameBoardInterface = {
+  /*override def load: GameBoardInterface = {
     var gameBoard: GameBoardInterface = null
     val source: String = Source.fromFile("gameBoard.json").getLines.mkString
     val json: JsValue = Json.parse(source)
@@ -32,6 +32,7 @@ class FileIO extends FileIOInterface{
     }
     gameBoard
   }
+  */
 
   override def save(gameBoard: GameBoardInterface): Unit = {
     import java.io._

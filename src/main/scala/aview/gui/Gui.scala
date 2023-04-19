@@ -113,8 +113,8 @@ class Gui(controller: ControllerInterface) extends Frame {
     contents += new Menu("Edit") {
 
         contents += new Menu("Debugging") {
-          contents += new MenuItem(Action("Undo") { controller.undo })
-          contents += new MenuItem(Action("Redo") { controller.redo })
+          contents += new MenuItem(Action("Undo") { controller.undo() })
+          contents += new MenuItem(Action("Redo") { controller.redo() })
         }
     }
     contents += new Menu("Options") {

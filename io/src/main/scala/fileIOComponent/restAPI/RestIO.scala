@@ -10,6 +10,13 @@ import controller.controllerComponent.Checkers
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.util.{Failure, Success, Try}
 
+object RestIO {
+  val routes: String =
+    """
+      Welcome to the Persistence REST service! Available routes:
+        GET   /fileio/load
+        POST  /fileio/save
+      """.stripMargin
 
 object UiAPI:
 // needed to run the route

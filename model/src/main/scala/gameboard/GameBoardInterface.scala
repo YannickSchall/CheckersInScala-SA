@@ -2,6 +2,7 @@ package gameboard
 import gameboard.gameBoardBaseImpl.Piece
 import gameboard.gameBoardBaseImpl.*
 import gameboard.{FieldInterface, PieceInterface}
+import play.api.libs.json.{Format, JsObject, JsValue, Reads, Writes}
 import utils.Mover
 
 
@@ -30,6 +31,27 @@ trait GameBoardInterface {
   def move(start: String, dest: String): GameBoardInterface
 
   def movePossible(start: String, dest: String): Mover
+
+  def jsonToString: String
+  
+  def toJson: JsValue
+  
+  def jsonToGameBoard(gameBoardInterface: GameBoardInterface): GameBoardInterface
+
+  implicit def optionFormat[T: Format]: Format[Option[T]]
+
+  implicit val pieceReads: Reads[Piece]
+
+  implicit val fieldReads: Reads[Field]
+
+  implicit val colorReads: Reads[Color]
+
+  implicit val colorWrites: Writes[Color]
+
+  implicit val fieldWrites: Writes[Field]
+
+  implicit val pieceWrites: Writes[Piece]
+
 }
 
 

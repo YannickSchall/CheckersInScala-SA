@@ -1,8 +1,9 @@
 package controller.controllerComponent
 import controller.controllerComponent.GameState.GameState
-import gameboard.{FieldInterface, PieceInterface}
+import gameboard.{FieldInterface, GameBoardInterface, PieceInterface}
 import gameboard.gameBoardBaseImpl.Piece
 import gameboard.gameBoardBaseImpl.Piece
+
 import scala.swing.Publisher
 import scala.swing.event.Event
 import scala.compiletime.erasedValue
@@ -13,6 +14,7 @@ trait ControllerInterface extends Publisher {
   def gameState: GameState
   var cap: String
   var destTemp: String
+  var gameBoard: GameBoardInterface
   def createNewGameBoard(): Unit
   def resize(newSize: Int): Unit
   def createGameBoard(size: Int): Unit
@@ -23,10 +25,10 @@ trait ControllerInterface extends Publisher {
   def remove(row: Int, col: Int): Unit
   def move(start: String, dest: String): Unit
   def movePossible(start: String, dest: String): Mover
-  def save: Unit
-  def load: Unit
-  def undo: Unit
-  def redo: Unit
+  def save(): Unit
+  def load(): Unit
+  def undo(): Unit
+  def redo(): Unit
   def isSet(row: Int, col: Int): Boolean
   def field(row: Int, col: Int): FieldInterface
   def gameBoardSize: Int

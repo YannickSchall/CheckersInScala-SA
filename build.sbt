@@ -28,7 +28,7 @@ lazy val allDependencies = Seq(
 
 /** Root Module */
 lazy val root: Project = Project(id = "Checkers", base = file("."))
-  .dependsOn(model, helper)
+  .dependsOn(model, helper, io)
   .settings(
     name := "Checkers",
     version := "0.5.0-SNAPSHOT",

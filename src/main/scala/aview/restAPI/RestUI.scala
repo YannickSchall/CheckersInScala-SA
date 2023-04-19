@@ -1,3 +1,5 @@
+package aview.restAPI
+
 import akka.http.scaladsl.server.Directives.{complete, concat, get, path}
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors

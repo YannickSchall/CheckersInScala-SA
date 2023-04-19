@@ -23,11 +23,11 @@ class Tui(controller: ControllerInterface) extends Reactor {
           case Failure(e) => println("Error: Non integer " + e.getMessage.charAt(0).toLower + e.getMessage.tail + "\nTry 8 or 10\n")
           case Success(e) => if (Integer.parseInt(args(1)) == 8 || Integer.parseInt(args(1)) == 10) controller.createGameBoard(args(1).toInt) else print("Try 8 or 10\n")
         }
-      case "SAVE" => controller.save; print("Progress saved\n")
-      case "LOAD" => controller.load; print("Progress loaded\n")
+      case "SAVE" => controller.save(); print("Progress saved\n")
+      case "LOAD" => controller.load(); print("Progress loaded\n")
       case "REMOVE" => controller.remove(Integer.parseInt(args(1).tail)-1, args(1).charAt(0).toInt - 65)
-      case "UNDO" => controller.undo
-      case "REDO" => controller.redo
+      case "UNDO" => controller.undo()
+      case "REDO" => controller.redo()
       case "FONTS" => val fonts: Array[String] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames(); for (i <- fonts) {print(i + "\n") }
       case "QUIT" => System.exit(0)
       case "MOVE" => if (controller.movePossible(args(1), args(2)).getBool) if (controller.movePossible(args(1), args(2)).getBool) {

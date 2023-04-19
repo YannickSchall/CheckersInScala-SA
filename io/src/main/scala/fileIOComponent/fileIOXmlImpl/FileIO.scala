@@ -1,5 +1,5 @@
-package fileIoComponent.fileIoXmlImpl
-import fileIoComponent.FileIOInterface
+package fileIOComponent.fileIOXmlImpl
+import fileIOComponent.FileIOInterface
 import com.google.inject.Guice
 import com.google.inject.name.Names
 import gameboard.gameBoardBaseImpl.*
@@ -13,6 +13,7 @@ import util.*
 import scala.xml.{Elem, PrettyPrinter}
 
 class FileIO extends FileIOInterface {
+  /*
   override def load: GameBoardInterface = {
     var gameBoard: GameBoardInterface = null
     val file = scala.xml.XML.loadFile("gameBoard.xml")
@@ -24,7 +25,7 @@ class FileIO extends FileIOInterface {
       case 10 => gameBoard = injector.instance[GameBoardInterface](Names.named("10"))
       case _ =>
     }
-
+  
     val fieldNodes = file \\ "field"
 
     for (field <- fieldNodes) {
@@ -41,7 +42,7 @@ class FileIO extends FileIOInterface {
       }
     }
     gameBoard
-  }
+  }*/
 
   def save(gameBoard: GameBoardInterface): Unit = saveString(gameBoard)
 

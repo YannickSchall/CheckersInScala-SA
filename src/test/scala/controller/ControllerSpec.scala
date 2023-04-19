@@ -26,8 +26,8 @@ class ControllerSpec extends AnyWordSpec {
       controller.undo
       controller.undo
       controller.gameBoard.field(0,0).isSet should be (true)
-      controller.redo
-      controller.redo
+      controller.redo()
+      controller.redo()
       controller.gameBoard.field(0,0).isSet should be (true)
     } /*
     "be set correctly" in {
