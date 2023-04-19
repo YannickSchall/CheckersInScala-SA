@@ -10,11 +10,11 @@ object dependencies {
     val xml = "org.scala-lang.modules" %% "scala-xml" % "2.0.0"
     val json = "com.typesafe.play" %% "play-json" % "2.10.0-RC7"
     val scalafx = "org.scalafx" %% "scalafx" % "16.0.0-R24"
-    val akkaHttp = "com.typesafe.akka" %% "akka-http" % "10.2.9"
-    val akkaHttpSpray = "com.typesafe.akka" %% "akka-http-spray-json" % "10.2.9"
-    val akkaHttpCore = "com.typesafe.akka" %% "akka-http-core" % "10.2.9"
-    val akkaActorTyped = "com.typesafe.akka" %% "akka-actor-typed" % "2.6.19"
-    val akkaStream = "com.typesafe.akka" %% "akka-stream" % "2.6.19"
-    val akkaActor = "com.typesafe.akka" %% "akka-actor" % "2.6.19"
+    val akkaHttp = ("com.typesafe.akka" %% "akka-http" % "10.2.9").cross(CrossVersion.for3Use2_13)
+    val akkaHttpSpray = ("com.typesafe.akka" %% "akka-http-spray-json" % "10.2.9").cross(CrossVersion.for3Use2_13)
+    val akkaHttpCore = ("com.typesafe.akka" %% "akka-http-core" % "10.2.9").cross(CrossVersion.for3Use2_13)
+    val akkaActorTyped = ("com.typesafe.akka" %% "akka-actor-typed" % "2.6.19").cross(CrossVersion.for3Use2_13)
+    val akkaStream = ("com.typesafe.akka" %% "akka-stream" % "2.6.19").cross(CrossVersion.for3Use2_13)
+    val akkaActor = ("com.typesafe.akka" %% "akka-actor" % "2.6.19").cross(CrossVersion.for3Use2_13)
     val slf4jNop = "org.slf4j" % "slf4j-nop" % "2.0.0-alpha7"
 }

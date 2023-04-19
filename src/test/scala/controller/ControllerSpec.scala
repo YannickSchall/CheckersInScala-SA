@@ -23,8 +23,8 @@ class ControllerSpec extends AnyWordSpec {
       controller.set(1,1, Piece.apply("normal", 1, 1, Black))
       controller.gameBoard.field(0,0).isSet should be (true)
       controller.isSet(0,0) should be (true)
-      controller.undo
-      controller.undo
+      controller.undo()
+      controller.undo()
       controller.gameBoard.field(0,0).isSet should be (true)
       controller.redo()
       controller.redo()

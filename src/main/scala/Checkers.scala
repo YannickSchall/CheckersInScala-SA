@@ -9,6 +9,7 @@ import controller.controllerComponent.ControllerInterface
 import scala.compiletime.{erasedValue, summonFrom}
 import scala.io.StdIn.readLine
 
+
 object Checkers {
   val injector = Guice.createInjector(new CheckersModule)
   val controller = injector.getInstance(classOf[ControllerInterface])

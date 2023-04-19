@@ -203,12 +203,12 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     } else new Mover(false, "", false)
   }
 
-  def save: Unit = {
+  def save(): Unit = {
     //fileIo.save(gameBoard)
     publish(new FieldChanged)
   }
-
-  def load: Unit = {
+  
+  def load(): Unit = {
     val oldSize = gameBoard.size
     //gameBoard = fileIo.load
     if (gameBoard.size != oldSize) publish(new GBSizeChanged(gameBoard.size))
@@ -216,13 +216,13 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     publish(new PrintTui)
   }
 
-  def undo: Unit = {
+  def undo(): Unit = {
     undoManager.undoStep
     publish(new FieldChanged)
     publish(new PrintTui)
   }
 
-  def redo: Unit = {
+  def redo(): Unit = {
     undoManager.redoStep
     publish(new FieldChanged)
     publish(new PrintTui)
@@ -235,4 +235,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
   def gameBoardSize: Int = gameBoard.size
 
   def statusText: String = GameState.message(gameState)
+
+
+
 }
