@@ -254,8 +254,6 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
         }
       }
 
-
-
   }
 
   def undo(): Unit = {

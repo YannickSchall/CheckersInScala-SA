@@ -1,9 +1,4 @@
-package aview
-import controller.controllerComponent.controllerBaseImpl.Controller
-import gameboard.gameBoardBaseImpl.GameBoard
-import org.scalatest.*
-import org.scalatest.matchers.should.Matchers.*
-import org.scalatest.wordspec.*
+package view
 
 
 class TuiSpec extends  AnyWordSpec {

@@ -1,12 +1,4 @@
-package aview
 import java.awt.GraphicsEnvironment
-import controller.controllerComponent.*
-import controller.controllerComponent.controllerBaseImpl.PrintTui
-import gameboard.gameBoardBaseImpl.Piece
-
-
-import scala.swing.Reactor
-import scala.util.{Failure, Success, Try}
 
 class Tui(controller: ControllerInterface) extends Reactor {
 

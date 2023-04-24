@@ -1,11 +1,10 @@
 package scala
 import scala.util.{Failure, Success, Try}
 import com.google.inject.Guice
-import aview.Tui
-import aview.gui.Gui
 import aview.restAPI.RestUI
 import fileIOComponent.restAPI.RestIO
 import controller.controllerComponent.ControllerInterface
+
 import scala.compiletime.{erasedValue, summonFrom}
 import scala.io.StdIn.readLine
 
