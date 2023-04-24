@@ -13,26 +13,26 @@ import scala.io.Source
 import play.api.libs.json.*
 
 class FileIO extends FileIOInterface{
-  /*override def load: GameBoardInterface = {
-    var gameBoard: GameBoardInterface = null
+
+  override def load(gameBoard: GameBoardInterface): GameBoardInterface = {
+    var newGameBoard: GameBoardInterface = gameBoard
     val source: String = Source.fromFile("gameBoard.json").getLines.mkString
     val json: JsValue = Json.parse(source)
     val size = (json \ "gameBoard" \ "size").get.toString.toInt
-    val injector = Guice.createInjector(new CheckersModule)
-    size match {
+    /*size match {
       case 8 => gameBoard = injector.instance[GameBoardInterface](Names.named("8"))
       case 10 => gameBoard = injector.instance[GameBoardInterface](Names.named("10"))
       case _ =>
-    }
+    }*/
     for (index <- 0 until size * size) {
       val row = (json \\ "row")(index).as[Int]
       val col = (json \\ "col")(index).as[Int]
       val field = (json \\ "field")(index).as[Field]
-      gameBoard = gameBoard.set(row, col, field.piece)
+      newGameBoard = newGameBoard.set(row, col, field.piece)
     }
-    gameBoard
+    newGameBoard
   }
-  */
+
 
   override def save(gameBoard: GameBoardInterface): Unit = {
     import java.io._

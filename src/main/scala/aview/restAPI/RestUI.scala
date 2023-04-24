@@ -39,9 +39,11 @@ object RestUI:
         complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, routes))
       },
       path("ui") {
-        get {
-          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, controller.gameBoard.jsonToString))
-        }
+        concat(
+          get {
+            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, controller.gameBoard.jsonToString))
+          }
+        )
       },
       path("undo") {
         concat(

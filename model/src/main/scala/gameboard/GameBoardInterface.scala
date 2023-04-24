@@ -36,9 +36,7 @@ trait GameBoardInterface {
   
   def toJson: JsValue
   
-  def jsonToGameBoard(gameBoardInterface: GameBoardInterface): GameBoardInterface
-
-  implicit def optionFormat[T: Format]: Format[Option[T]]
+  def jsonToGameBoard(): GameBoardInterface
 
   implicit val pieceReads: Reads[Piece]
 
@@ -50,7 +48,7 @@ trait GameBoardInterface {
 
   implicit val fieldWrites: Writes[Field]
 
-  implicit val pieceWrites: Writes[Piece]
+  implicit val pieceWrites: Writes[Option[Piece]]
 
 }
 

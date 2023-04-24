@@ -23,5 +23,3 @@ object UiController {
     def gameBoardToJsonToString(controller: ControllerInterface): String =
       controller.gameBoard.jsonToString
 }
-
-

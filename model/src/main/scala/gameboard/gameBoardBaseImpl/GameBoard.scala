@@ -2,8 +2,9 @@ package gameboard.gameBoardBaseImpl
 import util.*
 import com.google.inject.{Guice, Inject}
 import com.google.inject.name.Names
+import gameboard.gameBoardBaseImpl.Color.{White, Black}
 import gameboard.{FieldInterface, GameBoardInterface}
-import play.api.libs.json.{Format, JsError, JsNull, JsNumber, JsPath, JsResult, JsString, JsSuccess, JsValue, Json, Reads, Writes}
+import play.api.libs.json.{Format, JsError, JsNull, JsNumber, JsObject, JsPath, JsResult, JsString, JsSuccess, JsValue, Json, Reads, Writes}
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import utils.Mover
 
@@ -64,29 +65,20 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
     }
   }
 
-  implicit def optionFormat[T: Format]: Format[Option[T]] = new Format[Option[T]] {
-    override def reads(json: JsValue): JsResult[Option[T]] = json.validateOpt[T]
 
-    override def writes(o: Option[T]): JsValue = o match {
-      case Some(t) ⇒ implicitly[Writes[T]].writes(t)
-      case None ⇒ JsNull
-    }
-  }
-
-
-  implicit val pieceReads: Reads[Piece] = (
+  override implicit val pieceReads: Reads[Piece] = (
     (JsPath \ "state").read[String] and
       (JsPath \ "prow").read[Int] and
       (JsPath \ "pcol").read[Int] and
       (JsPath \ "color").read[Color]
     )(Piece.apply _)
 
-  implicit val fieldReads: Reads[Field] = (
+  override implicit val fieldReads: Reads[Field] = (
     (JsPath \ "pos").read[String] and
       (JsPath \ "piece").readNullable[Piece]
     )(Field.apply _)
 
-  implicit val colorReads: Reads[Color] = Reads { json =>
+  override implicit val colorReads: Reads[Color] = Reads { json =>
     json.validate[String].flatMap {
       case "white" => JsSuccess(Color.White)
       case "black" => JsSuccess(Color.Black)
@@ -94,31 +86,38 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
     }
   }
 
-  implicit val colorWrites: Writes[Color] = new Writes[Color] {
-    def writes(color: Color) = JsString(color.color)
+  override implicit val colorWrites: Writes[Color] = new Writes[Color] {
+    def writes(color: Color) = Json.obj(
+      "color" -> color.color,
+    )
   }
 
-  implicit val fieldWrites: Writes[Field] = new Writes[Field] {
+  override implicit val fieldWrites: Writes[Field] = new Writes[Field] {
     def writes(field: Field) = Json.obj(
       "pos" -> field.getPos,
-      "piece" -> pieceWrites.writes(field.getPiece.get)
+      "piece" -> pieceWrites.writes(field.getPiece)
     )
   }
 
-  implicit val pieceWrites: Writes[Piece] = new Writes[Piece] {
-    def writes(piece: Piece) = Json.obj(
-      "state" -> piece.state,
-      "prow" -> piece.row,
-      "pcol" -> piece.col,
-      "color" -> colorWrites.writes(piece.getColor)
-    )
+  override implicit val pieceWrites: Writes[Option[Piece]] = new Writes[Option[Piece]] {
+    def writes(piece: Option[Piece]) = {
+      if (piece.isDefined) {
+        Json.obj(
+          "state" -> piece.get.state,
+          "prow" -> piece.get.row,
+          "pcol" -> piece.get.col,
+          "color" -> colorWrites.writes(piece.get.getColor)
+        )
+      } else {
+        JsNull
+      }
+    }
   }
-
 
   def gameBoardToJson = {
     Json.obj(
       "gameBoard" -> Json.obj(
-        "size" -> JsNumber(this.size),
+        "size" -> this.size,
         "fields" -> Json.toJson(
           for {
             row <- 0 until this.size
@@ -127,7 +126,7 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
             Json.obj(
               "row" -> row,
               "col" -> col,
-              "field" -> Json.toJson(this.field(row, col))
+              "field" -> field(row, col)
             )
           }
         )
@@ -141,7 +140,7 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
   def toJson: JsValue =
     gameBoardToJson
 
-  override def jsonToGameBoard(gameBoard: GameBoardInterface): GameBoardInterface = {
+  override def jsonToGameBoard(): GameBoardInterface = {
     var gameBoard: GameBoardInterface = null
     val source: String = Source.fromFile("gameBoard.json").getLines.mkString
     val json: JsValue = Json.parse(source)
