@@ -7,11 +7,20 @@ import controller.controllerComponent.GameState.*
 import gameboard.gameBoardBaseImpl.Color.*
 import controller.controllerComponent.{ControllerInterface, FieldChanged, GBSizeChanged, GameState}
 import gameboard.{FieldInterface, GameBoardInterface, PieceInterface}
-//import fileIoComponent.FileIOInterface
 import utils.*
 import gameboard.gameBoardBaseImpl.*
+import scala.concurrent.Future
 
+import akka.http.scaladsl.server.Directives.{complete, concat, get, path}
+import akka.actor.typed.ActorSystem
+import akka.actor.typed.scaladsl.Behaviors
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.server.Directives.*
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCode, HttpMethods, HttpResponse, HttpRequest}
+import akka.http.scaladsl.server.{ExceptionHandler, Route}
+import akka.http.scaladsl.unmarshalling.Unmarshal
 import scala.Checkers.{controller, gui}
+import scala.util.{Failure, Success, Try}
 import scala.swing.Publisher
 
 class Controller @Inject() (var gameBoard: GameBoardInterface) extends ControllerInterface with Publisher {
@@ -22,6 +31,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
   //val fileIo = injector.instance[FileIOInterface]
   var cap: String = ""
   var destTemp: String = ""
+  val fileIOServer = "http://localhost:8081/fileio"
 
   def createNewGameBoard(): Unit = {
     gameBoard.size match {
@@ -205,15 +215,47 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
 
   def save(): Unit = {
     //fileIo.save(gameBoard)
+    implicit val system = ActorSystem(Behaviors.empty, "SingleRequest")
+
+    implicit val executionContext = system.executionContext
+
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
+      method = HttpMethods.POST,
+      uri = fileIOServer + "/save",
+      entity = gameBoard.jsonToString
+    ))
     publish(new FieldChanged)
+    //notifyobserver
   }
   
   def load(): Unit = {
-    val oldSize = gameBoard.size
-    //gameBoard = fileIo.load
-    if (gameBoard.size != oldSize) publish(new GBSizeChanged(gameBoard.size))
-    publish(new FieldChanged)
-    publish(new PrintTui)
+
+    //if (gameBoard.size != oldSize) publish(new GBSizeChanged(gameBoard.size))
+
+    implicit val system = ActorSystem(Behaviors.empty, "SingleRequest")
+
+    implicit val executionContext = system.executionContext
+
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = fileIOServer + "/load"))
+
+    responseFuture
+      .onComplete {
+        case Failure(_) => sys.error("Failed getting Json")
+        case Success(value) => {
+          Unmarshal(value.entity).to[String].onComplete {
+            case Failure(_) => sys.error("Failed unmarshalling")
+            case Success(value) => {
+              val loadedGame = gameBoard.jsonToGameBoard()
+              this.gameBoard = loadedGame
+              publish(new FieldChanged)
+              publish(new PrintTui)
+            }
+          }
+        }
+      }
+
+
+
   }
 
   def undo(): Unit = {

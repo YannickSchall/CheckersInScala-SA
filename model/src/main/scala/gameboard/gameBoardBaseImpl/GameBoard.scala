@@ -17,21 +17,21 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
 
   val size: Int = fields.size
 
-  def getField(pos: String): Field = {
+  override def getField(pos: String): Field = {
     field(Integer.parseInt(pos.tail)-1, pos.charAt(0).toInt - 65)
   }
 
-  def remove(row: Int, col: Int): GameBoard = copy(fields.replaceField(row, col, Field(posToStr(row, col), None)))
+  override def remove(row: Int, col: Int): GameBoard = copy(fields.replaceField(row, col, Field(posToStr(row, col), None)))
 
-  def set(row: Int, col: Int, piece: Option[Piece]): GameBoard = copy(fields.replaceField(row, col, Field(posToStr(row, col), piece)))
+  override def set(row: Int, col: Int, piece: Option[Piece]): GameBoard = copy(fields.replaceField(row, col, Field(posToStr(row, col), piece)))
 
-  def field(row: Int, col: Int): Field = fields.field(row, col)
+  override def field(row: Int, col: Int): Field = fields.field(row, col)
 
-  def colToInt(pos: String): Int = pos.charAt(0).toInt - 65
+  override def colToInt(pos: String): Int = pos.charAt(0).toInt - 65
 
-  def rowToInt(pos: String): Int = Integer.parseInt(pos.tail) - 1
+  override def rowToInt(pos: String): Int = Integer.parseInt(pos.tail) - 1
 
-  def posToStr(row: Int, col: Int): String = (col + 65).toChar.toString + (row+1).toString
+  override def posToStr(row: Int, col: Int): String = (col + 65).toChar.toString + (row+1).toString
 
 
   override def toString: String = {
@@ -46,19 +46,19 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
   }
 
 
-  def getPiece(row: Int, col: Int): Option[Piece] = {
+  override def getPiece(row: Int, col: Int): Option[Piece] = {
     def pos = posToStr(row, col)
     getField(pos).piece
   }
 
-  def move(start: String, dest: String): GameBoard = {
+  override def move(start: String, dest: String): GameBoard = {
     getField(start).piece match {
       case Some(piece) => remove(Integer.parseInt(start.tail)-1, start.charAt(0).toInt - 65).set(Integer.parseInt(dest.tail)-1, dest.charAt(0).toInt - 65, Some(Piece(piece.state, Integer.parseInt(dest.tail)-1, dest.charAt(0).toInt - 65, piece.getColor)))
       case None => print("Field " + start + " is empty"); this
     }
   }
 
-  def movePossible(start: String, dest: String): Mover = {
+  override def movePossible(start: String, dest: String): Mover = {
     getField(start).piece match {
       case Some(piece) => piece.movePossible(dest, this)
       case _ => new Mover(false, "", false)
@@ -134,10 +134,12 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
     )
   }
 
-  def jsonToString: String =
+
+
+  override def jsonToString: String =
     Json.prettyPrint(gameBoardToJson)
 
-  def toJson: JsValue =
+  override def toJson: JsValue =
     gameBoardToJson
 
   override def jsonToGameBoard(): GameBoardInterface = {
