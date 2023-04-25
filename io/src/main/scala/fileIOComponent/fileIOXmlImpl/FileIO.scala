@@ -13,19 +13,13 @@ import util.*
 import scala.xml.{Elem, PrettyPrinter}
 
 class FileIO extends FileIOInterface {
-  /*
-  override def load: GameBoardInterface = {
-    var gameBoard: GameBoardInterface = null
+
+  override def load(gameBoard: GameBoardInterface): GameBoardInterface = {
+    var newGameBoard: GameBoardInterface = gameBoard
     val file = scala.xml.XML.loadFile("gameBoard.xml")
     val sizeAttr = (file \\ "gameBoard" \ "@size")
     val size = sizeAttr.text.toInt
-    val injector = Guice.createInjector(new CheckersModule)
-    size match {
-      case 8 => gameBoard = injector.instance[GameBoardInterface](Names.named("8"))
-      case 10 => gameBoard = injector.instance[GameBoardInterface](Names.named("10"))
-      case _ =>
-    }
-  
+
     val fieldNodes = file \\ "field"
 
     for (field <- fieldNodes) {
@@ -34,15 +28,15 @@ class FileIO extends FileIOInterface {
       val col: Int = pos.charAt(0).toInt - 65
       val piece = field.text
       piece match {
-        case " value = \uD83D\uDD34 " => gameBoard = gameBoard.set(row, col, Some(Piece("normal", row, col, Black)))
-        case " value = \uD83D\uDD35 " => gameBoard = gameBoard.set(row, col, Some(Piece("normal", row, col, White)))
-        case " value = \uD83D\uDFE0 " => gameBoard = gameBoard.set(row, col, Some(Piece("queen", row, col, Black)))
-        case " value = \uD83D\uDFE3 " => gameBoard = gameBoard.set(row, col, Some(Piece("queen", row, col, White)))
-        case " value = " => gameBoard = gameBoard.remove(row, col)
+        case " value = \uD83D\uDD34 " => newGameBoard = newGameBoard.set(row, col, Some(Piece("normal", row, col, Black)))
+        case " value = \uD83D\uDD35 " => newGameBoard = newGameBoard.set(row, col, Some(Piece("normal", row, col, White)))
+        case " value = \uD83D\uDFE0 " => newGameBoard = newGameBoard.set(row, col, Some(Piece("queen", row, col, Black)))
+        case " value = \uD83D\uDFE3 " => newGameBoard = newGameBoard.set(row, col, Some(Piece("queen", row, col, White)))
+        case " value = " => newGameBoard = newGameBoard.remove(row, col)
       }
     }
-    gameBoard
-  }*/
+    newGameBoard
+  }
 
   def save(gameBoard: GameBoardInterface): Unit = saveString(gameBoard)
 
@@ -67,7 +61,7 @@ class FileIO extends FileIOInterface {
         col <- 0 until gameBoard.size
       } yield {
         fieldToXml(gameBoard, row, col)
-        }
+      }
       }
     </gameBoard>
   }
@@ -78,10 +72,10 @@ class FileIO extends FileIOInterface {
     val xmlField = {
       <field pos={pos}>
         value = {
-          piece match {
-            case Some(value) => value.toString
-            case None => ""
-          }
+        piece match {
+          case Some(value) => value.toString
+          case None => ""
+        }
         }
       </field>
     }
