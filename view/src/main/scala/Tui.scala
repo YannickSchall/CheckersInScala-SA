@@ -1,10 +1,12 @@
 import java.awt.GraphicsEnvironment
+import UiController.*
+import scala.util.{Failure, Success, Try}
 
-class Tui(controller: ControllerInterface) extends Reactor {
+class Tui() {
+  val uicontroller = new UiController()
 
-  listenTo(controller)
 
-  def size = controller.gameBoardSize
+  def size = uicontroller.gameBoardSize
 
   def tuiEntry(inputSens: String): Unit = {
     def input = inputSens.toUpperCase
@@ -13,27 +15,27 @@ class Tui(controller: ControllerInterface) extends Reactor {
       case "NEW" =>
         Try {args(1).toInt} match {
           case Failure(e) => println("Error: Non integer " + e.getMessage.charAt(0).toLower + e.getMessage.tail + "\nTry 8 or 10\n")
-          case Success(e) => if (Integer.parseInt(args(1)) == 8 || Integer.parseInt(args(1)) == 10) controller.createGameBoard(args(1).toInt) else print("Try 8 or 10\n")
+          case Success(e) => if (Integer.parseInt(args(1)) == 8 || Integer.parseInt(args(1)) == 10) uicontroller.createGameBoard(args(1).toInt) else print("Try 8 or 10\n")
         }
-      case "SAVE" => controller.save(); print("Progress saved\n")
-      case "LOAD" => controller.load(); print("Progress loaded\n")
-      case "REMOVE" => controller.remove(Integer.parseInt(args(1).tail)-1, args(1).charAt(0).toInt - 65)
-      case "UNDO" => controller.undo()
-      case "REDO" => controller.redo()
+      case "SAVE" => uicontroller.save(); print("Progress saved\n")
+      case "LOAD" => uicontroller.load(); print("Progress loaded\n")
+      case "REMOVE" => uicontroller.remove(Integer.parseInt(args(1).tail)-1, args(1).charAt(0).toInt - 65)
+      case "UNDO" => uicontroller.undo()
+      case "REDO" => uicontroller.redo()
       case "FONTS" => val fonts: Array[String] = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames(); for (i <- fonts) {print(i + "\n") }
       case "QUIT" => System.exit(0)
-      case "MOVE" => if (controller.movePossible(args(1), args(2)).getBool) if (controller.movePossible(args(1), args(2)).getBool) {
+      case "MOVE" => if (uicontroller.movePossible(args(1), args(2)).getBool) if (uicontroller.movePossible(args(1), args(2)).getBool) {
         val row = Integer.parseInt(args(2).tail)-1
         val col = args(2).charAt(0).toInt - 65
         var rem = false
         var which = ""
-        if (!controller.movePossible(args(1), args(2)).getRem.isEmpty && controller.gameState.toString.charAt(0).toString.toLowerCase == controller.getPiece(Integer.parseInt(args(1).tail) - 1, args(1).charAt(0).toInt - 65).get.getColor.toString.charAt(0).toString) rem = true; which = controller.movePossible(args(1), args(2)).getRem
-        if (controller.movePossible(args(1), args(2)).getQ && controller.gameState.toString.charAt(0).toString.toLowerCase == controller.getPiece(Integer.parseInt(args(1).tail) - 1, args(0).charAt(1).toInt - 65).get.getColor.toString.charAt(0).toString) {
-          print(controller.getPiece(Integer.parseInt(args(1).tail) - 1, args(1).charAt(0).toInt - 65).get.getColor.toString.charAt(0).toString)
-          controller.move(args(1), args(2))
-          controller.set(row, col, Piece("queen", row, col, controller.getPiece(row, col).get.getColor))
-          if (rem) controller.remove(Integer.parseInt(which.tail)-1, which.charAt(0).toInt - 65)
-        } else controller.move(args(1), args(2))
+        if (!uicontroller.movePossible(args(1), args(2)).getRem.isEmpty && uicontroller.gameState.toString.charAt(0).toString.toLowerCase == uicontroller.getPiece(Integer.parseInt(args(1).tail) - 1, args(1).charAt(0).toInt - 65).get.getColor.toString.charAt(0).toString) rem = true; which = uicontroller.movePossible(args(1), args(2)).getRem
+        if (uicontroller.movePossible(args(1), args(2)).getQ && uicontroller.gameState.toString.charAt(0).toString.toLowerCase == uicontroller.getPiece(Integer.parseInt(args(1).tail) - 1, args(0).charAt(1).toInt - 65).get.getColor.toString.charAt(0).toString) {
+          print(uicontroller.getPiece(Integer.parseInt(args(1).tail) - 1, args(1).charAt(0).toInt - 65).get.getColor.toString.charAt(0).toString)
+          uicontroller.move(args(1), args(2))
+          uicontroller.set(row, col, Piece("queen", row, col, uicontroller.getPiece(row, col).get.getColor))
+          if (rem) uicontroller.remove(Integer.parseInt(which.tail)-1, which.charAt(0).toInt - 65)
+        } else uicontroller.move(args(1), args(2))
       } else print("Move not possible\n")
 
       case "HELP" =>
@@ -49,8 +51,8 @@ class Tui(controller: ControllerInterface) extends Reactor {
         print("\u001B[32mgetColor\u001B[0m: Returns the color of a piece at a specified location; mainly used for debugging purposes. \u001B[35mUsage\u001B[0m: \"\u001B[33mgetColor XX\u001B[0m\", where XX = a field name, such as \"A1\".\n")
         print("\u001B[32mhelp\u001B[0m: At this point you probably already know about it, but it prints information about possible TUI inputs.\n\n")
 
-      case "TRY" => print(controller.movePossible(args(1), args(2)).toString + "\n")
-      case "GETCOLOR" => print(controller.getPiece(args(1).charAt(1).toInt - 49, args(1).charAt(0).toInt - 65).get.getColor.toString + "\n")
+      case "TRY" => print(uicontroller.movePossible(args(1), args(2)).toString + "\n")
+      case "GETCOLOR" => print(uicontroller.getPiece(args(1).charAt(1).toInt - 49, args(1).charAt(0).toInt - 65).get.getColor.toString + "\n")
       case _ => print("Try something else, for possible inputs, type \"help\"\n")
     }
   }
@@ -60,7 +62,7 @@ class Tui(controller: ControllerInterface) extends Reactor {
   }
 
   def printTui: Unit = {
-    println(controller.gameBoardToString)
-    println(GameState.message(controller.gameState))
+    println(uicontroller.gameBoardToString)
+    println(GameState.message(uicontroller.gameState))
   }
 }
