@@ -1,17 +1,16 @@
-package gui
-
-import java.awt.{Color, Dimension}
+import java.awt.{Color, Dimension, GridLayout, Toolkit}
 import java.io.File
-import javax.swing.{BorderFactory, ImageIcon, JOptionPane}
 
-class Gui(uicontroller: UiController) extends Frame {
+import scala.swing.{Button, _}
+import scala.swing.event._
+import javax.swing.{BorderFactory, Icon, ImageIcon, JButton, JOptionPane, JPanel}
 
-  listenTo(uicontroller)
+class Gui(uiController: UiController) extends Frame {
   title = "Checkers"
   resizable = false
   minimumSize = new Dimension(800, 800)
   centerOnScreen()
-  var fields = Array.ofDim[FieldPanel](uicontroller.gameBoardSize, uicontroller.gameBoardSize)
+  var fields = Array.ofDim[FieldPanel](uiController.gameBoardSize, uiController.gameBoardSize)
   var flagTest = 0
   var fieldStart = ""
   var fieldDest = ""
@@ -21,14 +20,14 @@ class Gui(uicontroller: UiController) extends Frame {
   val dir: String = new File("").getAbsolutePath
   iconImage = new ImageIcon(dir+"\\src\\main\\resources\\icon.png").getImage
 
-  def gameBoardPanel = new GridPanel(uicontroller.gameBoardSize, uicontroller.gameBoardSize) {
+  def gameBoardPanel = new GridPanel(uiController.gameBoardSize, uiController.gameBoardSize) {
     border = BorderFactory.createEmptyBorder(1, 1, 1, 1)
     for {
-      row <- 0 until uicontroller.gameBoardSize
-      col <- 0 until uicontroller.gameBoardSize
+      row <- 0 until uiController.gameBoardSize
+      col <- 0 until uiController.gameBoardSize
     } {
-      var fieldPanel = new FieldPanel(row, col, uicontroller, if((row+col)%2==0) new Color(118,0,0) else new Color(0,0,0))
-      if (bgcol == "wb") fieldPanel = new FieldPanel(row, col, uicontroller, if((row+col)%2==0) new Color(250,250,250) else new Color(0,0,0))
+      var fieldPanel = new FieldPanel(row, col, uiController, if((row+col)%2==0) new Color(118,0,0) else new Color(0,0,0))
+      if (bgcol == "wb") fieldPanel = new FieldPanel(row, col, uiController, if((row+col)%2==0) new Color(250,250,250) else new Color(0,0,0))
       fields(row)(col) = fieldPanel
       contents += fieldPanel
     }
@@ -36,11 +35,11 @@ class Gui(uicontroller: UiController) extends Frame {
 
   }
 
-  def labelRowL = new GridPanel(uicontroller.gameBoardSize, 1) {
-    if (uicontroller.gameBoardSize == 10) border = BorderFactory.createEmptyBorder(0, 3, 0, 0)
-    if (uicontroller.gameBoardSize == 8) border = BorderFactory.createEmptyBorder(0, 2, 0, -1)
+  def labelRowL = new GridPanel(uiController.gameBoardSize, 1) {
+    if (uiController.gameBoardSize == 10) border = BorderFactory.createEmptyBorder(0, 3, 0, 0)
+    if (uiController.gameBoardSize == 8) border = BorderFactory.createEmptyBorder(0, 2, 0, -1)
     background = new Color(40, 40, 40)
-    for (i <- Range(1, uicontroller.gameBoardSize + 1)) {
+    for (i <- Range(1, uiController.gameBoardSize + 1)) {
       contents += new Label {
         text = i.toString
         foreground = new Color(230, 230, 230)
@@ -50,11 +49,11 @@ class Gui(uicontroller: UiController) extends Frame {
     }
   }
 
-  def labelRowR = new GridPanel(uicontroller.gameBoardSize, 1) {
-    if (uicontroller.gameBoardSize == 10) border = BorderFactory.createEmptyBorder(0, -1, 0, 2)
-    if (uicontroller.gameBoardSize == 8) border = BorderFactory.createEmptyBorder(0, -1, 0, 2)
+  def labelRowR = new GridPanel(uiController.gameBoardSize, 1) {
+    if (uiController.gameBoardSize == 10) border = BorderFactory.createEmptyBorder(0, -1, 0, 2)
+    if (uiController.gameBoardSize == 8) border = BorderFactory.createEmptyBorder(0, -1, 0, 2)
     background = new Color(40, 40, 40)
-    for (i <- Range(1, uicontroller.gameBoardSize + 1)) {
+    for (i <- Range(1, uiController.gameBoardSize + 1)) {
       contents += new Label {
         text = i.toString
         foreground = new Color(230, 230, 230)
@@ -64,11 +63,11 @@ class Gui(uicontroller: UiController) extends Frame {
     }
   }
 
-  def labelColT = new GridPanel(1, uicontroller.gameBoardSize - 1) {
-    if (uicontroller.gameBoardSize == 10) border = BorderFactory.createEmptyBorder(2, 20, 0, 20)
-    if (uicontroller.gameBoardSize == 8) border = BorderFactory.createEmptyBorder(2, 20, -2, 20)
+  def labelColT = new GridPanel(1, uiController.gameBoardSize - 1) {
+    if (uiController.gameBoardSize == 10) border = BorderFactory.createEmptyBorder(2, 20, 0, 20)
+    if (uiController.gameBoardSize == 8) border = BorderFactory.createEmptyBorder(2, 20, -2, 20)
     background = new Color(40, 40, 40)
-    for (i <- Range(65, uicontroller.gameBoardSize + 65)) {
+    for (i <- Range(65, uiController.gameBoardSize + 65)) {
       contents += new Label {
         text = i.toChar.toString
         foreground = new Color(230, 230, 230)
@@ -78,11 +77,11 @@ class Gui(uicontroller: UiController) extends Frame {
     }
   }
 
-  def labelColB = new GridPanel(1, uicontroller.gameBoardSize - 1) {
-    if (uicontroller.gameBoardSize == 10) border = BorderFactory.createEmptyBorder(0, 20, 0, 20)
-    if (uicontroller.gameBoardSize == 8) border = BorderFactory.createEmptyBorder(-1, 20, 0, 20)
+  def labelColB = new GridPanel(1, uiController.gameBoardSize - 1) {
+    if (uiController.gameBoardSize == 10) border = BorderFactory.createEmptyBorder(0, 20, 0, 20)
+    if (uiController.gameBoardSize == 8) border = BorderFactory.createEmptyBorder(-1, 20, 0, 20)
     background = new Color(40, 40, 40)
-    for (i <- Range(65, uicontroller.gameBoardSize + 65)) {
+    for (i <- Range(65, uiController.gameBoardSize + 65)) {
       contents += new Label {
         text = i.toChar.toString
         foreground = new Color(230, 230, 230)
@@ -103,14 +102,14 @@ class Gui(uicontroller: UiController) extends Frame {
   menuBar = new MenuBar {
     contents += new Menu("File") {
       mnemonic = Key.F
-      contents += new MenuItem(Action("New") { uicontroller.createGameBoard(uicontroller.gameBoardSize) })
+      contents += new MenuItem(Action("New") { uiController.createGameBoard(uiController.gameBoardSize) })
       contents += new MenuItem(Action("Quit") { System.exit(0) })
     }
     contents += new Menu("Edit") {
 
         contents += new Menu("Debugging") {
-          contents += new MenuItem(Action("Undo") { uicontroller.undo() })
-          contents += new MenuItem(Action("Redo") { uicontroller.redo() })
+          contents += new MenuItem(Action("Undo") { uiController.undo() })
+          contents += new MenuItem(Action("Redo") { uiController.redo() })
         }
     }
     contents += new Menu("Options") {
@@ -134,7 +133,7 @@ class Gui(uicontroller: UiController) extends Frame {
   }
 
   def resize(gameBoardSize: Int) = {
-    fields = Array.ofDim[FieldPanel](uicontroller.gameBoardSize, uicontroller.gameBoardSize)
+    fields = Array.ofDim[FieldPanel](uiController.gameBoardSize, uiController.gameBoardSize)
     contents = new BorderPanel {
       add(gameBoardPanel, BorderPanel.Position.Center)
       add(labelColT, BorderPanel.Position.North)
@@ -146,8 +145,8 @@ class Gui(uicontroller: UiController) extends Frame {
 
   def redraw = {
     for {
-      row <- 0 until uicontroller.gameBoardSize
-      column <- 0 until uicontroller.gameBoardSize
+      row <- 0 until uiController.gameBoardSize
+      column <- 0 until uiController.gameBoardSize
     } fields(row)(column).redraw
     repaint()
     visible = true
@@ -163,7 +162,7 @@ class Gui(uicontroller: UiController) extends Frame {
     val dialogResult = JOptionPane.showConfirmDialog(null, "When you change the color, your game will be reset!\nAre you ok with that?", "Warning", dialogButton)
     if (dialogResult == 0) {
       bgcol = color
-      uicontroller.createGameBoard(uicontroller.gameBoardSize)
+      uiController.createGameBoard(uiController.gameBoardSize)
     }
   }
 
@@ -171,7 +170,7 @@ class Gui(uicontroller: UiController) extends Frame {
     val dialogButton = JOptionPane.YES_NO_OPTION
     val dialogResult = JOptionPane.showConfirmDialog(null, "When you change the size, your game will be reset!\nAre you ok with that?", "Warning", dialogButton)
     if (dialogResult == 0) {
-      uicontroller.resize(size)
+      uiController.resize(size)
     }
   }
 

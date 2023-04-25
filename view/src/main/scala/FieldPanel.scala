@@ -1,14 +1,18 @@
-package gui
-
 import java.awt.Color
-import java.io.File
-import javax.swing.{BorderFactory, ImageIcon}
 
-class FieldPanel(row: Int, col: Int, controller: ControllerInterface, backgroundColor: Color) extends FlowPanel {
+import scala.swing._
+import scala.swing.event._
+import controller.controllerComponent.ControllerInterface
+import javax.swing.{BorderFactory, Icon, ImageIcon}
+import model.gameBoardComponent.gameBoardBaseImpl.Piece
+import java.io.File
+
+class FieldPanel(row: Int, col: Int, controller: UiController, backgroundColor: Color) extends FlowPanel {
   vGap = 0
   hGap = 0
   var color: String = "white"
   def myField = controller.field(row, col)
+
 
   val dir: String = new File("").getAbsolutePath
   val pieceBlackS = new ImageIcon(dir+"\\src\\main\\resources\\pieceBlackSmall.png")

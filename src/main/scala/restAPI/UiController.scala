@@ -1,4 +1,4 @@
-package aview.restAPI
+package restAPI
 
 import controller.controllerComponent.ControllerInterface
 

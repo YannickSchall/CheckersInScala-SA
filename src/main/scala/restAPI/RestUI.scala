@@ -1,4 +1,4 @@
-package aview.restAPI
+package restAPI
 
 import akka.http.scaladsl.server.Directives.{complete, concat, get, path}
 import akka.actor.typed.ActorSystem
@@ -7,7 +7,6 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpResponse, StatusCode}
 import akka.http.scaladsl.server.{ExceptionHandler, Route, StandardRoute}
-import aview.restAPI.UiController
 import controller.controllerComponent.ControllerInterface
 
 import scala.concurrent.{ExecutionContextExecutor, Future}

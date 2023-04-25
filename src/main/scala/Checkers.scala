@@ -1,9 +1,11 @@
-package scala
+package gui
+
 import scala.util.{Failure, Success, Try}
 import com.google.inject.Guice
-import aview.restAPI.RestUI
 import fileIOComponent.restAPI.RestIO
 import controller.controllerComponent.ControllerInterface
+
+import restAPI.RestUI
 
 import scala.compiletime.{erasedValue, summonFrom}
 import scala.io.StdIn.readLine

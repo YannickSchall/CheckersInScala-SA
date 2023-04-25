@@ -1,9 +1,6 @@
 import sbt.Keys.libraryDependencies
 import dependencies._
 
-lazy val ioProjectRef = ProjectRef(file("."), "Checkers-IO")
-lazy val rootProjectRef = ProjectRef(file("."), "Checkers")
-
 /** ScalaVersion */
 val scala3Version = "3.2.0"
 
@@ -28,7 +25,7 @@ lazy val allDependencies = Seq(
 
 /** Root Module */
 lazy val root: Project = Project(id = "Checkers", base = file("."))
-  .dependsOn(model, helper, io)
+  .dependsOn(model, helper, io, view)
   .settings(
     name := "Checkers",
     version := "0.5.0-SNAPSHOT",
@@ -60,6 +57,15 @@ lazy val model: Project = Project(id = "Checkers-Model", base = file("model"))
 lazy val helper: Project = Project(id = "Checkers-Helper", base = file("helper"))
   .settings(
     name := "Checkers-Helper",
+    version := "0.5.0-SNAPSHOT",
+    commonSettings,
+    libraryDependencies ++= allDependencies,
+  )
+
+/** View Module */
+lazy val view: Project = Project(id = "Checkers-View", base = file("view"))
+  .settings(
+    name := "Checkers-View",
     version := "0.5.0-SNAPSHOT",
     commonSettings,
     libraryDependencies ++= allDependencies,
