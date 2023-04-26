@@ -78,17 +78,23 @@ class FileIO extends FileIOInterface{
   implicit val fieldWrites: Writes[FieldInterface] = new Writes[FieldInterface] {
     def writes(field: FieldInterface) = Json.obj(
       "pos" -> field.getPos,
-      "piece" -> pieceWrites.writes(field.getPiece.get)
+      "piece" -> pieceWrites.writes(field.getPiece)
     )
   }
 
-  implicit val pieceWrites: Writes[Piece] = new Writes[Piece] {
-    def writes(piece: Piece) = Json.obj(
-      "state" -> piece.state,
-      "prow" -> piece.row,
-      "pcol" -> piece.col,
-      "color" -> colorWrites.writes(piece.getColor)
-    )
+  implicit val pieceWrites: Writes[Option[Piece]] = new Writes[Option[Piece]] {
+    def writes(piece: Option[Piece]) = {
+      if (piece.isDefined) {
+        Json.obj(
+          "state" -> piece.get.state,
+          "prow" -> piece.get.row,
+          "pcol" -> piece.get.col,
+          "color" -> colorWrites.writes(piece.get.getColor)
+        )
+      } else {
+        JsNull
+      }
+    }
   }
 
 
@@ -111,4 +117,8 @@ class FileIO extends FileIOInterface{
       )
     )
   }
+
+
+
+
 }

@@ -10,7 +10,6 @@ object FileIOController {
   def load(): String = {
     val file = scala.io.Source.fromFile("game.json")
     try file.mkString finally file.close()
-  
   }
 
    def save(gameAsJson: String) = {

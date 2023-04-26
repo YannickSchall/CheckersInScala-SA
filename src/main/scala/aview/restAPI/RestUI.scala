@@ -74,7 +74,7 @@ object RestUI:
           },
           post {
             UiController.redo(controller)
-            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "redo success"))
+            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "redo successful"))
           })
       },
 
@@ -83,10 +83,10 @@ object RestUI:
     bindingFuture.onComplete {
       case Success(binding) => {
         val address = binding.localAddress
-        println(s"View REST service online at http://localhost:${address.getPort}\nPress RETURN to stop...")
+        println(s"UI REST API running on http://localhost:${address.getPort}\n")
       }
       case Failure(exception) => {
-        println("View REST service couldn't be started! Error: " + exception + "\n")
+        println("UI REST API failed to start due to exception: " + exception + "\n")
       }
     }
 

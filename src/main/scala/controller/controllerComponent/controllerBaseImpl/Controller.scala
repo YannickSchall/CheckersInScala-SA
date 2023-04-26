@@ -7,9 +7,21 @@ import controller.controllerComponent.GameState.*
 import gameboard.gameBoardBaseImpl.Color.*
 import controller.controllerComponent.{ControllerInterface, FieldChanged, GBSizeChanged, GameState}
 import gameboard.{FieldInterface, GameBoardInterface, PieceInterface}
+
+import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.util.{Failure, Success}
 //import fileIoComponent.FileIOInterface
 import utils.*
 import gameboard.gameBoardBaseImpl.*
+import akka.http.scaladsl.server.Directives.{complete, concat, get, path}
+import akka.actor.typed.ActorSystem
+import akka.actor.typed.scaladsl.Behaviors
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.server.Directives.*
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCode, HttpMethods, HttpResponse, HttpRequest}
+import akka.http.scaladsl.server.{ExceptionHandler, Route}
+
+import akka.http.scaladsl.unmarshalling.Unmarshal
 
 import scala.Checkers.{controller, gui}
 import scala.swing.Publisher
@@ -203,15 +215,55 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     } else new Mover(false, "", false)
   }
 
-  def save(): Unit = {
+  /*def save(): Unit = {
     //fileIo.save(gameBoard)
     publish(new FieldChanged)
-  }
+  }*/
   
-  def load(): Unit = {
+  /*def load(): Unit = {
     val oldSize = gameBoard.size
     //gameBoard = fileIo.load
     if (gameBoard.size != oldSize) publish(new GBSizeChanged(gameBoard.size))
+    publish(new FieldChanged)
+    publish(new PrintTui)
+  }*/
+
+
+  override def save(): Unit = {
+    //FileIO.save(this.grid)
+    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+
+    implicit val executionContext: ExecutionContextExecutor = system.executionContext
+
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
+      method = HttpMethods.POST,
+      uri = "http://localhost:8081/fileio/save",
+      entity = gameBoard.jsonToString
+    ))
+    publish(new FieldChanged)
+  }
+
+  override def load(): Unit = {
+    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+    implicit val executionContext: ExecutionContextExecutor = system.executionContext
+
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = "http://localhost:8081/fileio/load"))
+
+    responseFuture
+      .onComplete {
+        case Failure(_) => sys.error("Failed getting Json")
+        case Success(value) => {
+          Unmarshal(value.entity).to[String].onComplete {
+            case Failure(_) => sys.error("Failed unmarshalling")
+            case Success(value) => {
+              val loadedGame = gameBoard.jsonToGameBoard(value)
+              this.gameBoard = loadedGame
+              publish(new FieldChanged)
+              publish(new PrintTui)
+            }
+          }
+        }
+      }
     publish(new FieldChanged)
     publish(new PrintTui)
   }

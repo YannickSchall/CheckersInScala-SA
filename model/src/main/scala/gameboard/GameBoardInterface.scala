@@ -33,24 +33,24 @@ trait GameBoardInterface {
   def movePossible(start: String, dest: String): Mover
 
   def jsonToString: String
-  
+
   def toJson: JsValue
-  
-  def jsonToGameBoard(gameBoardInterface: GameBoardInterface): GameBoardInterface
+
+  def jsonToGameBoard(source: String): GameBoard
 
   implicit def optionFormat[T: Format]: Format[Option[T]]
-
+  
   implicit val pieceReads: Reads[Piece]
 
   implicit val fieldReads: Reads[Field]
 
-  implicit val colorReads: Reads[Color]
-
+  //implicit val colorReads: Reads[Color]
+  
   implicit val colorWrites: Writes[Color]
 
   implicit val fieldWrites: Writes[Field]
 
-  implicit val pieceWrites: Writes[Piece]
+  implicit val pieceWrites: Writes[Option[Piece]]
 
 }
 
