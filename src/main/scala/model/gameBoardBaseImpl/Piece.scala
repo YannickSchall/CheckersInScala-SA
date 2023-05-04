@@ -4,7 +4,7 @@ import com.google.inject.Inject
 import gameboard.PieceInterface
 import utils.Mover
 
-import util.*
+import utils.Mover
 import scala.collection.mutable.ListBuffer
 
 abstract class Piece @Inject() (state: String, row: Int, col: Int, color: Color) extends PieceInterface {

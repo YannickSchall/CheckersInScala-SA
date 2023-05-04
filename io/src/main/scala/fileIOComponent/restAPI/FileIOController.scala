@@ -1,22 +1,25 @@
 package fileIOComponent.restAPI
-import com.google.inject.{Guice, Inject}
-import java.io._
+import com.google.inject.{Guice, Inject, Injector}
+import fileIOComponent.{FileIOInterface, FileIOModule}
+
+
+import java.io.*
 import play.api.libs.json.{JsValue, Json}
+
 import scala.io.Source
 
 
 object FileIOController {
 
+  val injector: Injector = Guice.createInjector(FileIOModule())
+  val fileIO = injector.getInstance(classOf[FileIOInterface])
+
   def load(): String = {
-    val file = scala.io.Source.fromFile("game.json")
-    try file.mkString finally file.close()
-  
+    fileIO.load()
   }
 
    def save(gameAsJson: String) = {
-     val pw = new PrintWriter(new File("." + File.separator + "game.json"))
-     pw.write(gameAsJson)
-     pw.close
+     fileIO.save(gameAsJson)
    }
 
 }

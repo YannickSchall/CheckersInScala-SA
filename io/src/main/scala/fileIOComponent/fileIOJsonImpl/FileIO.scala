@@ -6,7 +6,7 @@ import gameboard.{FieldInterface, GameBoardInterface, PieceInterface}
 import gameboard.gameBoardBaseImpl.*
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
-
+import java.io.{File, PrintWriter}
 import fileIOComponent.FileIOInterface
 
 import scala.io.Source
@@ -14,6 +14,19 @@ import play.api.libs.json.*
 
 class FileIO extends FileIOInterface{
 
+  def load(): String = {
+    val file = scala.io.Source.fromFile("game.json")
+    try file.mkString finally file.close()
+
+  }
+
+  def save(gameAsJson: String) = {
+    val pw = new PrintWriter(new File("." + File.separator + "game.json"))
+    pw.write(gameAsJson)
+    pw.close
+  }
+  
+  /*
   override def load(gameBoard: GameBoardInterface): GameBoardInterface = {
     var newGameBoard: GameBoardInterface = gameBoard
     val source: String = Source.fromFile("gameBoard.json").getLines.mkString
@@ -110,5 +123,6 @@ class FileIO extends FileIOInterface{
         )
       )
     )
-  }
+  }*/
+  
 }

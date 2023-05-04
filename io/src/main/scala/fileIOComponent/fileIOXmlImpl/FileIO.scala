@@ -14,6 +14,19 @@ import scala.xml.{Elem, PrettyPrinter}
 
 class FileIO extends FileIOInterface {
 
+  def load(): String = {
+    val file = scala.io.Source.fromFile("game.xml")
+    try file.mkString finally file.close()
+
+  }
+
+  def save(gameAsJson: String) = {
+    val pw = new PrintWriter(new File("." + File.separator + "game.xml"))
+    pw.write(gameAsJson)
+    pw.close
+  }
+
+  /*
   override def load(gameBoard: GameBoardInterface): GameBoardInterface = {
     var newGameBoard: GameBoardInterface = gameBoard
     val file = scala.xml.XML.loadFile("gameBoard.xml")
@@ -82,5 +95,5 @@ class FileIO extends FileIOInterface {
     xmlField
   }
 
-
+*/
 }
