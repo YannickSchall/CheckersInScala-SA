@@ -2,14 +2,11 @@ package fileIOComponent.fileIOXmlImpl
 import fileIOComponent.FileIOInterface
 import com.google.inject.Guice
 import com.google.inject.name.Names
-import gameboard.gameBoardBaseImpl.*
-import gameboard.GameBoardInterface
-import gameboard.gameBoardBaseImpl.Piece
-import gameboard.gameBoardBaseImpl.Color
-import gameboard.gameBoardBaseImpl.Color.{Black, White}
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
-import util.*
+import java.io.{File, PrintWriter}
+import scala.io.Source
 
+import util.*
 import scala.xml.{Elem, PrettyPrinter}
 
 class FileIO extends FileIOInterface {

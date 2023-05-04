@@ -1,7 +1,7 @@
 package utils
-import org.scalatest._
-import org.scalatest.matchers.should.Matchers._
-import org.scalatest.wordspec._
+import org.scalatest.*
+import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.wordspec.*
 
 class incrCommand extends Command {
   var state:Int=0

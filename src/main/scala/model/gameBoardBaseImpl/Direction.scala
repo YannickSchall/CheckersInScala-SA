@@ -1,4 +1,4 @@
-package gameboard.gameBoardBaseImpl
+package model.gameBoardBaseImpl
 
 enum Direction(val dir: (Int,Int)) {
   case Left extends Direction(0, -1)

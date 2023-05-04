@@ -1,8 +1,7 @@
-package gameboard.gameBoardBaseImpl
+package model.gameBoardBaseImpl
 
 import com.google.inject.Inject
-import gameboard.PieceInterface
-import utils.Mover
+import model.PieceInterface
 
 import utils.Mover
 import scala.collection.mutable.ListBuffer

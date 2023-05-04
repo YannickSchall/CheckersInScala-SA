@@ -3,9 +3,6 @@ package model
 import org.scalatest.*
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.*
-import gameboard.gameBoardBaseImpl.*
-import gameboard.gameBoardBaseImpl.Color.*
-import gameboard.gameBoardBaseImpl.Direction.*
 import scala.collection.mutable.ListBuffer
 
 class NormalSpec extends AnyWordSpec {

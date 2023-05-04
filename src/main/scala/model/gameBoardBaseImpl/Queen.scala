@@ -1,10 +1,12 @@
-package gameboard.gameBoardBaseImpl
+package model.gameBoardBaseImpl
+
 import scala.annotation.tailrec
 import scala.collection.mutable.ListBuffer
-import gameboard.gameBoardBaseImpl.*
-import gameboard.gameBoardBaseImpl.Color.{Black, White}
-import gameboard.gameBoardBaseImpl.Direction.{DownLeft, DownRight, Left, Right, UpLeft, UpRight}
+import model.gameBoardBaseImpl.*
+import model.gameBoardBaseImpl.Color.{Black, White}
 import utils.Mover
+import model.gameBoardBaseImpl.Direction.{DownLeft, DownRight, Left, Right, UpLeft, UpRight}
+
 case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) extends Piece(state, row, col, getColor) {
 
   var sList: ListBuffer[String] = ListBuffer()

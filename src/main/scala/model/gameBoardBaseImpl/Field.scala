@@ -1,6 +1,6 @@
-package gameboard.gameBoardBaseImpl
+package model.gameBoardBaseImpl
 
-import gameboard.FieldInterface
+import model.FieldInterface
 
 case class Field (pos: String, piece: Option[Piece]) extends FieldInterface {
 

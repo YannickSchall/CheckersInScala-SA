@@ -1,6 +1,4 @@
 package model
-import gameboard.gameBoardBaseImpl.{Piece, Field, Color}
-import gameboard.gameBoardBaseImpl.Color.*
 
 import org.scalatest.*
 import org.scalatest.matchers.should.Matchers.*

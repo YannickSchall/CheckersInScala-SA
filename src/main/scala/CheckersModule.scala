@@ -3,9 +3,8 @@ import com.google.inject.AbstractModule
 import com.google.inject.name.Names
 import net.codingwell.scalaguice.ScalaModule
 import controller.controllerComponent.*
-import gameboard.GameBoardInterface
-import gameboard.gameBoardAdvImpl.GameBoard
-
+import model.GameBoardInterface
+import model.gameBoardAdvImpl.GameBoard
 
 
 class CheckersModule extends AbstractModule with ScalaModule {

@@ -25,7 +25,6 @@ lazy val allDependencies = Seq(
 
 /** Root Module */
 lazy val root: Project = Project(id = "Checkers", base = file("."))
-  .dependsOn(model, helper, io, view)
   .settings(
     name := "Checkers",
     version := "0.5.0-SNAPSHOT",
@@ -35,7 +34,6 @@ lazy val root: Project = Project(id = "Checkers", base = file("."))
 
 /** IO Module */
 lazy val io: Project = Project(id = "Checkers-IO", base = file("io"))
-  .dependsOn(model)
   .settings(
     name := "Checkers-IO",
     version := "0.5.0-SNAPSHOT",
@@ -43,33 +41,6 @@ lazy val io: Project = Project(id = "Checkers-IO", base = file("io"))
     libraryDependencies ++= allDependencies,
   )
 
-/** Model Module */
-lazy val model: Project = Project(id = "Checkers-Model", base = file("model"))
-  .dependsOn(helper)
-  .settings(
-    name := "Checkers-Model",
-    version := "0.5.0-SNAPSHOT",
-    commonSettings,
-    libraryDependencies ++= allDependencies,
-  )
-
-/** Helper Module */
-lazy val helper: Project = Project(id = "Checkers-Helper", base = file("helper"))
-  .settings(
-    name := "Checkers-Helper",
-    version := "0.5.0-SNAPSHOT",
-    commonSettings,
-    libraryDependencies ++= allDependencies,
-  )
-
-/** View Module */
-lazy val view: Project = Project(id = "Checkers-View", base = file("view"))
-  .settings(
-    name := "Checkers-View",
-    version := "0.5.0-SNAPSHOT",
-    commonSettings,
-    libraryDependencies ++= allDependencies,
-  )
 
 /** Common Settings */
 lazy val commonSettings: Seq[Def.Setting[_]] = Seq(

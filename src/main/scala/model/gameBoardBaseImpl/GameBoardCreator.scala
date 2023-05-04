@@ -1,6 +1,7 @@
-package gameboard.gameBoardBaseImpl
-import gameboard.gameBoardBaseImpl.Color.{Black, White}
-import gameboard.GameBoardInterface
+package model.gameBoardBaseImpl
+
+import Color.{Black, White}
+import model.GameBoardInterface
 
 
 class GameBoardCreator(size: Int) {

@@ -2,7 +2,7 @@ package model
 import org.scalatest.*
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.*
-import gameboard.gameBoardBaseImpl.GameBoard
+
 class GameBoardSpec extends AnyWordSpec {
   "A GameBoard" should {
     val board = new GameBoard(3)

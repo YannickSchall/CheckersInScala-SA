@@ -1,12 +1,13 @@
-package gameboard.gameBoardBaseImpl
+package model.gameBoardBaseImpl
+
 import util.*
 import com.google.inject.{Guice, Inject}
 import com.google.inject.name.Names
-import gameboard.gameBoardBaseImpl.Color.{White, Black}
-import gameboard.{FieldInterface, GameBoardInterface}
+import Color.{White, Black}
+import model.{FieldInterface, GameBoardInterface}
+import utils.Mover
 import play.api.libs.json.{Format, JsError, JsNull, JsNumber, JsObject, JsPath, JsResult, JsString, JsSuccess, JsValue, Json, Reads, Writes}
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
-import utils.Mover
 
 import scala.io.Source
 

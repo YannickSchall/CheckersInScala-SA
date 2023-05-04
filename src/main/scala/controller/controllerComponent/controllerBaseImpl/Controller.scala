@@ -4,21 +4,22 @@ import com.google.inject.name.Names
 import com.google.inject.{Guice, Inject}
 import net.codingwell.scalaguice.InjectorExtensions.*
 import controller.controllerComponent.GameState.*
-import gameboard.gameBoardBaseImpl.Color.*
 import controller.controllerComponent.{ControllerInterface, FieldChanged, GBSizeChanged, GameState}
-import gameboard.{FieldInterface, GameBoardInterface, PieceInterface}
-import utils.*
-import gameboard.gameBoardBaseImpl.*
-import scala.concurrent.Future
 
+import scala.concurrent.Future
 import akka.http.scaladsl.server.Directives.{complete, concat, get, path}
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives.*
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCode, HttpMethods, HttpResponse, HttpRequest}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, StatusCode}
 import akka.http.scaladsl.server.{ExceptionHandler, Route}
 import akka.http.scaladsl.unmarshalling.Unmarshal
+import model.{FieldInterface, GameBoardInterface, PieceInterface}
+import model.gameBoardBaseImpl.{GameBoardCreator, Piece}
+import model.gameBoardBaseImpl.Color.{White, Black}
+import utils.{Mover, UndoManager}
+
 import scala.Checkers.{controller, gui}
 import scala.util.{Failure, Success, Try}
 import scala.swing.Publisher

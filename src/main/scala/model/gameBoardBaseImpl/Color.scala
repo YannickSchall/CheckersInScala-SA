@@ -1,4 +1,4 @@
-package gameboard.gameBoardBaseImpl
+package model.gameBoardBaseImpl
 
 enum Color(val color: String):
   case White   extends Color("white")

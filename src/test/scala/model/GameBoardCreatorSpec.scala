@@ -2,7 +2,6 @@ package model
 import org.scalatest.*
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.*
-import gameboard.gameBoardBaseImpl.GameBoardCreator
 
 class GameBoardCreatorSpec extends AnyWordSpec {
   "A Creator" should {

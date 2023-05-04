@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Checkers.iml" filepath="$PROJECT_DIR$/.idea/modules/Checkers.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Checkers-Common.iml" filepath="$PROJECT_DIR$/.idea/modules/Checkers-Common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Checkers-Helper.iml" filepath="$PROJECT_DIR$/.idea/modules/Checkers-Helper.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Checkers-IO.iml" filepath="$PROJECT_DIR$/.idea/modules/Checkers-IO.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Checkers-Model.iml" filepath="$PROJECT_DIR$/.idea/modules/Checkers-Model.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Checkers-View.iml" filepath="$PROJECT_DIR$/.idea/modules/Checkers-View.iml" />

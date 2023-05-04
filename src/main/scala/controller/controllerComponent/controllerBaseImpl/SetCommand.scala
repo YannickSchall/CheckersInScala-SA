@@ -1,8 +1,8 @@
 package controller.controllerComponent.controllerBaseImpl
 import controller.controllerComponent.GameState.GameState
-import gameboard.GameBoardInterface
-import utils.*
-import gameboard.gameBoardBaseImpl.*
+import model.GameBoardInterface
+import model.gameBoardBaseImpl.Piece
+import utils.Command
 class SetCommand(start: Int, dest: Int, piece: Option[Piece], controller: Controller) extends Command {
 
   var memento: (GameBoardInterface, GameState) = (

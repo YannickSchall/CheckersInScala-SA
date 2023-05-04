@@ -2,8 +2,7 @@ package model
 import org.scalatest.*
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.*
-import gameboard.gameBoardBaseImpl.Matrix
-import gameboard.gameBoardBaseImpl.Field
+
 class MatrixSpec extends AnyWordSpec {
   "A Matrix" should {
     val mat = new Matrix[Field](1,Field("", None))

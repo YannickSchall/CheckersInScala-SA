@@ -1,4 +1,4 @@
-package gameboard.gameBoardBaseImpl
+package model.gameBoardBaseImpl
 
 import scala.annotation.targetName
 

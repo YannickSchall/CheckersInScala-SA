@@ -1,9 +1,8 @@
-package gameboard
-import gameboard.gameBoardBaseImpl.Piece
-import gameboard.gameBoardBaseImpl.*
-import gameboard.{FieldInterface, PieceInterface}
-import play.api.libs.json.{Format, JsObject, JsValue, Reads, Writes}
+package model
+
+import model.gameBoardBaseImpl.{Field, Color, Piece}
 import utils.Mover
+import play.api.libs.json.*
 
 
 trait GameBoardInterface {
