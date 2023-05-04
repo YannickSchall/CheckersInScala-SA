@@ -19,6 +19,7 @@ ${RESET}
 
 printf "$welcome_message"
 
+printf "hi"
 #Select View
 printf "What View do you want to select? (${BOLD}gui${RESET}/${BOLD}tui${RESET}): "
 read -t 5 selectview
