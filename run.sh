@@ -1,17 +1,20 @@
+#!/bin/bash
 
 #Colours
 RED='\033[31;1m'
 BOLD='\033[1m'
 RESET='\033[0m'
 
+#Welcome Message
+welcome_message="Welcomiiiiiii to ${RED}CHECKERS${RESET} by ${BOLD}@yannickschall${RESET} and ${BOLD}@ginakokoska${RESET}.
+Be sure to enable '${BOLD}xhost +${RESET}' for GUI."
 
+printf "$welcome_message"
 
 #Select View
-printf  "Welcome to ${RED}checkers${RESET} by ${BOLD}@yannickschall${RESET} and ${BOLD}@ginakokoska${RESET}.
-         Be sure to enable '${BOLD}xhost +${RESET}' for GUI.
-         ##############NOWWWW RUNNNNNINNNNGGG CHECKERSSSSSSSSS#############
-         What View do you want to select? (${BOLD}gui${RESET}/${BOLD}tui${RESET}): "
-read selectview
+printf "What View do you want to select? (${BOLD}gui${RESET}/${BOLD}tui${RESET}): "
+read -t 15 selectview
+
 
 
 
@@ -29,7 +32,7 @@ fi
 
 #Select IF REST TUI API should be online
 printf "Do you want to enable REST VIEW API? (${BOLD}y${RESET}/${BOLD}n${RESET}): "
-read selectrestview
+read -t 15 selectrestview
 
 SELRES=${selectrestview,,}
 
@@ -42,4 +45,4 @@ else
 fi
 
 #RUN sbt
-#sbt "run"
+sbt "run"

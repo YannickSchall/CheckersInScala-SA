@@ -30,7 +30,7 @@ lazy val root: Project = Project(id = "Checkers", base = file("."))
     version := "0.5.0-SNAPSHOT",
     commonSettings,
     libraryDependencies ++= allDependencies,
-  )
+  ).enablePlugins( JavaAppPackaging, DockerPlugin)
 
 /** IO Module */
 lazy val io: Project = Project(id = "Checkers-IO", base = file("io"))
@@ -39,7 +39,7 @@ lazy val io: Project = Project(id = "Checkers-IO", base = file("io"))
     version := "0.5.0-SNAPSHOT",
     commonSettings,
     libraryDependencies ++= allDependencies,
-  )
+  ).enablePlugins(JavaAppPackaging, DockerPlugin)
 
 
 /** Common Settings */

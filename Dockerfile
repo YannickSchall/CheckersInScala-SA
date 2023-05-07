@@ -1,15 +1,15 @@
-FROM hseeberger/scala-sbt:17.0.2_1.6.2_3.1.1
+#FROM sbtscala/scala-sbt:eclipse-temurin-17.0.4_1.7.1_3.2.0
+FROM checkers:0.5.0-SNAPSHOT
+#RUN apt-get update && apt-get install -y libxrender1 libxtst6 libxi6 libgl1-mesa-glx libgtk-3-0
 
-RUN apt-get update && apt-get install -y libxrender1 libxtst6 libxi6 libgl1-mesa-glx libgtk-3-0
+#EXPOSE 8080
 
-EXPOSE 8080
+#WORKDIR /CheckersInScala-SA
 
-WORKDIR /CheckersInScala-SA
+#ADD . /CheckersInScala-SA
 
-ADD . /CheckersInScala-SA
+#RUN chmod +x /CheckersInScala-SA/run.sh
 
-RUN chmod +x /CheckersInScala-SA/run.sh
+#CMD /bin/bash -c '/CheckersInScala-SA/run.sh; /bin/bash'
 
-CMD /bin/bash -c '/CheckersInScala-SA/run.sh; /bin/bash'
-
-
+#CMD sbt run
