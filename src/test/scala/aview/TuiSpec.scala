@@ -1,5 +1,4 @@
-package view
-
+package aview
 
 class TuiSpec extends  AnyWordSpec {
   "A tui" should {

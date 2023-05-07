@@ -1,26 +1,19 @@
-#!/bin/bash
 
 #Colours
 RED='\033[31;1m'
 BOLD='\033[1m'
 RESET='\033[0m'
 
-#Welcome Message
-welcome_message="Welcome to ${RED}checkers${RESET} by ${BOLD}@yannickschall${RESET} and ${BOLD}@ginakokoska${RESET}.
-Be sure to enable '${BOLD}xhost +${RESET}' for GUI.
 
-
-${RED}╦ ╦╔═╗╔═╗╔╦╗╔═╗╦═╗╔╦╗╔═╗╔═╗╔═╗╔╦╗╔═╗
-${RED}║║║║ ║╚═╗ ║ ║╣ ╠╦╝ ║ ║╣ ╚═╗║╣ ║║║╚═╗
-${RED}╚╩╝╚═╝╚═╝ ╩ ╚═╝╩╚═ ╩ ╚═╝╚═╝╚═╝╩ ╩╚═╝
-${RESET}
-"
-
-printf "$welcome_message"
 
 #Select View
-printf "What View do you want to select? (${BOLD}gui${RESET}/${BOLD}tui${RESET}): "
-read -r -t 5 selectview
+printf  "Welcome to ${RED}checkers${RESET} by ${BOLD}@yannickschall${RESET} and ${BOLD}@ginakokoska${RESET}.
+         Be sure to enable '${BOLD}xhost +${RESET}' for GUI.
+         ##############NOWWWW RUNNNNNINNNNGGG CHECKERSSSSSSSSS#############
+         What View do you want to select? (${BOLD}gui${RESET}/${BOLD}tui${RESET}): "
+read selectview
+
+
 
 SELVIEW=${selectview,,}
 
@@ -36,7 +29,7 @@ fi
 
 #Select IF REST TUI API should be online
 printf "Do you want to enable REST VIEW API? (${BOLD}y${RESET}/${BOLD}n${RESET}): "
-read -t 5 selectrestview
+read selectrestview
 
 SELRES=${selectrestview,,}
 
