@@ -42,4 +42,4 @@ else
 fi
 
 #RUN sbt
-
+#sbt "run"

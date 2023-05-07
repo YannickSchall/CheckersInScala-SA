@@ -7,7 +7,7 @@ import scala.swing.event._
 import controller.controllerComponent.ControllerInterface
 import model.gameBoardBaseImpl.Color.*
 import javax.swing.{BorderFactory, Icon, ImageIcon}
-import model.gameBoardComponent.gameBoardBaseImpl.Piece
+import model.gameBoardBaseImpl.Piece
 import java.io.File
 
 import scala.Checkers.{gui, injector}
