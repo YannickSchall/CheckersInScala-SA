@@ -1,20 +1,6 @@
 version: "3.9"
 
 services:
-  io:
-    image: checkers-io-image
-    build:
-      context: ./io/
-      dockerfile: ./Dockerfile
-    ports:
-      - "8081:8081"
-    stdin_open: true
-    container_name: io-container
-    environment:
-      FILEIO_SERVICE_HOST: io
-      FILEIO_SERVICE_PORT: 8081
-    tty: true
-
   checkers:
     image: checkers-image
     build:
@@ -29,7 +15,7 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
     environment:
-      DISPLAY: $DISPLAY
+      DISPLAY: 192.168.1.135:0.0
       CHECKERS_SERVICE_HOST: checkers
       CHECKERS_SERVICE_PORT: 8080
       FILEIO_SERVICE_HOST: io

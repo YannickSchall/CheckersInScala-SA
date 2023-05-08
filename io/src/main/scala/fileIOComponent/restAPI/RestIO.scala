@@ -13,7 +13,7 @@ import scala.concurrent.{ExecutionContextExecutor, Future}
 import com.google.inject.AbstractModule
 
 
-class RestIO {
+object RestIO {
   val routes: String =
     """
       Welcome to the Persistence REST service! Available routes:
