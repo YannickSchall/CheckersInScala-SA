@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export DISPLAY=localhost:0.0
+
 #Colours
 RED='\033[31;1m'
 BOLD='\033[1m'
@@ -27,7 +29,7 @@ elif [[ $SELVIEW == "tui" ]]; then
 elif [[ $SELVIEW == "q" ]]; then
   exit 1
 else
-  export C4_UITYPE="gui"
+  export C4_UITYPE="tui"
 fi
 
 #Select IF REST TUI API should be online
