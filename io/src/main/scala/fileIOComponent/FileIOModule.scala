@@ -8,5 +8,4 @@ class FileIOModule extends AbstractModule {
     bind(classOf[FileIOInterface]).to(classOf[fileIOJsonImpl.FileIO])
     //bind(classOf[FileIOInterface]).to(classOf[fileIOXmlImpl.FileIO])
   }
-
 }
