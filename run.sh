@@ -1,7 +1,5 @@
 #!/bin/bash
 
-export DISPLAY=localhost:0.0
-
 #Colours
 RED='\033[31;1m'
 BOLD='\033[1m'
