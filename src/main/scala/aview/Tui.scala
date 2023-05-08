@@ -15,7 +15,8 @@ class Tui(controller: ControllerInterface) extends Reactor {
   def size = controller.gameBoardSize
 
   def tuiEntry(inputSens: String): Unit = {
-    def input = inputSens.toUpperCase
+    def input = if (!inputSens.equals(null)) inputSens.toUpperCase else ""
+
     def args:Array[String] = input.split(" ")
     args(0) match {
       case "NEW" =>

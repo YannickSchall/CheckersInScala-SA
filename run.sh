@@ -5,8 +5,10 @@ RED='\033[31;1m'
 BOLD='\033[1m'
 RESET='\033[0m'
 
+
+
 #Welcome Message
-welcome_message="Welcomiiiiiii to ${RED}CHECKERS${RESET} by ${BOLD}@yannickschall${RESET} and ${BOLD}@ginakokoska${RESET}.
+welcome_message="Welcome to ${RED}CHECKERS${RESET} by ${BOLD}@yannickschall${RESET} and ${BOLD}@ginakokoska${RESET}.
 Be sure to enable '${BOLD}xhost +${RESET}' for GUI."
 
 printf "$welcome_message"
@@ -14,7 +16,6 @@ printf "$welcome_message"
 #Select View
 printf "What View do you want to select? (${BOLD}gui${RESET}/${BOLD}tui${RESET}): "
 read -t 15 selectview
-
 
 
 
@@ -27,7 +28,7 @@ elif [[ $SELVIEW == "tui" ]]; then
 elif [[ $SELVIEW == "q" ]]; then
   exit 1
 else
-  export C4_UITYPE="tui"
+  export C4_UITYPE="gui"
 fi
 
 #Select IF REST TUI API should be online

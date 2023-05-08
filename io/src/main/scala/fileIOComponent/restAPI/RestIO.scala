@@ -47,7 +47,7 @@ object RestIO {
     }
   )
 
-  def start(): Unit = {
+
     val bindingFuture = Http().newServerAt("0.0.0.0", 8081).bind(route)
 
     bindingFuture.onComplete {
@@ -59,7 +59,6 @@ object RestIO {
         println("File IO REST service couldn't be started! Error: " + exception + "\n")
       }
 
-  }
 
 
   }
