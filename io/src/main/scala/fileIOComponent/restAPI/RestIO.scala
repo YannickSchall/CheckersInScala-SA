@@ -7,10 +7,14 @@ import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCode}
 import akka.http.scaladsl.server.{ExceptionHandler, Route}
 import fileIOComponent.restAPI.FileIOController
+
 import scala.util.{Failure, Success}
 import akka.protobufv3.internal.compiler.PluginProtos.CodeGeneratorResponse.File
+
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import com.google.inject.AbstractModule
+
+import scala.io.StdIn
 
 
 object RestIO {
@@ -22,8 +26,16 @@ object RestIO {
       """.stripMargin
 
   // needed to run the route
-  implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "my-system")
-  implicit val executionContext: ExecutionContextExecutor = system.executionContext
+  val system: ActorSystem[Any] = ActorSystem(Behaviors.empty, "my-system")
+
+  given ActorSystem[Any] = system
+
+  val executionContext: ExecutionContextExecutor = system.executionContext
+
+  given ExecutionContextExecutor = executionContext
+
+  val connectIP = sys.env.getOrElse("FILEIO_SERVICE_HOST", "localhost").toString
+  val connectPort = sys.env.getOrElse("FILEIO_SERVICE_PORT", 8081).toString.toInt
 
 
   val route = concat(
@@ -48,12 +60,16 @@ object RestIO {
   )
 
 
-    val bindingFuture = Http().newServerAt("0.0.0.0", 8081).bind(route)
+    val bindingFuture = Http().newServerAt(connectIP, connectPort).bind(route)
 
     bindingFuture.onComplete {
       case Success(binding) => {
         val address = binding.localAddress
-        println(s"File IO REST service online at http://localhost:${address.getPort}\nPress RETURN to stop...")
+        println(s"File IO REST service online at http://$connectIP:$connectPort\nPress RETURN to stop...")
+        StdIn.readLine() // let it run until user presses return
+        bindingFuture
+          .flatMap(_.unbind()) // trigger unbinding from the port
+          .onComplete(_ => system.terminate()) // and shutdown when done
       }
       case Failure(exception) => {
         println("File IO REST service couldn't be started! Error: " + exception + "\n")

@@ -71,21 +71,21 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
     (JsPath \ "state").read[String] and
       (JsPath \ "prow").read[Int] and
       (JsPath \ "pcol").read[Int] and
-      (JsPath \ "color").read[Color]
-    )(Piece.apply _)
+      (JsPath \ "color").read[String]
+    )((state, prow, pcol, color) => Piece(state, prow, pcol, if (color == "white") White else Black))
 
   override implicit val fieldReads: Reads[Field] = (
     (JsPath \ "pos").read[String] and
       (JsPath \ "piece").readNullable[Piece]
     )(Field.apply _)
 
-  override implicit val colorReads: Reads[Color] = Reads { json =>
+  /*override implicit val colorReads: Reads[Color] = Reads { json =>
     json.validate[String].flatMap {
       case "white" => JsSuccess(Color.White)
       case "black" => JsSuccess(Color.Black)
       case other => JsError(s"Invalid color: $other")
     }
-  }
+  }*/
 
   override implicit val colorWrites: Writes[Color] = new Writes[Color] {
     def writes(color: Color) = Json.obj(
@@ -107,7 +107,7 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
           "state" -> piece.get.state,
           "prow" -> piece.get.row,
           "pcol" -> piece.get.col,
-          "color" -> colorWrites.writes(piece.get.getColor)
+          "color" -> piece.get.getColor.color
         )
       } else {
         JsNull
@@ -143,17 +143,19 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
   override def toJson: JsValue =
     gameBoardToJson
 
-  override def jsonToGameBoard(): GameBoardInterface = {
-    var gameBoard: GameBoardInterface = null
-    val source: String = Source.fromFile("gameBoard.json").getLines.mkString
+  override def jsonToGameBoard(source: String): GameBoard = {
     val json: JsValue = Json.parse(source)
     val size = (json \ "gameBoard" \ "size").get.toString.toInt
+    var gb: GameBoard = new GameBoard(size)
+
+    val fields = (json \ "gameBoard" \ "fields").get
     for (index <- 0 until size * size) {
-      val row = (json \\ "row")(index).as[Int]
-      val col = (json \\ "col")(index).as[Int]
-      val field = (json \\ "field")(index).as[Field]
-      gameBoard = gameBoard.set(row, col, field.piece)
+      val row = fields(index)("row").as[Int]
+      val col = fields(index)("col").as[Int]
+      val check = fields(index)("field")("piece")
+      val piece = if (check.toString != "null") check.as[Piece] else null
+      gb = gb.set(row, col, Option(piece))
     }
-    gameBoard
+    gb
   }
 }

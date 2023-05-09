@@ -15,13 +15,14 @@ import scala.util.{Failure, Success, Try}
 object RestUI:
   // needed to run the route
   val system: ActorSystem[Any] = ActorSystem(Behaviors.empty, "my-system")
-
   given ActorSystem[Any] = system
 
   // needed for the future flatMap/onComplete in the end
   val executionContext: ExecutionContextExecutor = system.executionContext
-
   given ExecutionContextExecutor = executionContext
+
+  val connectIP = sys.env.getOrElse("CHECKERS_SERVICE_HOST", "localhost").toString
+  val connectPort = sys.env.getOrElse("CHECKERS_SERVICE_PORT", 8080).toString.toInt
 
   def apply(controller: ControllerInterface) =
     val routes: String =
@@ -80,11 +81,11 @@ object RestUI:
       },
 
     )
-    val bindingFuture = Http().newServerAt("0.0.0.0", 8080).bind(route)
+    val bindingFuture = Http().newServerAt(connectIP, connectPort).bind(route)
     bindingFuture.onComplete {
       case Success(binding) => {
         val address = binding.localAddress
-        println(s"View REST service online at http://localhost:${address.getPort}\nPress RETURN to stop...")
+        println(s"View REST service online at http://$connectIP:$connectPort\nPress RETURN to stop...")
       }
       case Failure(exception) => {
         println("View REST service couldn't be started! Error: " + exception + "\n")

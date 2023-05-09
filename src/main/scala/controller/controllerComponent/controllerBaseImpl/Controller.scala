@@ -6,20 +6,25 @@ import net.codingwell.scalaguice.InjectorExtensions.*
 import controller.controllerComponent.GameState.*
 import controller.controllerComponent.{ControllerInterface, FieldChanged, GBSizeChanged, GameState}
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import akka.http.scaladsl.server.Directives.{complete, concat, get, path}
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives.*
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, StatusCode}
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, StatusCode, StatusCodes}
 import akka.http.scaladsl.server.{ExceptionHandler, Route}
 import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.util.Timeout
 import model.{FieldInterface, GameBoardInterface, PieceInterface}
 import model.gameBoardBaseImpl.{GameBoardCreator, Piece}
-import model.gameBoardBaseImpl.Color.{White, Black}
+import model.gameBoardBaseImpl.Color.{Black, White}
+import play.api.libs.json.Json
 import utils.{Mover, UndoManager}
+import concurrent.duration.DurationInt
 
+import java.util.concurrent.TimeUnit
+import scala.concurrent.duration.TimeUnit
 import scala.Checkers.{controller, gui}
 import scala.util.{Failure, Success, Try}
 import scala.swing.Publisher
@@ -33,6 +38,10 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
   var cap: String = ""
   var destTemp: String = ""
   val fileIOServer = "http://localhost:8081/fileio"
+  val fileIOIP = sys.env.getOrElse("FILEIO_SERVICE_HOST", "localhost").toString
+  val fileIOPort = sys.env.getOrElse("FILEIO_SERVICE_PORT", 8081).toString.toInt
+
+  val fileIOURI = "http://" + fileIOIP + ":" + fileIOPort + "/fileio"
 
   def createNewGameBoard(): Unit = {
     gameBoard.size match {
@@ -215,29 +224,30 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
   }
 
   def save(): Unit = {
-    //fileIo.save(gameBoard)
-    implicit val system = ActorSystem(Behaviors.empty, "SingleRequest")
-
-    implicit val executionContext = system.executionContext
+    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+    implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
     val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
       method = HttpMethods.POST,
-      uri = fileIOServer + "/save",
+      uri = fileIOURI + "/save",
       entity = gameBoard.jsonToString
     ))
     publish(new FieldChanged)
-    //notifyobserver
   }
-  
+
+
+
   def load(): Unit = {
 
-    //if (gameBoard.size != oldSize) publish(new GBSizeChanged(gameBoard.size))
+    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+    implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
-    implicit val system = ActorSystem(Behaviors.empty, "SingleRequest")
 
-    implicit val executionContext = system.executionContext
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
+      method = HttpMethods.GET,
+      uri = fileIOURI + "/load",
+    ))
 
-    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(uri = fileIOServer + "/load"))
 
     responseFuture
       .onComplete {
@@ -246,15 +256,13 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
           Unmarshal(value.entity).to[String].onComplete {
             case Failure(_) => sys.error("Failed unmarshalling")
             case Success(value) => {
-              val loadedGame = gameBoard.jsonToGameBoard()
-              this.gameBoard = loadedGame
+              this.gameBoard = gameBoard.jsonToGameBoard(value)
               publish(new FieldChanged)
               publish(new PrintTui)
             }
           }
         }
       }
-
   }
 
   def undo(): Unit = {
