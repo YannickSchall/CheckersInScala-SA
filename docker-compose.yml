@@ -33,4 +33,5 @@ services:
       CHECKERS_SERVICE_PORT: 8080
       FILEIO_SERVICE_HOST: io
       FILEIO_SERVICE_PORT: 8081
+    command: bash -i /CheckersInScala-SA/run.sh
     tty: true
