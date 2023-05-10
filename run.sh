@@ -19,6 +19,7 @@ read -t 15 selectview
 
 
 
+
 SELVIEW=${selectview,,}
 
 if [[ $SELVIEW == "gui" ]]; then
@@ -30,6 +31,8 @@ elif [[ $SELVIEW == "q" ]]; then
 else
   export C4_UITYPE="gui"
 fi
+
+printf "selected %s\n" "$SELVIEW"
 
 #Select IF REST TUI API should be online
 printf "Do you want to enable REST VIEW API? (${BOLD}y${RESET}/${BOLD}n${RESET}): "
@@ -44,6 +47,8 @@ elif [[ $SELRES == "q" ]]; then
 else
   export C4_VIEWREST="y"
 fi
+
+printf "selected %s\n" "$SELRES"
 
 #RUN sbt
 sbt "run"
