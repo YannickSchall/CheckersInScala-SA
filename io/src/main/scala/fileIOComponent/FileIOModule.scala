@@ -7,5 +7,7 @@ class FileIOModule extends AbstractModule {
   override def configure() = {
     bind(classOf[FileIOInterface]).to(classOf[fileIOJsonImpl.FileIO])
     //bind(classOf[FileIOInterface]).to(classOf[fileIOXmlImpl.FileIO])
+    //bind(classOf[DBInterface]).to(classOf[DBSlickImpl])
+    //bind(classOf[DAOInterface]).to(classOf[DAOSlickGridPlayerImpl])
   }
 }

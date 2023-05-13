@@ -20,7 +20,11 @@ lazy val allDependencies = Seq(
   akkaActorTyped,
   akkaStream,
   akkaActor,
-  slf4jNop
+  slf4jNop,
+  slick,
+  hikarislick,
+  githubslick,
+  postgresql
 )
 
 /** Root Module */
