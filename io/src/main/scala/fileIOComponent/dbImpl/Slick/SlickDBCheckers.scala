@@ -2,7 +2,8 @@ package fileIOComponent.dbImpl.Slick
 
 import com.google.inject.Inject
 import fileIOComponent.dbImpl.DBInterface
-import fileIOComponent.model.gameBoardBaseImpl.Color
+import fileIOComponent.dbImpl.Slick.Tables.GameBoardTable
+import fileIOComponent.model.gameBoardBaseImpl.{Color, Piece}
 import fileIOComponent.model.GameBoardInterface
 import slick.lifted.TableQuery
 import slick.jdbc.PostgresProfile.api.*
