@@ -45,7 +45,7 @@ class SlickDBCheckers @Inject () extends DBInterface {
     val actionQuery = sql"""SELECT * FROM "GAMEBOARD" WHERE "row" = $row AND "column" = $col""".as[(String, Int, Int, Color)]
     val result = Await.result(database.run(actionQuery), atMost = 10.second)
     result match {
-      case Seq(a) => Some((a._1, a._2, a._3, a._4))
+      case Seq(a) => Some(a) // Piece (row, col, state, color)
       case _ => None
     }
 
@@ -60,7 +60,6 @@ class SlickDBCheckers @Inject () extends DBInterface {
 
 
 
-
   override def createGameboard(size: Int): Unit =
       if isGBcreated() then
         dropGB()
@@ -70,7 +69,7 @@ class SlickDBCheckers @Inject () extends DBInterface {
         var counter = 1
         (0 to size).flatMap(col =>
           (0 to size).reverse.map(row => {
-            database.run(gameBoardTable += (counter, row, col, "None")) // ?? TODO: What should be in GBTable
+            database.run(gameBoardTable += (counter, row, col, None)) // ?? TODO: What should be in GBTable
             counter + 1
           }))
       }) match {
@@ -80,9 +79,9 @@ class SlickDBCheckers @Inject () extends DBInterface {
       }
 
   def isGBcreated(): Boolean =
-    val actionQuery = sql"""SELECT * FROM "GAMEBOARD"""".as[(Int, Int, Int, String)] // TODO: as what ?
+    val actionQuery = sql"""SELECT * FROM "GAMEBOARD"""".as[(Int, Int, Int, Option[Piece])] // TODO: as what ?
     val result = Await.result(database.run(actionQuery), atMost = 10.second)
-    !result.toList.isEmpty
+    //!result.toList.isEmpty
 
   override def dropGB() =
     val action = gameBoardTable.delete

@@ -1,27 +1,21 @@
 package fileIOComponent.dbImpl
 
+import fileIOComponent.model.gameBoardBaseImpl.Color
+
+
 trait DBInterface {
 
-
-/*
   def createDB(): Unit
 
   def createGameBoard(size: Int): Unit
 
-  def createPlayers(): Unit
-  
-  def readPlayerColor(Color: color): Unit
+  def updatePiece(row: Int, col: Int, value: String)
 
-
-
-  def resetGame(): Unit
+  def readPiece(row: Int, col: Int): Option[(String, Int, Int, Color)]
 
   def load(): Unit
 
-  def move(): Unit
 
-*/
-
-
+  
 
 }
