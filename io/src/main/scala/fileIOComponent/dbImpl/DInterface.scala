@@ -8,4 +8,8 @@ trait DInterface {
   def update(input: String): Unit
 
   def delete: Unit
+
+  def storeGameBoard(gamestate: String)
+
+
 }

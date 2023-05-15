@@ -57,6 +57,19 @@ object RestIO {
         }
       )
     }
+
+      path ("fileio" / "dbsave") {
+      concat(
+        post {
+          entity(as[String]) { game =>
+            FileIOController.save(game)
+            complete("game saved")
+          }
+        }
+      )
+    }
+
+
   )
 
 

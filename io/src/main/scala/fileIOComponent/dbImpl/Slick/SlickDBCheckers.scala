@@ -17,6 +17,8 @@ import slick.jdbc.JdbcBackend.Database
 
 import scala.util.control.Breaks.break
 
+import model.gameBoardBaseImpl.fileIOJsonImpl.FileIO
+
 class SlickDBCheckers @Inject () extends DBInterface {
   val connectIP = sys.env.getOrElse("POSTGRES_IP", "localhost").toString
   val connectPort = sys.env.getOrElse("POSTGRES_PORT", 5432).toString.toInt
@@ -33,7 +35,7 @@ class SlickDBCheckers @Inject () extends DBInterface {
 
   val gameBoardTable = new TableQuery(new GameBoardTable(_))
 
-
+/*
   override def createDB(): Unit =
     val gameBoardDB = Future(Await.result(database.run(gameBoardTable.schema.createIfNotExists), Duration.Inf))
     gameBoardDB.onComplete {
@@ -93,8 +95,24 @@ class SlickDBCheckers @Inject () extends DBInterface {
     val new_value = "None"
     val actionQuery = sql"""UPDATE "GAMEBOARD" SET "value" = $new_value WHERE "value" != $new_value""".as[Int]
     Await.result(database.run(actionQuery), atMost = 10.second)
+*/
 
-  override def readGrid(): GameBoardInterface =
-    ???
+  def save(gameBoard: GameBoardInterface): Unit = {
+    Try {
+      println("saving game in DB")
+      val jsonGb = fileIO.gameBoardToJson()
+      val gameState = (jsonGb \ "gameBoard").get.toString()
+    }
+  }
+
+  def load(id: Option[Int] = None): Try[GameBoardInterface] =
+    Try {
+      val loadQuery = id.map(id => gameBoardTable.filter(_.id === id))
+        .getOrElse(gameBoardTable.filter(_.id === gameBoardTable.map(_.id).max))
+
+      val gameBoard =  Await.result(database.run(loadQuery.result), 5.seconds)
+      val gb =
+
+    }
 
 }

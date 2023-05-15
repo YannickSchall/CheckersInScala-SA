@@ -4,20 +4,7 @@ import fileIOComponent.model.gameBoardBaseImpl.Piece
 
 class PieceTable(tag: Tag) extends Table[(Int, "Colorstring")](tag, "PIECETABLE"){
     def id = column[Int] ("ID", O.PrimaryKey, O.AutoInc)
-    def piece =  column[Color]("PIECE")
-
-    
-    implicit val providerMapper =
-        MappedColumnType.base[Color.color, String](
-            e => e.toString,
-            s => Color.withName(s)
-        )
-
-
-    override def * = (id, piece) <> (Color.tupled, ColorMapping.unapply)
-}
-
-lazy val colorMappingTable = TableQuery[PieceTable]
+    def piece =  column[String]("PIECE")
 
 }
 

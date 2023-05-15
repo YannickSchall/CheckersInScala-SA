@@ -2,13 +2,12 @@ package fileIOComponent.dbImpl.Slick.Tables
 import slick.jdbc.MySQLProfile.api.*
 import fileIOComponent.model.gameBoardBaseImpl.Piece
 
-class GameBoardTable(tag: Tag) extends Table[(Int, Int, Int, Option[Piece])](tag, "GAMEBOARD"){
+class GameBoardTable(tag: Tag) extends Table[(Int, String)](tag, "GAMEBOARD"){
     def id = column[Int] ("ID", O.PrimaryKey, O.AutoInc)
-    def row =  column[Int] ("ROW")
-    def col =  column[Int] ("COL")
-    def piece = column[Option[Piece]]("PIECE")
+
+    def gamestate = column[String]
     
-    def * = (id, row, col, piece)
+    def * = (id, gamestate)
 }
   // Grid(Cells(Object(row, col, player) - player . settings . grid
   // Gameboard(Gamestate(Field(Piece(row, col, state Color))
