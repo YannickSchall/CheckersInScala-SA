@@ -44,12 +44,17 @@ object RestIO {
     pathSingleSlash {
       complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, routes))
     },
-    path("fileio" / "load") {
+    path("io" / "load") {
       get {
         complete(HttpEntity(ContentTypes.`application/json`, IOController.load()))
       }
     },
-    path("fileio" / "save") {
+    path("io" / "dbload") {
+      get {
+      ///
+      }
+    },
+    path("io" / "save") {
       concat(
         post {
           entity(as[String]) { game =>

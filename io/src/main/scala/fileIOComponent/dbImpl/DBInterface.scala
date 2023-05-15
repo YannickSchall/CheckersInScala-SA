@@ -1,15 +1,14 @@
 package fileIOComponent.dbImpl
 
 import fileIOComponent.model.gameBoardBaseImpl.Color
-
-
+import fileIOComponent.model.GameBoardInterface
 trait DBInterface {
-/*
-  def createDB(): Unit
 
-  def createGameBoard(size: Int): Unit
+  def save(gameBoard: GameBoardInterface): Unit
 
-  def updatePiece(row: Int, col: Int, value: String)
+  def load(id: Option[Int] = None): GameBoardInterface
+
+  def update(id: Int, gamestate: Option[String]): Unit
 
   def deleteGame(id: Int): Boolean
 

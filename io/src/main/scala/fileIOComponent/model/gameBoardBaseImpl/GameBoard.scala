@@ -115,7 +115,7 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
     }
   }
 
-  def gameBoardToJson = {
+  override def gameBoardToJson = {
     Json.obj(
       "gameBoard" -> Json.obj(
         "size" -> this.size,

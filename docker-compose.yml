@@ -1,6 +1,21 @@
 version: "3.9"
 
 services:
+  database:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3306:3306"
+    container_name: uno-database
+    environment:
+      MYSQL_HOST: uno-database
+      MYSQL_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: uno
+      MYSQL_USER: nue
+      MYSQL_PASSWORD: root
+    volumes:
+      - .:/var/lib/sql/uno
   io:
     image: checkers-io-image
     build:
@@ -13,7 +28,18 @@ services:
     environment:
       FILEIO_SERVICE_HOST: io
       FILEIO_SERVICE_PORT: 8081
+      MYSQL_HOST: checkers-database
+      MYSQL_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: checkers
+      MYSQL_USER: nue
+      MYSQL_PASSWORD: root
+    depends_on:
+      - db
+    volumes:
+          - .:/var/lib/sql/uno
     tty: true
+
 
   checkers:
     image: checkers-image
