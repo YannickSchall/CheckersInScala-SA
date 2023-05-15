@@ -1,11 +1,11 @@
 package fileIOComponent
 
 import com.google.inject.AbstractModule
-import fileIOComponent.FileIOInterface
+import fileIOComponent.IOInterface
 
-class FileIOModule extends AbstractModule {
+class IOModule extends AbstractModule {
   override def configure() = {
-    bind(classOf[FileIOInterface]).to(classOf[fileIOJsonImpl.FileIO])
+    bind(classOf[IOInterface]).to(classOf[fileIOJsonImpl.IO])
     //bind(classOf[FileIOInterface]).to(classOf[fileIOXmlImpl.FileIO])
     //bind(classOf[DBInterface]).to(classOf[DBSlickImpl])
     //bind(classOf[DAOInterface]).to(classOf[DAOSlickGridPlayerImpl])

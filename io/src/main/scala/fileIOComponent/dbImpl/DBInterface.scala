@@ -11,11 +11,8 @@ trait DBInterface {
 
   def updatePiece(row: Int, col: Int, value: String)
 
-  def readPiece(row: Int, col: Int): Option[(String, Int, Int, Color)]
+  def deleteGame(id: Int): Boolean
 
   def load(): Unit
-*/
-
-  
 
 }

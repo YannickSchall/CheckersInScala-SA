@@ -1,6 +1,6 @@
 package fileIOComponent.dbImpl
 
-trait DInterface {
+trait DAOInterface {
   def create: Unit
 
   def read: String
@@ -9,7 +9,6 @@ trait DInterface {
 
   def delete: Unit
 
-  def storeGameBoard(gamestate: String)
 
 
 }

@@ -6,7 +6,9 @@ import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCode}
 import akka.http.scaladsl.server.{ExceptionHandler, Route}
-import fileIOComponent.restAPI.FileIOController
+import fileIOComponent.restAPI.IOController
+import fileIOComponent.dbImpl.Slick.SlickDBCheckers
+
 
 import scala.util.{Failure, Success}
 import akka.protobufv3.internal.compiler.PluginProtos.CodeGeneratorResponse.File
@@ -44,29 +46,28 @@ object RestIO {
     },
     path("fileio" / "load") {
       get {
-        complete(HttpEntity(ContentTypes.`application/json`, FileIOController.load()))
+        complete(HttpEntity(ContentTypes.`application/json`, IOController.load()))
       }
     },
     path("fileio" / "save") {
       concat(
         post {
           entity(as[String]) { game =>
-            FileIOController.save(game)
+            IOController.save(game)
             complete("game saved")
           }
         }
       )
-    }
-
-      path ("fileio" / "dbsave") {
-      concat(
-        post {
-          entity(as[String]) { game =>
-            FileIOController.save(game)
-            complete("game saved")
-          }
+    },
+    path ("io" / "dbsave") {
+    concat(
+      post {
+        entity(as[String]) { game =>
+          SlickDBCheckers.save(game)
+          complete("game saved")
         }
-      )
+      }
+    )
     }
 
 
@@ -78,14 +79,14 @@ object RestIO {
     bindingFuture.onComplete {
       case Success(binding) => {
         val address = binding.localAddress
-        println(s"File IO REST service online at http://$connectIP:$connectPort\nPress RETURN to stop...")
+        println(s"IO REST service online at http://$connectIP:$connectPort\nPress RETURN to stop...")
         StdIn.readLine() // let it run until user presses return
         bindingFuture
           .flatMap(_.unbind()) // trigger unbinding from the port
           .onComplete(_ => system.terminate()) // and shutdown when done
       }
       case Failure(exception) => {
-        println("File IO REST service couldn't be started! Error: " + exception + "\n")
+        println("IO REST service couldn't be started! Error: " + exception + "\n")
       }
 
 

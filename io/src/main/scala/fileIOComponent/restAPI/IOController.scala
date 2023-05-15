@@ -1,7 +1,7 @@
 package fileIOComponent.restAPI
 import com.google.inject.{Guice, Inject, Injector}
-import fileIOComponent.dbImpl.{DBInterface, DInterface}
-import fileIOComponent.{FileIOInterface, FileIOModule}
+import fileIOComponent.dbImpl.{DBInterface, DAOInterface}
+import fileIOComponent.{IOInterface, IOModule}
 
 import java.io.*
 import play.api.libs.json.{JsValue, Json}
@@ -9,12 +9,12 @@ import play.api.libs.json.{JsValue, Json}
 import scala.io.Source
 
 
-object FileIOController {
+object IOController {
 
-  val injector: Injector = Guice.createInjector(FileIOModule())
-  val fileIO = injector.getInstance(classOf[FileIOInterface])
+  val injector: Injector = Guice.createInjector(IOModule())
+  val fileIO = injector.getInstance(classOf[IOInterface])
   val database = injector.getInstance(classOf[DBInterface])
-  val databaseDAO = injector.getInstance(classOf[DInterface])
+  val databaseDAO = injector.getInstance(classOf[DAOInterface])
 
   def load(): String = {
     fileIO.load()

@@ -37,11 +37,11 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
   //val fileIo = injector.instance[FileIOInterface]
   var cap: String = ""
   var destTemp: String = ""
-  val fileIOServer = "http://localhost:8081/fileio"
-  val fileIOIP = sys.env.getOrElse("FILEIO_SERVICE_HOST", "localhost").toString
-  val fileIOPort = sys.env.getOrElse("FILEIO_SERVICE_PORT", 8081).toString.toInt
+  val IOServer = "http://localhost:8081/io"
+  val IOIP = sys.env.getOrElse("FILEIO_SERVICE_HOST", "localhost").toString
+  val IOPort = sys.env.getOrElse("FILEIO_SERVICE_PORT", 8081).toString.toInt
 
-  val fileIOURI = "http://" + fileIOIP + ":" + fileIOPort + "/fileio"
+  val IOURI = "http://" + IOIP + ":" + IOPort + "/io"
 
   def createNewGameBoard(): Unit = {
     gameBoard.size match {
@@ -229,7 +229,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
 
     val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
       method = HttpMethods.POST,
-      uri = fileIOURI + "/save",
+      uri = IOURI + "/save",
       entity = gameBoard.jsonToString
     ))
     publish(new FieldChanged)
@@ -245,7 +245,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
 
     val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
       method = HttpMethods.GET,
-      uri = fileIOURI + "/load",
+      uri = IOURI + "/load",
     ))
 
 

@@ -1,5 +1,5 @@
 package fileIOComponent.fileIOXmlImpl
-import fileIOComponent.FileIOInterface
+import fileIOComponent.IOInterface
 import com.google.inject.Guice
 import com.google.inject.name.Names
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
@@ -9,7 +9,7 @@ import scala.io.Source
 import util.*
 import scala.xml.{Elem, PrettyPrinter}
 
-class FileIO extends FileIOInterface {
+class IO extends IOInterface {
 
   def load(): String = {
     val file = scala.io.Source.fromFile("game.xml")

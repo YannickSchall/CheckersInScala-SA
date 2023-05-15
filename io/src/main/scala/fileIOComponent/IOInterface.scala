@@ -1,6 +1,6 @@
 package fileIOComponent
 
-trait FileIOInterface {
+trait IOInterface {
   def load(): String
   def save(gameAsJson: String): Unit
 }

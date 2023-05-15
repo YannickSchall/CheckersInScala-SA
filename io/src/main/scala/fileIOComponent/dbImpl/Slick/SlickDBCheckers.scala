@@ -110,9 +110,50 @@ class SlickDBCheckers @Inject () extends DBInterface {
       val loadQuery = id.map(id => gameBoardTable.filter(_.id === id))
         .getOrElse(gameBoardTable.filter(_.id === gameBoardTable.map(_.id).max))
 
-      val gameBoard =  Await.result(database.run(loadQuery.result), 5.seconds)
-      val gb =
+       val answer = Await.result(database.run(loadQuery.result), 5.seconds)
+       val slave = new GameBoard(8)
+       val res = try {
+         slave.jsonToGame(answer.asInstanceOf[JsValue])
+       } catch {
+         case e: Exception =>
+           e.printStackTrace()
+           throw e
+       }
+       res
+     }
+   }
 
+    override def update(id: Int, gamestate: Option[String]): Unit = {
+      Try {
+        val gamestateQuery =
+          gamestate match {
+            case Some(name) => gameBoardTable.filter(_.id === id).map(_.name).update(gamestate)
+            case None => DBIO.successful(0)
+          }
+        val query = gamestateQuery andThen cardsQuery andThen cardCountQuery andThen placedQuery
+        Await.result(database.run(query), 5.seconds)
+        true
+      }
     }
+
+    override def deleteGame(id: Int): Try[Boolean] = {
+      Try {
+        Await.result(database.run(gameBoardTable.filter(_.id === id).delete), 5.seconds)
+        true
+      }
+    }
+
+     def sanitize(str: String): String = {
+      str.replace("\\n", "\n")
+        .replace("\\r", "\r")
+        .replace("\\t", "\t")
+        .replace("\\b", "\b")
+        .replace("\\f", "\f")
+        .replace("\\\\", "\\")
+        .replace("\\\"", "\"")
+        .replace("\\'", "'")
+        .replace("\"\"", "\"")
+    }
+}
 
 }
