@@ -23,7 +23,6 @@ lazy val allDependencies = Seq(
   slf4jNop,
   slick,
   hikarislick,
-  githubslick,
   postgresql
 )
 

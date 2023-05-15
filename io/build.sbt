@@ -8,7 +8,7 @@ version       := "0.5.0-SNAPSHOT"
 scalaVersion := "3.2.0"
 
 /** Dependencies */
-lazy val allDependencies = Seq(
+lazy val allDependencies2 = Seq(
   scalatic,
   scalatest,
   swing,
@@ -26,8 +26,7 @@ lazy val allDependencies = Seq(
   slf4jNop,
   slick,
   hikarislick,
-  githubslick,
   postgresql
 )
 
-libraryDependencies ++= allDependencies
+libraryDependencies ++= allDependencies2

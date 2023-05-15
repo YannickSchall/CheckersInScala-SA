@@ -1,15 +1,20 @@
 package fileIOComponent.dbImpl.Slick
 
+import com.google.inject.Inject
 import fileIOComponent.dbImpl.DBInterface
-
-import slick.jdbc.JdbcBackend.Database
+import fileIOComponent.model.gameBoardBaseImpl.Color
+import fileIOComponent.model.GameBoardInterface
 import slick.lifted.TableQuery
 import slick.jdbc.PostgresProfile.api.*
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, DurationInt}
 import scala.concurrent.{Await, Future}
 import scala.io.StdIn
 import scala.util.{Failure, Success, Try}
+import slick.jdbc.JdbcBackend.Database
+
+import scala.util.control.Breaks.break
 
 class SlickDBCheckers @Inject () extends DBInterface {
   val connectIP = sys.env.getOrElse("POSTGRES_IP", "localhost").toString
@@ -18,19 +23,19 @@ class SlickDBCheckers @Inject () extends DBInterface {
   val db_pw = sys.env.getOrElse("POSTGRES_PASSWORD", "postgres").toString
   val db_name = sys.env.getOrElse("POSTGRES_DB", "postgres").toString
 
+  val database =
+    Database.forURL(
+      url = "jdbc:postgresql://" + connectIP + ":" + connectPort + "/" + db_name + "?serverTimezone=UTC",
+      user = db_user,
+      password = db_pw,
+      driver = "org.postgresql.Driver")
 
-  val playerTable = TableQuery[PlayerTable]
-  val gameBoardTable = TableQuery[GabeBoardTable]
+  val gameBoardTable = new TableQuery(new GameBoardTable(_))
 
 
   override def createDB(): Unit =
-    val playerDB = Future(Await.result(database.run(playerTable.schema.createIfNotExists), Duration.Inf))
-    val gameBoardDB = Future(Await.result(database.run(gridTable.schema.createIfNotExists), Duration.Inf))
-    playerDB.onComplete {
-      case Success(_) => print("Connection to DB & Creation of playerTable successful!")
-      case Failure(e) => print("Error: " + e)
-    }
-    gridDB.onComplete {
+    val gameBoardDB = Future(Await.result(database.run(gameBoardTable.schema.createIfNotExists), Duration.Inf))
+    gameBoardDB.onComplete {
       case Success(_) => print("Connection to DB & Creation of gameBoard successful!")
       case Failure(e) => print("Error: " + e)
     }
@@ -53,34 +58,18 @@ class SlickDBCheckers @Inject () extends DBInterface {
     result.toString()
 
 
-  override def createPlayer(color: Color): Color =
-    if readAllPlayers().length = 2 then
-      return -1
-
-    Try({
-      if readAllPlayers().contains(color.White) then
-        db.run(playerTable += (color.Black))
-        color.Black
-      else if  readAllPlayers().contains(color.White) then
-        db.run(playerTable += (color.Black))
-        color.Black
-    }) match {
-      case Success(_) =>
-        println("Player successuflly added "); player.playerNumber
-      case Failure(exception) => println(exception); -1
-    }
 
 
-  override def createGameboard(size: Int) =
+  override def createGameboard(size: Int): Unit =
       if isGBcreated() then
-        resetGrid()
-        break;// GB already exists
+        dropGB()
+        return println("")// GB already exists
 
-    Try({
+      Try({
         var counter = 1
         (0 to size).flatMap(col =>
           (0 to size).reverse.map(row => {
-            db.run(gameBoardTable += (counter, row, col, "None")) // ?? TODO: What should be in GBTable
+            database.run(gameBoardTable += (counter, row, col, "None")) // ?? TODO: What should be in GBTable
             counter + 1
           }))
       }) match {
@@ -94,17 +83,6 @@ class SlickDBCheckers @Inject () extends DBInterface {
     val result = Await.result(database.run(actionQuery), atMost = 10.second)
     !result.toList.isEmpty
 
-  override def readAllPlayers(): List[(String, Int, Int, Color)] = // Liste aus einem Piece
-    val actionQuery = sql"""SELECT * FROM "PLAYER"""".as[(String, Int, Int, Color)]
-    val result = Await.result(database.run(actionQuery), atMost = 10.second)
-    result.toList
-
-  override def dropPlayers() =
-    val action = db.delete
-    Await.result(database.run(action), atMost = 10.second)
-    val deleteQuery = sql"""ALTER SEQUENCE "PLAYER_id_seq" RESTART WITH 1""".as[Int]
-    Await.result(database.run(deleteQuery), atMost = 10.second)
-
   override def dropGB() =
     val action = gameBoardTable.delete
     Await.result(database.run(action), atMost = 10.second)
@@ -116,7 +94,7 @@ class SlickDBCheckers @Inject () extends DBInterface {
     val actionQuery = sql"""UPDATE "GAMEBOARD" SET "value" = $new_value WHERE "value" != $new_value""".as[Int]
     Await.result(database.run(actionQuery), atMost = 10.second)
 
-  override def readGrid(): GridInterface =
+  override def readGrid(): GameBoardInterface =
     ???
 
 }
