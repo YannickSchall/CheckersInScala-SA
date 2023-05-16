@@ -37,7 +37,7 @@ services:
     depends_on:
       - database
     volumes:
-          - .:/var/lib/sql/uno
+          - .:/var/lib/sql/checkers
     tty: true
 
 
