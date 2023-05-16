@@ -2,7 +2,7 @@ package fileIOComponent
 
 import fileIOComponent.model.GameBoardInterface
 import fileIOComponent.model.gameBoardBaseImpl.GameBoard
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 
 
 trait IOInterface {

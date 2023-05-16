@@ -64,10 +64,8 @@ object RestIO {
               case Some(id) => Some(id.toInt)
               case None => None
             }
-          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, fileIO.gameBoardToJson(
-            slick.load(id_updated).getOrElse(new GameBoard(1))
-              )
-            )
+          complete(HttpEntity(ContentTypes.`application/json`, fileIO.gameBoardToJson(
+            slick.load(id_updated).getOrElse(new GameBoard(8))))
           )
         }
       }
@@ -83,36 +81,62 @@ object RestIO {
       )
     },
     path ("io" / "dbsave") {
-    concat(
-      post {
-        entity(as[String]) { gameString =>
-          slick.save(fileIO.jsonToGameBoard(gameString))
-          complete("game saved")
+        put {
+          entity(as[String]) { gameString =>
+            complete {
+            slick.save(fileIO.jsonToGameBoard(gameString))
+
+            Future.successful(HttpEntity(ContentTypes.`text/html(UTF-8)`, "game successfully saved"))
+            }
+          }
+        }
+    },
+    path("io" / "dbdelete") {
+      put {
+        parameter("id") {
+          (id) =>
+            complete {
+              val result = slick.deleteGame(id = id.toInt).getOrElse("ERROR")
+              Future.successful(HttpEntity(ContentTypes.`text/html(UTF-8)`, s"deleted game in game database" +
+                s" $result"))
+            }
         }
       }
-    )
+    },
+    path("io" / "dbupdate") {
+      put {
+        parameter("id", "gamestate".?) {
+          (id, gamestate) =>
+            complete {
+              val updatetdGb =
+                gamestate match {
+                  case Some(gamestate) => Some(gamestate.toString)
+                  case None => None
+                }
+              val result = slick.update(id = id.toInt, gamestate=gamestate.toString)
+              Future.successful(HttpEntity(ContentTypes.`text/html(UTF-8)`, s"updated gameboard database" +
+                s" $result"))
+            }
+        }
+      }
     }
-
-
   )
 
 
-    val bindingFuture = Http().newServerAt(connectIP, connectPort).bind(route)
+  val bindingFuture = Http().newServerAt(connectIP, connectPort).bind(route)
 
-    bindingFuture.onComplete {
-      case Success(binding) => {
-        val address = binding.localAddress
-        println(s"IO REST service online at http://$connectIP:$connectPort\nPress RETURN to stop...")
-        StdIn.readLine() // let it run until user presses return
-        bindingFuture
-          .flatMap(_.unbind()) // trigger unbinding from the port
-          .onComplete(_ => system.terminate()) // and shutdown when done
-      }
-      case Failure(exception) => {
-        println("IO REST service couldn't be started! Error: " + exception + "\n")
-      }
-
-
+  bindingFuture.onComplete {
+    case Success(binding) => {
+      val address = binding.localAddress
+      println(s"IO REST service online at http://$connectIP:$connectPort\nPress RETURN to stop...")
+      StdIn.readLine() // let it run until user presses return
+      bindingFuture
+        .flatMap(_.unbind()) // trigger unbinding from the port
+        .onComplete(_ => system.terminate()) // and shutdown when done
+    }
+    case Failure(exception) => {
+      println("IO REST service couldn't be started! Error: " + exception + "\n")
+    }
 
   }
 }

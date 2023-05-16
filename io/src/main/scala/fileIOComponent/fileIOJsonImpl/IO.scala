@@ -71,23 +71,23 @@ class IO @Inject () extends IOInterface{
 
   override def gameBoardToJson(gb: GameBoardInterface): String = {
     Json.prettyPrint(
-    Json.obj(
-      "gameBoard" -> Json.obj(
-        "size" -> gb.size,
-        "fields" -> Json.toJson(
-          for {
-            row <- 0 until gb.size
-            col <- 0 until gb.size
-          } yield {
-            Json.obj(
-              "row" -> row,
-              "col" -> col,
-              "field" -> gb.field(row, col)
-            )
-          }
+      Json.obj(
+        "gameBoard" -> Json.obj(
+          "size" -> gb.size,
+          "fields" -> Json.toJson(
+            for {
+              row <- 0 until gb.size
+              col <- 0 until gb.size
+            } yield {
+              Json.obj(
+                "row" -> row,
+                "col" -> col,
+                "field" -> gb.field(row, col)
+              )
+            }
+          )
         )
       )
-    )
     )
   }
   

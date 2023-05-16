@@ -25,7 +25,9 @@ trait ControllerInterface extends Publisher {
   def move(start: String, dest: String): Unit
   def movePossible(start: String, dest: String): Mover
   def save(): Unit
+  def dbsave(): Unit
   def load(): Unit
+  def dbload(): Unit
   def undo(): Unit
   def redo(): Unit
   def isSet(row: Int, col: Int): Boolean

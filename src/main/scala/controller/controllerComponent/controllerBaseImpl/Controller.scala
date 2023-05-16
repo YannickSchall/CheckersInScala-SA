@@ -235,7 +235,17 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     publish(new FieldChanged)
   }
 
+  def dbsave(): Unit = {
+    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+    implicit val executionContext: ExecutionContextExecutor = system.executionContext
 
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
+      method = HttpMethods.PUT,
+      uri = IOURI + "/dbsave",
+      entity = gameBoard.jsonToString
+    ))
+    publish(new FieldChanged)
+  }
 
   def load(): Unit = {
 
@@ -246,6 +256,34 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
       method = HttpMethods.GET,
       uri = IOURI + "/load",
+    ))
+
+
+    responseFuture
+      .onComplete {
+        case Failure(_) => sys.error("Failed getting Json")
+        case Success(value) => {
+          Unmarshal(value.entity).to[String].onComplete {
+            case Failure(_) => sys.error("Failed unmarshalling")
+            case Success(value) => {
+              this.gameBoard = gameBoard.jsonToGameBoard(value)
+              publish(new FieldChanged)
+              publish(new PrintTui)
+            }
+          }
+        }
+      }
+  }
+
+  def dbload(): Unit = {
+
+    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+    implicit val executionContext: ExecutionContextExecutor = system.executionContext
+
+
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
+      method = HttpMethods.GET,
+      uri = IOURI + "/dbload",
     ))
 
 

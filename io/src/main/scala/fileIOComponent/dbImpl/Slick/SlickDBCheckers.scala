@@ -10,6 +10,7 @@ import play.api.libs.json.JsPath.\
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.parse
 import slick.lifted.TableQuery
+
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, DurationInt}
 import scala.concurrent.{Await, Future}
@@ -17,6 +18,7 @@ import scala.io.StdIn
 import scala.util.{Failure, Success, Try}
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api.*
+
 import scala.util.control.Breaks.break
 
 
@@ -41,10 +43,11 @@ class SlickDBCheckers @Inject () extends DBInterface {
   override def save(gameBoard: GameBoardInterface): Unit = {
     Try {
       println("saving game in DB")
-      val jsonGb = parse(io.gameBoardToJson(gameBoard))
-      val gbFromJson = (jsonGb \ "gameBoard").get.toString()
-      val gb = (0, gbFromJson)
-      Await.result(database.run(gameBoardTable returning gameBoardTable.map(_.id) += gb), 2.seconds)
+      //val jsonGb = parse(io.gameBoardToJson(gameBoard))
+      //val gbFromJson = (jsonGb \ "gameBoard").get.toString()
+      //val gb = (0, gbFromJson)
+      val test = (0, "test")
+      Await.result(database.run(gameBoardTable += test), 15.seconds)
     }
   }
 

@@ -17,8 +17,7 @@ object dependencies {
     val akkaStream = ("com.typesafe.akka" %% "akka-stream" % "2.6.19").cross(CrossVersion.for3Use2_13)
     val akkaActor = ("com.typesafe.akka" %% "akka-actor" % "2.6.19").cross(CrossVersion.for3Use2_13)
     val slf4jNop = "org.slf4j" % "slf4j-nop" % "2.0.0-alpha7"
-    val slick = ("com.typesafe.slick" %% "slick" % "3.4.0-M1").cross(CrossVersion.for3Use2_13)
-    val hikarislick = ("com.typesafe.slick" %% "slick-hikaricp" % "3.3.3").cross(CrossVersion.for3Use2_13)
-    val githubslick = ("com.github.slick.slick" % "slick_3" % "nafg~dottyquery-SNAPSHOT")
-    val postgresql = "org.postgresql" % "postgresql" % "42.3.4"
+    val slick = ("com.typesafe.slick" %% "slick" % "3.5.0-M3").cross(CrossVersion.for3Use2_13)
+    val hikarislick = ("com.typesafe.slick" %% "slick-hikaricp" % "3.5.0-M3").cross(CrossVersion.for3Use2_13)
+    val postgresql = "org.postgresql" % "postgresql" % "42.5.0"
 }
