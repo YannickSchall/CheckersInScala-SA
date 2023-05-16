@@ -1,40 +1,39 @@
 package fileIOComponent.dbImpl.Slick
-import java.io.PrintWriter
+
 import com.google.inject.Inject
 import fileIOComponent.dbImpl.DBInterface
 import fileIOComponent.dbImpl.Slick.Tables.GameBoardTable
 import fileIOComponent.fileIOJsonImpl.IO
-import fileIOComponent.model.gameBoardBaseImpl.{Color, GameBoard, Piece}
 import fileIOComponent.model.GameBoardInterface
+import fileIOComponent.model.gameBoardBaseImpl.{Color, GameBoard, Piece}
 import play.api.libs.json.JsPath.\
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.parse
+import slick.jdbc.JdbcBackend.Database
+import slick.jdbc.MySQLProfile.api.*
 import slick.lifted.TableQuery
 
+import java.io.PrintWriter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, DurationInt}
 import scala.concurrent.{Await, Future}
 import scala.io.StdIn
-import scala.util.{Failure, Success, Try}
-import slick.jdbc.JdbcBackend.Database
-import slick.jdbc.MySQLProfile.api.*
-
 import scala.util.control.Breaks.break
+import scala.util.{Failure, Success, Try}
 
 
-class SlickDBCheckers @Inject () extends DBInterface {
-  val connectIP = sys.env.getOrElse("MYSQL_HOST", "localhost").toString
+class SlickDBCheckers @Inject() extends DBInterface {
+  val connectIP = sys.env.getOrElse("MYSQL_HOST", "localhost")
   val connectPort = sys.env.getOrElse("MYSQL_PORT", 3306).toString.toInt
-  val db_user = sys.env.getOrElse("MYSQL_USER", "user").toString
-  val db_pw = sys.env.getOrElse("MYSQL_PASSWORD", "root").toString
-  val db_name = sys.env.getOrElse("MYSQL_DATABASE", "postgres").toString
+  val db_user = sys.env.getOrElse("MYSQL_USER", "user")
+  val db_pw = sys.env.getOrElse("MYSQL_PASSWORD", "root")
+  val db_name = sys.env.getOrElse("MYSQL_DATABASE", "postgres")
   val io = new IO()
-
 
 
   val database =
     Database.forURL(
-      url = "jdbc:postgresql://" + connectIP + ":" + connectPort + "/" + db_name + "?serverTimezone=UTC",
+      url = "jdbc:mysql://" + connectIP + ":" + connectPort + "/" + db_name + "?serverTimezone=UTC",
       user = db_user,
       password = db_pw,
       driver = "com.mysql.cj.jdbc.Driver")
@@ -52,55 +51,57 @@ class SlickDBCheckers @Inject () extends DBInterface {
     }
     val jsonGb = parse(io.gameBoardToJson(gameBoard))
     val gbFromJson = (jsonGb \ "gameBoard").get.toString()
-    new PrintWriter("savefile") { write(gbFromJson); close }
+    new PrintWriter("savefile") {
+      write(gbFromJson); close
+    }
   }
 
-   override def load(id: Option[Int] = None): Try[GameBoardInterface] = {
-     Try {
-       println("storing game in DB")
-       val loadQuery = id.map(id => gameBoardTable.filter(_.id === id))
-         .getOrElse(gameBoardTable.filter(_.id === gameBoardTable.map(_.id).max))
+  override def load(id: Option[Int] = None): Try[GameBoardInterface] = {
+    Try {
+      println("storing game in DB")
+      val loadQuery = id.map(id => gameBoardTable.filter(_.id === id))
+        .getOrElse(gameBoardTable.filter(_.id === gameBoardTable.map(_.id).max))
 
-       val answer = Await.result(database.run(loadQuery.result), 5.seconds)
-       val slave = new GameBoard(8)
-       val res = try {
-         slave.jsonToGameBoard(answer.head(1))
-       } catch {
-         case e: Exception =>
-           e.printStackTrace()
-           throw e
-       }
-       res
-     }
-   }
-
-    override def update(id: Int, gamestate: String): Unit = {
-      Try {
-        val gamestateQuery = gameBoardTable.filter(_.id === id).map(_.gamestate).update(gamestate)
-        val query = gamestateQuery
-        Await.result(database.run(query), 5.seconds)
-        true
+      val answer = Await.result(database.run(loadQuery.result), 5.seconds)
+      val slave = new GameBoard(8)
+      val res = try {
+        slave.jsonToGameBoard(answer.head(1))
+      } catch {
+        case e: Exception =>
+          e.printStackTrace()
+          throw e
       }
+      res
     }
+  }
 
-    override def deleteGame(id: Int): Try[Boolean] = {
-      Try {
-        Await.result(database.run(gameBoardTable.filter(_.id === id).delete), 5.seconds)
-        true
-      }
+  override def update(id: Int, gamestate: String): Unit = {
+    Try {
+      val gamestateQuery = gameBoardTable.filter(_.id === id).map(_.gamestate).update(gamestate)
+      val query = gamestateQuery
+      Await.result(database.run(query), 5.seconds)
+      true
     }
+  }
 
-     def sanitize(str: String): String = {
-      str.replace("\\n", "\n")
-        .replace("\\r", "\r")
-        .replace("\\t", "\t")
-        .replace("\\b", "\b")
-        .replace("\\f", "\f")
-        .replace("\\\\", "\\")
-        .replace("\\\"", "\"")
-        .replace("\\'", "'")
-        .replace("\"\"", "\"")
+  override def deleteGame(id: Int): Try[Boolean] = {
+    Try {
+      Await.result(database.run(gameBoardTable.filter(_.id === id).delete), 5.seconds)
+      true
     }
+  }
+
+  def sanitize(str: String): String = {
+    str.replace("\\n", "\n")
+      .replace("\\r", "\r")
+      .replace("\\t", "\t")
+      .replace("\\b", "\b")
+      .replace("\\f", "\f")
+      .replace("\\\\", "\\")
+      .replace("\\\"", "\"")
+      .replace("\\'", "'")
+      .replace("\"\"", "\"")
+  }
 }
 
 
