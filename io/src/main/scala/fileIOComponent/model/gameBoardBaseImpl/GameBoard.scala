@@ -67,27 +67,19 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
   }
 
 
-  override implicit val pieceReads: Reads[Piece] = (
+  implicit val pieceReads: Reads[Piece] = (
     (JsPath \ "state").read[String] and
       (JsPath \ "prow").read[Int] and
       (JsPath \ "pcol").read[Int] and
       (JsPath \ "color").read[String]
     )((state, prow, pcol, color) => Piece(state, prow, pcol, if (color == "white") White else Black))
 
-  override implicit val fieldReads: Reads[Field] = (
+  implicit val fieldReads: Reads[Field] = (
     (JsPath \ "pos").read[String] and
       (JsPath \ "piece").readNullable[Piece]
     )(Field.apply _)
 
-  /*override implicit val colorReads: Reads[Color] = Reads { json =>
-    json.validate[String].flatMap {
-      case "white" => JsSuccess(Color.White)
-      case "black" => JsSuccess(Color.Black)
-      case other => JsError(s"Invalid color: $other")
-    }
-  }*/
-
-  override implicit val colorWrites: Writes[Color] = new Writes[Color] {
+  implicit val colorWrites: Writes[Color] = new Writes[Color] {
     def writes(color: Color) = Json.obj(
       "color" -> color.color,
     )

@@ -10,8 +10,6 @@ trait DBInterface {
 
   def update(id: Int, gamestate: Option[String]): Unit
 
-  def deleteGame(id: Int): Boolean
-
-  def load(): Unit
+  def deleteGame(id: Int): Try[Boolean]
 
 }

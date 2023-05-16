@@ -31,8 +31,6 @@ trait GameBoardInterface {
 
   def movePossible(start: String, dest: String): Mover
 
-  def gameBoardToJson(): Unit
-
   def jsonToString: String
   
   def toJson: JsValue

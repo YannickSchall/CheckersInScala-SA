@@ -3,6 +3,7 @@ package fileIOComponent.dbImpl.Slick
 import com.google.inject.Inject
 import fileIOComponent.dbImpl.DBInterface
 import fileIOComponent.dbImpl.Slick.Tables.GameBoardTable
+import fileIOComponent.fileIOJsonImpl.IO
 import fileIOComponent.model.gameBoardBaseImpl.{Color, GameBoard, Piece}
 import fileIOComponent.model.GameBoardInterface
 import play.api.libs.json.JsValue
@@ -25,6 +26,7 @@ class SlickDBCheckers @Inject () extends DBInterface {
   val db_user = sys.env.getOrElse("POSTGRES_USER", "postgres").toString
   val db_pw = sys.env.getOrElse("POSTGRES_PASSWORD", "postgres").toString
   val db_name = sys.env.getOrElse("POSTGRES_DB", "postgres").toString
+  val io = new IO()
 
 
   val database =
@@ -67,12 +69,8 @@ class SlickDBCheckers @Inject () extends DBInterface {
 
     override def update(id: Int, gamestate: Option[String]): Unit = {
       Try {
-        val gamestateQuery =
-          gamestate match {
-            case Some(name) => gameBoardTable.filter(_.id === id).map(_.name).update(gamestate)
-            case None => DBIO.successful(0)
-          }
-        val query = gamestateQuery andThen cardsQuery andThen cardCountQuery andThen placedQuery
+        val gamestateQuery = gameBoardTable.filter(_.id === id).map(_.gamestate).update(gamestate)
+        val query = gamestateQuery
         Await.result(database.run(query), 5.seconds)
         true
       }
