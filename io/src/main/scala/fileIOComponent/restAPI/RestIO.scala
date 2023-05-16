@@ -1,25 +1,22 @@
 package fileIOComponent.restAPI
 
-import akka.http.scaladsl.server.Directives.{complete, concat, get, path}
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCode}
+import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.{ExceptionHandler, Route}
-import fileIOComponent.restAPI.IOController
-import fileIOComponent.dbImpl.Slick.SlickDBCheckers
-
-import scala.util.{Failure, Success}
 import akka.protobufv3.internal.compiler.PluginProtos.CodeGeneratorResponse.File
-
-import scala.concurrent.{ExecutionContextExecutor, Future}
 import com.google.inject.AbstractModule
+import fileIOComponent.dbImpl.Slick.SlickDBCheckers
 import fileIOComponent.fileIOJsonImpl.IO
 import fileIOComponent.model.GameBoardInterface
 import fileIOComponent.model.gameBoardBaseImpl.GameBoard
+import fileIOComponent.restAPI.IOController
 
+import scala.concurrent.{ExecutionContextExecutor, Future}
 import scala.io.StdIn
+import scala.util.{Failure, Success}
 
 
 object RestIO {
@@ -80,15 +77,15 @@ object RestIO {
         }
       )
     },
-    path ("io" / "dbsave") {
-        put {
-          entity(as[String]) { gameString =>
-            complete {
+    path("io" / "dbsave") {
+      put {
+        entity(as[String]) { gameString =>
+          complete {
             slick.save(fileIO.jsonToGameBoard(gameString))
             Future.successful(HttpEntity(ContentTypes.`text/html(UTF-8)`, "game successfully saved"))
-            }
           }
         }
+      }
     },
     path("io" / "dbdelete") {
       put {
@@ -112,7 +109,7 @@ object RestIO {
                   case Some(gamestate) => Some(gamestate.toString)
                   case None => None
                 }
-              val result = slick.update(id = id.toInt, gamestate=gamestate.toString)
+              val result = slick.update(id = id.toInt, gamestate = gamestate.toString)
               Future.successful(HttpEntity(ContentTypes.`text/html(UTF-8)`, s"updated gameboard database" +
                 s" $result"))
             }

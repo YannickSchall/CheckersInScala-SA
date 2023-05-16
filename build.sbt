@@ -23,7 +23,7 @@ lazy val allDependencies = Seq(
   slf4jNop,
   slick,
   hikarislick,
-  postgresql
+  mysql
 )
 
 /** Root Module */

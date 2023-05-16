@@ -11,7 +11,6 @@ import play.api.libs.json.JsValue
 import play.api.libs.json.Json.parse
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api.*
-import slick.lifted.TableQuery
 
 import java.io.PrintWriter
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -23,21 +22,22 @@ import scala.util.{Failure, Success, Try}
 
 
 class SlickDBCheckers @Inject() extends DBInterface {
-  val connectIP = sys.env.getOrElse("MYSQL_HOST", "localhost")
-  val connectPort = sys.env.getOrElse("MYSQL_PORT", 3306).toString.toInt
-  val db_user = sys.env.getOrElse("MYSQL_USER", "user")
-  val db_pw = sys.env.getOrElse("MYSQL_PASSWORD", "root")
-  val db_name = sys.env.getOrElse("MYSQL_DATABASE", "postgres")
+  val databaseDB: String = sys.env.getOrElse("MYSQL_DATABASE", "checkers")
+  val databaseUser: String = sys.env.getOrElse("MYSQL_USER", "user")
+  val databasePassword: String = sys.env.getOrElse("MYSQL_PASSWORD", "root")
+  val databasePort: String = sys.env.getOrElse("MYSQL_PORT", "3306")
+  val databaseHost: String = sys.env.getOrElse("MYSQL_HOST", "localhost")
+  val databaseUrl = s"jdbc:mysql://$databaseHost:$databasePort/$databaseDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&autoReconnect=true"
+
+  println(databaseUrl)
+  val database = Database.forURL(
+    url = databaseUrl,
+    driver = "com.mysql.cj.jdbc.Driver",
+    user = databaseUser,
+    password = databasePassword
+  )
+
   val io = new IO()
-
-
-  val database =
-    Database.forURL(
-      url = "jdbc:mysql://" + connectIP + ":" + connectPort + "/" + db_name + "?serverTimezone=UTC",
-      user = db_user,
-      password = db_pw,
-      driver = "com.mysql.cj.jdbc.Driver")
-
   val gameBoardTable = new TableQuery(new GameBoardTable(_))
 
   override def save(gameBoard: GameBoardInterface): Unit = {
@@ -52,7 +52,8 @@ class SlickDBCheckers @Inject() extends DBInterface {
     val jsonGb = parse(io.gameBoardToJson(gameBoard))
     val gbFromJson = (jsonGb \ "gameBoard").get.toString()
     new PrintWriter("savefile") {
-      write(gbFromJson); close
+      write(gbFromJson);
+      close
     }
   }
 

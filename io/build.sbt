@@ -3,8 +3,8 @@ import dependencies._
 
 
 name := "Checkers-IO"
-organization  := "XXXY"
-version       := "0.5.0-SNAPSHOT"
+organization := "XXXY"
+version := "0.5.0-SNAPSHOT"
 scalaVersion := "3.2.0"
 
 /** Dependencies */
@@ -26,7 +26,7 @@ lazy val allDependencies2 = Seq(
   slf4jNop,
   slick,
   hikarislick,
-  postgresql
+  mysql
 )
 
 libraryDependencies ++= allDependencies2
