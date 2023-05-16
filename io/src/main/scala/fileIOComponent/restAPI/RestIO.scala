@@ -85,7 +85,6 @@ object RestIO {
           entity(as[String]) { gameString =>
             complete {
             slick.save(fileIO.jsonToGameBoard(gameString))
-
             Future.successful(HttpEntity(ContentTypes.`text/html(UTF-8)`, "game successfully saved"))
             }
           }
