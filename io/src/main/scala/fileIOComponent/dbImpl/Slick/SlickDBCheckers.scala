@@ -8,15 +8,13 @@ import fileIOComponent.model.gameBoardBaseImpl.{Color, GameBoard, Piece}
 import fileIOComponent.model.GameBoardInterface
 import play.api.libs.json.JsValue
 import slick.lifted.TableQuery
-import slick.jdbc.PostgresProfile.api.*
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, DurationInt}
 import scala.concurrent.{Await, Future}
 import scala.io.StdIn
 import scala.util.{Failure, Success, Try}
 import slick.jdbc.JdbcBackend.Database
-
+import slick.jdbc.MySQLProfile.api.*
 import scala.util.control.Breaks.break
 
 
@@ -67,7 +65,7 @@ class SlickDBCheckers @Inject () extends DBInterface {
      }
    }
 
-    override def update(id: Int, gamestate: Option[String]): Unit = {
+    override def update(id: Int, gamestate: String): Unit = {
       Try {
         val gamestateQuery = gameBoardTable.filter(_.id === id).map(_.gamestate).update(gamestate)
         val query = gamestateQuery

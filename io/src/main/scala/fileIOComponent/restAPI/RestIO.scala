@@ -1,4 +1,5 @@
 package fileIOComponent.restAPI
+
 import akka.http.scaladsl.server.Directives.{complete, concat, get, path}
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
@@ -15,6 +16,7 @@ import akka.protobufv3.internal.compiler.PluginProtos.CodeGeneratorResponse.File
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import com.google.inject.AbstractModule
+import fileIOComponent.fileIOJsonImpl.IO
 
 import scala.io.StdIn
 
@@ -51,7 +53,15 @@ object RestIO {
     },
     path("io" / "dbload") {
       get {
-      ///
+        parameter("id".?) { (id) =>
+          val id_updated =
+            id match {
+              case Some(id) => Some(id.toInt)
+              case None => None
+            }
+          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, fileIO.gameToJson(slick.load(id_updated)
+            .getOrElse(new Game("ERROR LOADING DATABASE", "ERROR LOADING DATABASE", UnoState.winState))).toString()))
+        }
       }
     },
     path("io" / "save") {
