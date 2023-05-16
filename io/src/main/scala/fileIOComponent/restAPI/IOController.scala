@@ -1,6 +1,6 @@
 package fileIOComponent.restAPI
 import com.google.inject.{Guice, Inject, Injector}
-import fileIOComponent.dbImpl.{DBInterface, DAOInterface}
+import fileIOComponent.dbImpl.DBInterface
 import fileIOComponent.{IOInterface, IOModule}
 
 import java.io.*
@@ -14,7 +14,7 @@ object IOController {
   val injector: Injector = Guice.createInjector(IOModule())
   val fileIO = injector.getInstance(classOf[IOInterface])
   val database = injector.getInstance(classOf[DBInterface])
-  val databaseDAO = injector.getInstance(classOf[DAOInterface])
+
 
   def load(): String = {
     fileIO.load()

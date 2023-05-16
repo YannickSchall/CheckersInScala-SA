@@ -85,14 +85,14 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
     )
   }
 
-  override implicit val fieldWrites: Writes[Field] = new Writes[Field] {
+  implicit val fieldWrites: Writes[Field] = new Writes[Field] {
     def writes(field: Field) = Json.obj(
       "pos" -> field.getPos,
       "piece" -> pieceWrites.writes(field.getPiece)
     )
   }
 
-  override implicit val pieceWrites: Writes[Option[Piece]] = new Writes[Option[Piece]] {
+  implicit val pieceWrites: Writes[Option[Piece]] = new Writes[Option[Piece]] {
     def writes(piece: Option[Piece]) = {
       if (piece.isDefined) {
         Json.obj(

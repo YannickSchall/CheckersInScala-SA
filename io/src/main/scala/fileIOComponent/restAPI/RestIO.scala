@@ -29,6 +29,10 @@ object RestIO {
         POST  /fileio/save
       """.stripMargin
 
+
+  val fileIO = new IO
+  val slick = new SlickDBCheckers
+
   // needed to run the route
   val system: ActorSystem[Any] = ActorSystem(Behaviors.empty, "my-system")
 
@@ -78,7 +82,7 @@ object RestIO {
     concat(
       post {
         entity(as[String]) { game =>
-          SlickDBCheckers.save(game)
+          fileIO.save(fileIO.jsonToGameBoard(game))
           complete("game saved")
         }
       }

@@ -6,6 +6,7 @@ import fileIOComponent.dbImpl.Slick.Tables.GameBoardTable
 import fileIOComponent.fileIOJsonImpl.IO
 import fileIOComponent.model.gameBoardBaseImpl.{Color, GameBoard, Piece}
 import fileIOComponent.model.GameBoardInterface
+import play.api.libs.json.JsPath.\
 import play.api.libs.json.JsValue
 import slick.lifted.TableQuery
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -39,8 +40,8 @@ class SlickDBCheckers @Inject () extends DBInterface {
   override def save(gameBoard: GameBoardInterface): Unit = {
     Try {
       println("saving game in DB")
-      val jsonGb = gameBoard.gameBoardToJson()
-      val gbFromJson = (jsonGb \ "gameBoard").get.toString
+      val jsonGb = io.gameBoardToJson(gameBoard)
+      val gbFromJson = (jsonGb \ "gameBoard").get.toString()
       val gb = (0, gbFromJson)
       Await.result(database.run(gameBoardTable returning gameBoardTable.map(_.id) += gb), 2.seconds)
     }
@@ -55,7 +56,7 @@ class SlickDBCheckers @Inject () extends DBInterface {
        val answer = Await.result(database.run(loadQuery.result), 5.seconds)
        val slave = new GameBoard(8)
        val res = try {
-         slave.jsonToGame(answer.asInstanceOf[JsValue])
+         slave.jsonToGameBoard(answer.head(1))
        } catch {
          case e: Exception =>
            e.printStackTrace()

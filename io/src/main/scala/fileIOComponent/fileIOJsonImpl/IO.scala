@@ -16,6 +16,8 @@ import play.api.libs.json.*
 
 class IO @Inject () extends IOInterface{
 
+
+
   override def load(): String = {
     val file = scala.io.Source.fromFile("game.json")
     try file.mkString finally file.close()
