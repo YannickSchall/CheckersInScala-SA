@@ -8,6 +8,7 @@ import fileIOComponent.model.gameBoardBaseImpl.{Color, GameBoard, Piece}
 import fileIOComponent.model.GameBoardInterface
 import play.api.libs.json.JsPath.\
 import play.api.libs.json.JsValue
+import play.api.libs.json.Json.parse
 import slick.lifted.TableQuery
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, DurationInt}
@@ -20,11 +21,11 @@ import scala.util.control.Breaks.break
 
 
 class SlickDBCheckers @Inject () extends DBInterface {
-  val connectIP = sys.env.getOrElse("POSTGRES_IP", "localhost").toString
-  val connectPort = sys.env.getOrElse("POSTGRES_PORT", 5432).toString.toInt
-  val db_user = sys.env.getOrElse("POSTGRES_USER", "postgres").toString
-  val db_pw = sys.env.getOrElse("POSTGRES_PASSWORD", "postgres").toString
-  val db_name = sys.env.getOrElse("POSTGRES_DB", "postgres").toString
+  val connectIP = sys.env.getOrElse("MYSQL_HOST", "localhost").toString
+  val connectPort = sys.env.getOrElse("MYSQL_PORT", 3306).toString.toInt
+  val db_user = sys.env.getOrElse("MYSQL_USER", "user").toString
+  val db_pw = sys.env.getOrElse("MYSQL_PASSWORD", "root").toString
+  val db_name = sys.env.getOrElse("MYSQL_DATABASE", "postgres").toString
   val io = new IO()
 
 
@@ -33,14 +34,14 @@ class SlickDBCheckers @Inject () extends DBInterface {
       url = "jdbc:postgresql://" + connectIP + ":" + connectPort + "/" + db_name + "?serverTimezone=UTC",
       user = db_user,
       password = db_pw,
-      driver = "org.postgresql.Driver")
+      driver = "com.mysql.cj.jdbc.Driver")
 
   val gameBoardTable = new TableQuery(new GameBoardTable(_))
 
   override def save(gameBoard: GameBoardInterface): Unit = {
     Try {
       println("saving game in DB")
-      val jsonGb = io.gameBoardToJson(gameBoard)
+      val jsonGb = parse(io.gameBoardToJson(gameBoard))
       val gbFromJson = (jsonGb \ "gameBoard").get.toString()
       val gb = (0, gbFromJson)
       Await.result(database.run(gameBoardTable returning gameBoardTable.map(_.id) += gb), 2.seconds)

@@ -10,13 +10,14 @@ import akka.http.scaladsl.server.{ExceptionHandler, Route}
 import fileIOComponent.restAPI.IOController
 import fileIOComponent.dbImpl.Slick.SlickDBCheckers
 
-
 import scala.util.{Failure, Success}
 import akka.protobufv3.internal.compiler.PluginProtos.CodeGeneratorResponse.File
 
 import scala.concurrent.{ExecutionContextExecutor, Future}
 import com.google.inject.AbstractModule
 import fileIOComponent.fileIOJsonImpl.IO
+import fileIOComponent.model.GameBoardInterface
+import fileIOComponent.model.gameBoardBaseImpl.GameBoard
 
 import scala.io.StdIn
 
@@ -63,8 +64,11 @@ object RestIO {
               case Some(id) => Some(id.toInt)
               case None => None
             }
-          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, fileIO.gameToJson(slick.load(id_updated)
-            .getOrElse(new Game("ERROR LOADING DATABASE", "ERROR LOADING DATABASE", UnoState.winState))).toString()))
+          complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, fileIO.gameBoardToJson(
+            slick.load(id_updated).getOrElse(new GameBoard(1))
+              )
+            )
+          )
         }
       }
     },
@@ -81,8 +85,8 @@ object RestIO {
     path ("io" / "dbsave") {
     concat(
       post {
-        entity(as[String]) { game =>
-          fileIO.save(fileIO.jsonToGameBoard(game))
+        entity(as[String]) { gameString =>
+          slick.save(fileIO.jsonToGameBoard(gameString))
           complete("game saved")
         }
       }

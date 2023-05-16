@@ -4,7 +4,7 @@ import com.google.inject.{Guice, Inject}
 import com.google.inject.name.Names
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
-
+import fileIOComponent.IOInterface
 import java.io.{File, PrintWriter}
 import fileIOComponent.dbImpl.Slick.SlickDBCheckers
 import fileIOComponent.model.{FieldInterface, GameBoardInterface}
@@ -69,7 +69,8 @@ class IO @Inject () extends IOInterface{
     }
   }
 
-  def gameBoardToJson(gb: GameBoardInterface) = {
+  override def gameBoardToJson(gb: GameBoardInterface): String = {
+    Json.prettyPrint(
     Json.obj(
       "gameBoard" -> Json.obj(
         "size" -> gb.size,
@@ -87,10 +88,8 @@ class IO @Inject () extends IOInterface{
         )
       )
     )
+    )
   }
-
-  override def jsonToString: String =
-    Json.prettyPrint(gameBoardToJson)
   
   override def jsonToGameBoard(source: String): GameBoard = {
     val json: JsValue = Json.parse(source)

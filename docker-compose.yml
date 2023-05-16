@@ -6,16 +6,16 @@ services:
     restart: always
     ports:
       - "3306:3306"
-    container_name: uno-database
+    container_name: checkers-database
     environment:
-      MYSQL_HOST: uno-database
+      MYSQL_HOST: checkers-database
       MYSQL_PORT: 3306
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: uno
-      MYSQL_USER: nue
+      MYSQL_DATABASE: checkers
+      MYSQL_USER: user
       MYSQL_PASSWORD: root
     volumes:
-      - .:/var/lib/sql/uno
+      - .:/var/lib/sql/checkers
   io:
     image: checkers-io-image
     build:
@@ -32,10 +32,10 @@ services:
       MYSQL_PORT: 3306
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: checkers
-      MYSQL_USER: nue
+      MYSQL_USER: user
       MYSQL_PASSWORD: root
     depends_on:
-      - db
+      - database
     volumes:
           - .:/var/lib/sql/uno
     tty: true

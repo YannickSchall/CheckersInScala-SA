@@ -11,5 +11,6 @@ trait IOInterface {
 
   def jsonToGameBoard(source: String): GameBoard
 
-  override def jsonToString: String
-}
+  def gameBoardToJson(gb: GameBoardInterface): String
+
+  }
