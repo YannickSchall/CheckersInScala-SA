@@ -40,14 +40,20 @@ class SlickDBCheckers @Inject() extends DBInterface {
   val io = new IO()
   val gameBoardTable = new TableQuery(new GameBoardTable(_))
 
+  val setup: DBIOAction[Unit, NoStream, Effect.Schema] = DBIO.seq(
+    gameBoardTable.schema.createIfNotExists
+  )
+  println("creating tables")
+  Await.result(database.run(setup), 15.seconds)
+  println("tables created")
+
   override def save(gameBoard: GameBoardInterface): Unit = {
     Try {
       println("saving game in DB")
       val jsonGb = parse(io.gameBoardToJson(gameBoard))
       val gbFromJson = (jsonGb \ "gameBoard").get.toString()
       val gb = (0, gbFromJson)
-      val test = (1, "test")
-      Await.result(database.run(gameBoardTable returning gameBoardTable.map(_.id) += test), 15.seconds)
+      Await.result(database.run(gameBoardTable returning gameBoardTable.map(_.id) += gb), 15.seconds)
     }
     val jsonGb = parse(io.gameBoardToJson(gameBoard))
     val gbFromJson = (jsonGb \ "gameBoard").get.toString()
