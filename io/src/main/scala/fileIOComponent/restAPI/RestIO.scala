@@ -91,9 +91,36 @@ object RestIO {
         }
       }
     )
+    },
+    path("io" / "dbdelete") {
+        put {
+          parameter("id") {
+            (id) =>
+              complete {
+                val result = slick.deleteGame(id = id.toInt).getOrElse("ERROR")
+                Future.successful(HttpEntity(ContentTypes.`text/html(UTF-8)`, s"deleted game in game database" +
+                  s" $result"))
+              }
+          }
+        }
+    },
+    path("io" / "dbupdate") {
+      put {
+        parameter("id", "gamestate".?) {
+          (id, gamestate) =>
+            complete {
+              val updatetdGb =
+                gamestate match {
+                  case Some(gamestate) => Some(gamestate.toString)
+                  case None => None
+                }
+              val result = slick.update(id = id.toInt, gamestate=gamestate.toString)
+              Future.successful(HttpEntity(ContentTypes.`text/html(UTF-8)`, s"updated gameboard database" +
+                s" $result"))
+            }
+        }
+      }
     }
-
-
   )
 
 
@@ -111,8 +138,6 @@ object RestIO {
       case Failure(exception) => {
         println("IO REST service couldn't be started! Error: " + exception + "\n")
       }
-
-
-
+        
   }
 }
