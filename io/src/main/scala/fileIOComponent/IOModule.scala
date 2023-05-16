@@ -8,6 +8,6 @@ class IOModule extends AbstractModule {
     bind(classOf[IOInterface]).to(classOf[fileIOJsonImpl.IO])
     //bind(classOf[FileIOInterface]).to(classOf[fileIOXmlImpl.FileIO])
     //bind(classOf[DBInterface]).to(classOf[DBSlickImpl])
-    //bind(classOf[DAOInterface]).to(classOf[DAOSlickGridPlayerImpl])
+
   }
 }

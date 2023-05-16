@@ -179,5 +179,4 @@ class Gui(controller: ControllerInterface) extends Frame {
       controller.resize(size)
     }
   }
-
 }

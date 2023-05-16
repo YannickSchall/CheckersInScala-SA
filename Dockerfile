@@ -10,8 +10,8 @@ WORKDIR /CheckersInScala-SA
 
 ADD . /CheckersInScala-SA
 
-RUN chmod +x /CheckersInScala-SA/run.sh
+#RUN chmod +x /CheckersInScala-SA/run.sh
 
-CMD ["bash", "-i", "/CheckersInScala-SA/run.sh"]
+#CMD ["bash", "-i", "/CheckersInScala-SA/run.sh"]
 
-#CMD sbt run
+CMD sbt run

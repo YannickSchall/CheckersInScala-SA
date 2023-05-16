@@ -14,7 +14,7 @@ import fileIOComponent.model.gameBoardBaseImpl.{Color, Field, GameBoard, Piece}
 import scala.io.Source
 import play.api.libs.json.*
 
-class IO @Inject () extends IOInterface{
+class IO @Inject () extends IOInterface {
 
 
 
@@ -90,7 +90,7 @@ class IO @Inject () extends IOInterface{
       )
     )
   }
-  
+
   override def jsonToGameBoard(source: String): GameBoard = {
     val json: JsValue = Json.parse(source)
     val size = (json \ "gameBoard" \ "size").get.toString.toInt
