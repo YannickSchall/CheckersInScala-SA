@@ -26,7 +26,8 @@ lazy val allDependencies2 = Seq(
   slf4jNop,
   slick,
   hikarislick,
-  mysql
+  mysql,
+  mongoDB
 )
 
 libraryDependencies ++= allDependencies2

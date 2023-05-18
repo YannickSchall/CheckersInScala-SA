@@ -20,4 +20,5 @@ object dependencies {
   val slick = ("com.typesafe.slick" %% "slick" % "3.5.0-M3").cross(CrossVersion.for3Use2_13)
   val hikarislick = ("com.typesafe.slick" %% "slick-hikaricp" % "3.5.0-M3").cross(CrossVersion.for3Use2_13)
   val mysql = "mysql" % "mysql-connector-java" % "8.0.32"
+  val mongoDB = ("org.mongodb.scala" %% "mongo-scala-driver" % "4.9.1").cross(CrossVersion.for3Use2_13)
 }

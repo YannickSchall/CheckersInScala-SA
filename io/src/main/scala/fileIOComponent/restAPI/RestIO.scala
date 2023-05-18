@@ -7,7 +7,9 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCode}
 import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.{ExceptionHandler, Route}
 import akka.protobufv3.internal.compiler.PluginProtos.CodeGeneratorResponse.File
-import com.google.inject.AbstractModule
+import com.google.inject.{AbstractModule, Guice, Inject, Injector}
+import fileIOComponent.IOModule
+import fileIOComponent.dbImpl.DBInterface
 import fileIOComponent.dbImpl.Slick.SlickDBCheckers
 import fileIOComponent.fileIOJsonImpl.IO
 import fileIOComponent.model.GameBoardInterface
@@ -27,9 +29,9 @@ object RestIO {
         POST  /fileio/save
       """.stripMargin
 
-
+  val injector: Injector = Guice.createInjector(new IOModule())
   val fileIO = new IO
-  val slick = new SlickDBCheckers
+  val db: DBInterface = injector.getInstance(classOf[DBInterface])
 
   // needed to run the route
   val system: ActorSystem[Any] = ActorSystem(Behaviors.empty, "my-system")
@@ -62,7 +64,7 @@ object RestIO {
               case None => None
             }
           complete(HttpEntity(ContentTypes.`application/json`, fileIO.gameBoardToJson(
-            slick.load(id_updated).getOrElse(new GameBoard(8))))
+            db.load(id_updated).getOrElse(new GameBoard(8))))
           )
         }
       }
@@ -81,7 +83,7 @@ object RestIO {
       put {
         entity(as[String]) { gameString =>
           complete {
-            slick.save(fileIO.jsonToGameBoard(gameString))
+            db.save(fileIO.jsonToGameBoard(gameString))
             Future.successful(HttpEntity(ContentTypes.`text/html(UTF-8)`, "game successfully saved"))
           }
         }
@@ -92,7 +94,7 @@ object RestIO {
         parameter("id") {
           (id) =>
             complete {
-              val result = slick.deleteGame(id = id.toInt).getOrElse("ERROR")
+              val result = db.delete(id = id.toInt).getOrElse("ERROR")
               Future.successful(HttpEntity(ContentTypes.`text/html(UTF-8)`, s"deleted game in game database" +
                 s" $result"))
             }
@@ -109,7 +111,7 @@ object RestIO {
                   case Some(gamestate) => Some(gamestate.toString)
                   case None => None
                 }
-              val result = slick.update(id = id.toInt, gamestate = gamestate.toString)
+              val result = db.update(id = id.toInt, gamestate = gamestate.toString)
               Future.successful(HttpEntity(ContentTypes.`text/html(UTF-8)`, s"updated gameboard database" +
                 s" $result"))
             }

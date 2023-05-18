@@ -12,6 +12,6 @@ trait DBInterface {
 
   def update(id: Int, gamestate: String): Unit
 
-  def deleteGame(id: Int): Try[Boolean]
+  def delete(id: Int): Try[Boolean]
 
 }

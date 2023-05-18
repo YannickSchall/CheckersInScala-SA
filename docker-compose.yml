@@ -1,6 +1,18 @@
 version: "3.9"
 
 services:
+  mongo-checkers:
+    image: mongo
+    restart: always
+    container_name: mongo-checkers
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: Checkers
+      MONGO_INITDB_HOST: mongo-checkers
+      MONGO_INITDB_PORT: 27017
   database:
     image: mysql:5.7
     restart: always
@@ -34,6 +46,11 @@ services:
       MYSQL_DATABASE: checkers
       MYSQL_USER: user
       MYSQL_PASSWORD: root
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: Checkers
+      MONGO_INITDB_HOST: mongo-checkers
+      MONGO_INITDB_PORT: 27017
     depends_on:
       - database
     volumes:
