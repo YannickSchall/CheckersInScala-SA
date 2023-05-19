@@ -13,7 +13,7 @@ import org.mongodb.scala.model.Updates.set
 import org.mongodb.scala.*
 import org.mongodb.scala.model.Filters.{equal, exists}
 import org.mongodb.scala.model.Sorts.descending
-import org.mongodb.scala.model.{Aggregates, Sorts}
+import org.mongodb.scala.model.{Aggregates, Sorts, Updates}
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api.*
 
@@ -21,6 +21,7 @@ import java.io.PrintWriter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, DurationInt}
 import scala.concurrent.{Await, Future}
+
 import scala.concurrent.duration.Duration.Inf
 import scala.io.StdIn
 import scala.util.control.Breaks.break
@@ -40,29 +41,19 @@ class MongoDBCheckers @Inject() extends DBInterface {
   val db: MongoDatabase = client.getDatabase("Checkers")
   val gameBoardCollection: MongoCollection[Document] = db.getCollection("gameBoard")
 
-  private def getNewestId(collection: MongoCollection[Document]): Int =
-    println("start getting id")
+  def getNewestId(collection: MongoCollection[Document]): Int =
     val result = Await.result(collection.find(exists("_id")).sort(descending("_id")).first().head(), Inf)
-    println("done getting id")
-    println(": "+result("_id").asInt32().getValue)
-    if result.contains("_id") then result("_id").asInt32().getValue else 0
+    if result != null then result("_id").asInt32().getValue else 0
 
-
-    //val result = Await.result(, Inf)
-
-    //result.flatMap(_.get("_id").map(_.asInt32().getValue.toHexString)).getOrElse("0").toInt
 
   override def save(gameBoard: GameBoardInterface): Unit = {
     println("Saving game in MongoDB")
     val jsonGb = io.gameBoardToJson(gameBoard)
-    println("1")
     val gbID = getNewestId(gameBoardCollection)+1
-    println("2")
     val gameBoardDocument: Document = Document(
       "_id" -> gbID,
       "gameBoard" -> jsonGb
     )
-    println("3")
     Await.result(gameBoardCollection.insertOne(gameBoardDocument).asInstanceOf[SingleObservable[Unit]].head(), 5.seconds)
     println("Game saved in MongoDB")
   }
@@ -78,13 +69,8 @@ class MongoDBCheckers @Inject() extends DBInterface {
       val gameBoardDocument = Await.result(gameBoardCollection.find(equal("_id", newID)).first().head(), 5.seconds)
 
       val slave = new GameBoard(8)
-      val res = try {
-        slave.jsonToGameBoard(gameBoardDocument("gameBoard").asString().getValue)
-      } catch {
-        case e: Exception =>
-          e.printStackTrace()
-          throw e
-      }
+      val res = slave.jsonToGameBoard(gameBoardDocument("gameBoard").asString().getValue)
+
       println("Game loaded from MongoDB")
       res
     }
@@ -92,8 +78,11 @@ class MongoDBCheckers @Inject() extends DBInterface {
 
   override def update(id: Int, gameBoard: String): Unit = {
     Try {
-      gameBoardCollection.updateOne(equal("_id","gameBoardDocument"), set("_id", gameBoard))
-      //Await.result(gameBoardCollection.find(equal("_id", gameBoard)).first().head(), 5.seconds)
+      val filter = Filters.equal("_id", id)
+      val update = Updates.set("gameBoard", gameBoard)
+      val updateResult: Future[UpdateResult] = gameBoardCollection.updateOne(filter, update).toFuture()
+      val result: UpdateResult = Await.result(updateResult, 5.seconds)
+
     }
   }
 

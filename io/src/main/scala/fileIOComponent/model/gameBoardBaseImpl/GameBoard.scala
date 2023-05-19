@@ -137,10 +137,10 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
 
   override def jsonToGameBoard(source: String): GameBoard = {
     val json: JsValue = Json.parse(source)
-    val size = (json \ "size").get.toString.toInt
+    val size = (json \ "gameBoard" \ "size").get.toString.toInt
     var gb: GameBoard = new GameBoard(size)
 
-    val fields = (json \ "fields").get
+    val fields = (json \ "gameBoard" \ "fields").get
     for (index <- 0 until size * size) {
       val row = fields(index)("row").as[Int]
       val col = fields(index)("col").as[Int]
