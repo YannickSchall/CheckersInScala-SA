@@ -50,7 +50,7 @@ class SlickDBCheckers @Inject() extends DBInterface {
   override def save(gameBoard: GameBoardInterface): Unit = {
     Try {
       println("saving game in DB")
-      val jsonGb = parse(io.gameBoardToJson(gameBoard))
+      val jsonGb = parse(io.gameBoardToJson(gameBoard)) 
       val gbFromJson = (jsonGb \ "gameBoard").get.toString()
       val gb = (0, gbFromJson)
       Await.result(database.run(gameBoardTable returning gameBoardTable.map(_.id) += gb), 15.seconds)

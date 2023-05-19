@@ -9,14 +9,15 @@ import fileIOComponent.model.gameBoardBaseImpl.{Color, GameBoard, Piece}
 import play.api.libs.json.JsPath.\
 import play.api.libs.json.JsValue
 import play.api.libs.json.Json.parse
-import org.mongodb.scala.model.Updates.set
+import org.mongodb.scala.model.Updates.{set, setOnInsert, unset}
 import org.mongodb.scala.*
 import org.mongodb.scala.model.Filters.{equal, exists}
 import org.mongodb.scala.model.Sorts.descending
 import org.mongodb.scala.model.{Aggregates, Sorts, Updates}
 import slick.jdbc.JdbcBackend.Database
 import slick.jdbc.MySQLProfile.api.*
-
+import org.mongodb.scala.result.{DeleteResult, InsertOneResult, UpdateResult}
+import org.mongodb.scala.model.Filters
 import java.io.PrintWriter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, DurationInt}
@@ -26,6 +27,13 @@ import scala.concurrent.duration.Duration.Inf
 import scala.io.StdIn
 import scala.util.control.Breaks.break
 import scala.util.{Failure, Success, Try}
+import scala.concurrent.duration.*
+import scala.concurrent.{Await, Future}
+import org.mongodb.scala.model.Filters.*
+import org.mongodb.scala.model.Updates.*
+import org.mongodb.scala.model.Filters
+import org.mongodb.scala.model.Updates
+import org.mongodb.scala.MongoCollection
 
 
 class MongoDBCheckers @Inject() extends DBInterface {
@@ -39,7 +47,7 @@ class MongoDBCheckers @Inject() extends DBInterface {
   val io = new IO()
   val client: MongoClient = MongoClient(databaseUrl)
   val db: MongoDatabase = client.getDatabase("Checkers")
-  val gameBoardCollection: MongoCollection[Document] = db.getCollection("gameBoard")
+  var gameBoardCollection: MongoCollection[Document] = db.getCollection("gameBoard")
 
   def getNewestId(collection: MongoCollection[Document]): Int =
     val result = Await.result(collection.find(exists("_id")).sort(descending("_id")).first().head(), Inf)
@@ -92,6 +100,7 @@ class MongoDBCheckers @Inject() extends DBInterface {
       true
     }
   }
+
 
 }
 
