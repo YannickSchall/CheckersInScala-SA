@@ -1,71 +1,66 @@
 package Slick
-/*
-import fileIOComponent.dbImpl.Mongo.MongoDBCheckers
+
 import fileIOComponent.dbImpl.Slick.SlickDBCheckers
 import fileIOComponent.dbImpl.Slick.Tables.GameBoardTable
 import fileIOComponent.fileIOJsonImpl.IO
+import fileIOComponent.model.GameBoardInterface
 import fileIOComponent.model.gameBoardBaseImpl.{GameBoard, GameBoardCreator}
-import org.mongodb.scala.{Document, MongoClient, MongoCollection, MongoDatabase, Observable, ObservableFuture}
-import org.mongodb.scala.bson.collection.immutable.Document
-import org.mongodb.scala.gridfs.ObservableFuture
-import org.mongodb.scala.model.Aggregates.*
-import org.mongodb.scala.model.Filters
-import org.mongodb.scala.model.Filters.*
-import org.mongodb.scala.model.Sorts.*
-import org.mongodb.scala.model.Updates.*
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalactic.Prettifier.default
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.{BeforeAndAfter, PrivateMethodTester}
+import play.api.libs.json.Json
 import slick.dbio.{DBIO, DBIOAction, Effect, NoStream}
 import slick.jdbc.JdbcBackend.Database
 import slick.lifted.TableQuery
+import slick.jdbc.MySQLProfile.api.*
+import play.api.libs.json.Json.parse
+import org.scalatestplus.mockito.MockitoSugar
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.*
 import scala.concurrent.{Await, Future}
-import scala.util.{Failure, Success}
+import scala.util.{Failure, Success, Try}
+import org.scalatest.BeforeAndAfterEach
+import slick.lifted.TableQuery
+import org.mockito.ArgumentMatchers.*
 
-class MongoDBCheckersSpec extends AnyWordSpec with Matchers with BeforeAndAfter {
 
-  val databaseDB: String = sys.env.getOrElse("MYSQL_DATABASE", "checkers")
-  val databaseUser: String = sys.env.getOrElse("MYSQL_USER", "user")
-  val databasePassword: String = sys.env.getOrElse("MYSQL_PASSWORD", "root")
-  val databasePort: String = sys.env.getOrElse("MYSQL_PORT", "3306")
-  val databaseHost: String = sys.env.getOrElse("MYSQL_HOST", "localhost")
-  val databaseUrl = s"jdbc:mysql://$databaseHost:$databasePort/$databaseDB?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&autoReconnect=true"
+class SlickDBCheckersSpec extends AnyWordSpec with MockitoSugar with BeforeAndAfterEach {
 
-  println(databaseUrl)
-  val database = Database.forURL(
-    url = databaseUrl,
-    driver = "com.mysql.cj.jdbc.Driver",
-    user = databaseUser,
-    password = databasePassword
-  )
 
   private var slickDBCheckers: SlickDBCheckers = _
   val io = new IO()
 
 
-  before {
-    slickDBCheckers = new SlickDBCheckers()
-    val gameBoardTable = new TableQuery(new GameBoardTable(_))
-    val setup: DBIOAction[Unit, NoStream, Effect.Schema] = DBIO.seq(
-      gameBoardTable.schema.createIfNotExists
-    )
+  val mockDatabase: Database = mock[Database]
+  val slickDAO: SlickDBCheckers = new SlickDBCheckers {
+    override val database: Database = mockDatabase
   }
 
-  after {
+
+  override def beforeEach(): Unit = {
+    super.beforeEach()
+    reset(mockDatabase)
   }
+
 
   "MongoDBCheckers" should {
 
     "save the game board to the Slick table" in {
-      val gameBoard = new GameBoard(8)
-      slickDBCheckers.save(gameBoard)
+      //slickDBCheckers.save(gameBoard)
+      val testgame = mock[GameBoardInterface]
+      val _id = 1
+      val gb = "a game board string"
+      when(testgame.toString()).thenReturn(gb)
+      when(mockDatabase.run(any)).thenReturn(_id)
+      val result = slickDAO.save(testgame)
+      assert(result.asInstanceOf[Try[Int]].isSuccess)
+      verify(mockDatabase).run(any)
 
-      val result = Await.result(collection.find().first().head(), 5.seconds)
-      result("gameBoard").asString().getValue shouldEqual io.gameBoardToJson(gameBoard)
+
+
     }
 
     "load the game board from the Slick table" in {
@@ -78,28 +73,28 @@ class MongoDBCheckersSpec extends AnyWordSpec with Matchers with BeforeAndAfter 
 
     "update the game board in the Slick table" in {
       val gameBoard = new GameBoard(8)
-      slickDBCheckers.save(gameBoard)
+      slickDAO.save(gameBoard)
       val updatedGameBoard = new GameBoard(10)
-      slickDBCheckers.update(0, io.gameBoardToJson(updatedGameBoard))
-
+      slickDAO.update(0, io.gameBoardToJson(updatedGameBoard))
+      /*
       val filter = Filters.equal("_id", mongoDBCheckers.getNewestId(collection))
       val futureResult: Future[Document] = collection.find(filter).head()
       val result: Document = Await.result(futureResult, 5.seconds)
       val jsonGb = result("gameBoard").asString().getValue
       jsonGb shouldEqual mongoDBCheckers.io.gameBoardToJson(updatedGameBoard)
+      */
     }
 
     "delete the game board from the Slick table" in {
       val gameBoard = new GameBoard(8)
       slickDBCheckers.save(gameBoard)
       val highest = 1
-      val result = slickDBCheckers.delete(1)
-      result.isSuccess shouldEqual true
-      result.get shouldEqual true
+      val result = slickDAO.delete(1)
 
+      /*
       val count = Await.result(collection.countDocuments().toFuture(), 5.seconds).head
       count shouldEqual highest-1
+      */
     }
   }
 }
-*/
