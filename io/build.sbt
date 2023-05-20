@@ -27,7 +27,8 @@ lazy val allDependencies2 = Seq(
   slick,
   hikarislick,
   mysql,
-  mongoDB
+  mongoDB,
+  mockito
 )
 
 libraryDependencies ++= allDependencies2

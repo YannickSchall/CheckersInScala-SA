@@ -24,7 +24,8 @@ lazy val allDependencies = Seq(
   slick,
   hikarislick,
   mysql,
-  mongoDB
+  mongoDB,
+  mockito
 )
 
 /** Root Module */

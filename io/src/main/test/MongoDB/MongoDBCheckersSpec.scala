@@ -5,14 +5,12 @@ import org.mongodb.scala.MongoClient
 import org.mongodb.scala.MongoDatabase
 import org.mongodb.scala.MongoCollection
 import org.mongodb.scala.Observable
-import org.mongodb.scala.model.Filters.{equal, *}
+import org.mongodb.scala.model.Filters.{equal, exists, *}
 import org.mongodb.scala.model.Sorts.*
 import org.mongodb.scala.model.Updates.*
 import org.mongodb.scala.model.Aggregates.*
-import org.mongodb.scala.model.Filters.{equal, exists}
 
 import scala.concurrent.duration.*
-import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 import fileIOComponent.dbImpl.Mongo.MongoDBCheckers
