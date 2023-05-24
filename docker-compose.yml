@@ -60,3 +60,5 @@ services:
       FILEIO_SERVICE_HOST: io
       FILEIO_SERVICE_PORT: 8081
     tty: true
+
+
