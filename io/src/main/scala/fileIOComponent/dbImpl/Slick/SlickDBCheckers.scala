@@ -57,22 +57,24 @@ class SlickDBCheckers @Inject() extends DBInterface {
     }
   }
 
-  override def load(id: Option[Int] = None): Try[GameBoardInterface] = {
-    Try {
-      println("storing game in DB")
-      val loadQuery = id.map(id => gameBoardTable.filter(_.id === id))
-        .getOrElse(gameBoardTable.filter(_.id === gameBoardTable.map(_.id).max))
+  override def load(id: Option[Int] = None): Future[Try[GameBoardInterface]]  = {
+    Future {
+      Try {
+        println("storing game in DB")
+        val loadQuery = id.map(id => gameBoardTable.filter(_.id === id))
+          .getOrElse(gameBoardTable.filter(_.id === gameBoardTable.map(_.id).max))
 
-      val answer = Await.result(database.run(loadQuery.result), 5.seconds)
-      val slave = new GameBoard(8)
-      val res = try {
-        slave.jsonToGameBoard(answer.head(1))
-      } catch {
-        case e: Exception =>
-          e.printStackTrace()
-          throw e
+        val answer = Await.result(database.run(loadQuery.result), 5.seconds)
+        val slave = new GameBoard(8)
+        val res = try {
+          slave.jsonToGameBoard(answer.head(1))
+        } catch {
+          case e: Exception =>
+            e.printStackTrace()
+            throw e
+        }
+        res
       }
-      res
     }
   }
 

@@ -66,31 +66,31 @@ class MongoDBCheckers @Inject() extends DBInterface {
     println("Game saved in MongoDB")
   }
 
-  override def load(id: Option[Int] = None): Try[GameBoardInterface] = {
-    Try {
-      println("Loading game from MongoDB")
+  override def load(id: Option[Int] = None): Future[Try[GameBoardInterface]] = {
+    Future {
+      Try {
+        println("Loading game from MongoDB")
 
-      val newID = id match {
-        case Some(id) => id
-        case None => getNewestId(gameBoardCollection)
+        val newID = id.getOrElse(getNewestId(gameBoardCollection))
+
+        val gameBoardDocument = Await.result(gameBoardCollection.find(equal("_id", newID)).first().head(), 5.seconds)
+
+        val slave = new GameBoard(8)
+        val res = slave.jsonToGameBoard(gameBoardDocument("gameBoard").asString().getValue)
+
+        println("Game loaded from MongoDB")
+        res
       }
-      val gameBoardDocument = Await.result(gameBoardCollection.find(equal("_id", newID)).first().head(), 5.seconds)
-
-      val slave = new GameBoard(8)
-      val res = slave.jsonToGameBoard(gameBoardDocument("gameBoard").asString().getValue)
-
-      println("Game loaded from MongoDB")
-      res
     }
   }
+
 
   override def update(id: Int, gameBoard: String): Unit = {
     Try {
       val filter = Filters.equal("_id", id)
       val update = Updates.set("gameBoard", gameBoard)
-      val updateResult: Future[UpdateResult] = gameBoardCollection.updateOne(filter, update).toFuture()
+      val updateResult: Future[UpdateResult] = gameBoardCollection.updateOne(filter, update).to
       val result: UpdateResult = Await.result(updateResult, 5.seconds)
-
     }
   }
 

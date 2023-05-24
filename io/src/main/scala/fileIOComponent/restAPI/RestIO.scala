@@ -16,7 +16,7 @@ import fileIOComponent.model.GameBoardInterface
 import fileIOComponent.model.gameBoardBaseImpl.GameBoard
 import fileIOComponent.restAPI.IOController
 
-import scala.concurrent.{ExecutionContextExecutor, Future}
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import scala.io.StdIn
 import scala.util.{Failure, Success}
 
