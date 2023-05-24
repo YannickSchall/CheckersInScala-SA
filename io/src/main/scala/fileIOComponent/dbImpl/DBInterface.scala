@@ -8,7 +8,7 @@ trait DBInterface {
 
   def save(gameBoard: GameBoardInterface): Unit
 
-  def load(id: Option[Int] = None): Try[GameBoardInterface]
+  def load(id: Option[Int] = None): Future[Try[GameBoardInterface]]
 
   def update(id: Int, gamestate: String): Unit
 
