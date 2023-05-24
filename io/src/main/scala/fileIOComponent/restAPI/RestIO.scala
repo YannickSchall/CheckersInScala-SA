@@ -15,6 +15,7 @@ import fileIOComponent.fileIOJsonImpl.IO
 import fileIOComponent.model.GameBoardInterface
 import fileIOComponent.model.gameBoardBaseImpl.GameBoard
 import fileIOComponent.restAPI.IOController
+import scala.concurrent.duration.{Duration, DurationInt}
 
 import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import scala.io.StdIn
@@ -64,7 +65,7 @@ object RestIO {
               case None => None
             }
           complete(HttpEntity(ContentTypes.`application/json`, fileIO.gameBoardToJson(
-            db.load(id_updated).getOrElse(new GameBoard(8))))
+            Await.result(db.load(id_updated), 5.seconds).getOrElse(new GameBoard(8))))
           )
         }
       }
