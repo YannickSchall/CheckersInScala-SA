@@ -19,7 +19,6 @@ read -t 15 selectview
 
 
 
-
 SELVIEW=${selectview,,}
 
 if [[ $SELVIEW == "gui" ]]; then
