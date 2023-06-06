@@ -1,10 +1,12 @@
 import sbt._
 import Keys._
+import sbt.librarymanagement.InclExclRule
+
 
 object dependencies {
   val scalatic = "org.scalactic" %% "scalactic" % "3.2.15"
   val scalatest = "org.scalatest" %% "scalatest" % "3.2.15" % "test"
-  val swing = "org.scala-lang.modules" %% "scala-swing" % "3.0.0"
+  val swing = ("org.scala-lang.modules" %% "scala-swing" % "3.0.0").cross(CrossVersion.for3Use2_13)
   val ginject = "com.google.inject" % "guice" % "5.1.0"
   val well = "net.codingwell" %% "scala-guice" % "5.1.1"
   val xml = "org.scala-lang.modules" %% "scala-xml" % "2.0.0"
@@ -22,4 +24,7 @@ object dependencies {
   val mysql = "mysql" % "mysql-connector-java" % "8.0.32"
   val mongoDB = ("org.mongodb.scala" %% "mongo-scala-driver" % "4.9.1").cross(CrossVersion.for3Use2_13)
   val mockito = "org.scalatestplus" %% "mockito-3-4" % "3.2.9.0" % Test
+  val gatlingExclude = Seq(("com.typesafe.akka", "akka-actor_2.13"), ("org.scala-lang.modules", "scala-java8-compat_2.13"), ("com.typesafe.akka", "akka-slf4j_2.13")).toVector.map((org_name: Tuple2[String, String]) => InclExclRule(org_name._1, org_name._2))
+  val gatlingHigh = ("io.gatling.highcharts" % "gatling-charts-highcharts" % "3.9.5" % "test").withExclusions(gatlingExclude)
+  val gatlingTest = ("io.gatling" % "gatling-test-framework" % "3.9.5" % "test").withExclusions(gatlingExclude)
 }

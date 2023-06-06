@@ -89,7 +89,7 @@ class MongoDBCheckers @Inject() extends DBInterface {
     Try {
       val filter = Filters.equal("_id", id)
       val update = Updates.set("gameBoard", gameBoard)
-      val updateResult: Future[UpdateResult] = gameBoardCollection.updateOne(filter, update).to
+      val updateResult: Future[UpdateResult] = gameBoardCollection.updateOne(filter, update).toFuture()
       val result: UpdateResult = Await.result(updateResult, 5.seconds)
     }
   }

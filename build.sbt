@@ -25,7 +25,9 @@ lazy val allDependencies = Seq(
   hikarislick,
   mysql,
   mongoDB,
-  mockito
+  mockito,
+  gatlingTest,
+  gatlingHigh
 )
 
 /** Root Module */
@@ -35,7 +37,7 @@ lazy val root: Project = Project(id = "Checkers", base = file("."))
     version := "0.5.0-SNAPSHOT",
     commonSettings,
     libraryDependencies ++= allDependencies,
-  )
+  ).enablePlugins(GatlingPlugin)
 
 /** IO Module */
 lazy val io: Project = Project(id = "Checkers-IO", base = file("io"))
@@ -44,7 +46,7 @@ lazy val io: Project = Project(id = "Checkers-IO", base = file("io"))
     version := "0.5.0-SNAPSHOT",
     commonSettings,
     libraryDependencies ++= allDependencies,
-  )
+  ).enablePlugins(GatlingPlugin)
 
 
 /** Common Settings */
