@@ -21,7 +21,7 @@ services:
   persistence:
     image: checkers-io-image
     build:
-      context: ../../../../../.
+      context: ../../../../..
       dockerfile: docker/service.Dockerfile
       args:
         - SERVICE=persistence

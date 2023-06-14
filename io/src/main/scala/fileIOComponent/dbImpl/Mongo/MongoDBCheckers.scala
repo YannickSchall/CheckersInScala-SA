@@ -22,7 +22,6 @@ import java.io.PrintWriter
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration.{Duration, DurationInt}
 import scala.concurrent.{Await, Future}
-
 import scala.concurrent.duration.Duration.Inf
 import scala.io.StdIn
 import scala.util.control.Breaks.break
@@ -31,7 +30,6 @@ import scala.concurrent.duration.*
 import scala.concurrent.{Await, Future}
 import org.mongodb.scala.model.Filters.*
 import org.mongodb.scala.model.Updates.*
-import org.mongodb.scala.model.Filters
 import org.mongodb.scala.model.Updates
 import org.mongodb.scala.MongoCollection
 

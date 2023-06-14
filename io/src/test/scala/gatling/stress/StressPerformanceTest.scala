@@ -1,23 +1,25 @@
+package gatling
+package stress
 
 import com.dimafeng.testcontainers.{ContainerDef, DockerComposeContainer, ExposedService}
-import io.gatling.core.Predef._
-import io.gatling.http.Predef._
+import io.gatling.http.Predef.*
+
 import java.io.File
 import org.testcontainers.containers.wait.strategy.Wait
-import scala.concurrent.duration._
 
-import util.data.Tile
-import CheckersServiceSimulation._
-import Database._
+import scala.concurrent.duration.*
+import util.*
+import gatling.CheckersServiceSimulation.*
+import gatling.Database.*
+import io.gatling.core.Predef.*
 
 
-abstract class StressPerformanceTest(database: Database) extends IOSimulation("Stress", database):
+abstract class StressPerformanceTest(database: Database) extends IoSimulation("Stress", database):
 
   override protected val defaultUserCount: Int = 50
   override val scenarioBuilder = scenario(name)
-    .feed(usernameFeeder)
-    .feed(passwordFeeder)
-    .exec(simpleOperationChain)
+    .feed(idFeeder)
+    .exec(operationChain)
 
   override protected val populationBuilder =
     scenarioBuilder

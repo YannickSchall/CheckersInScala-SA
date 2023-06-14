@@ -24,7 +24,7 @@ services:
   io:
       image: checkers-io-image
       build:
-        context: ./../../../../../io/
+        context: ../../../../../../io
         dockerfile: ./../../../../../Dockerfile
       ports:
         - "8081:8081"

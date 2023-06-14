@@ -126,8 +126,7 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
       )
     )
   }
-
-
+  
 
   override def jsonToString: String =
     Json.prettyPrint(gameBoardToJson)

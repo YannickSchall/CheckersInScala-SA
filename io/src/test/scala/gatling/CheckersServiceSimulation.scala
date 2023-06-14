@@ -1,23 +1,28 @@
+package gatling
+
 import com.dimafeng.testcontainers.{ContainerDef, DockerComposeContainer, ExposedService}
 import org.testcontainers.containers.wait.strategy.Wait
+
 import java.time.Duration
 import java.time.temporal.ChronoUnit
-import play.api.libs.json.{Json,JsString,JsValue,JsArray,JsObject}
+import play.api.libs.json.{JsArray, JsObject, JsString, JsValue, Json}
+
 import java.io.File
 import scala.io.Source
 import scala.reflect.io.Directory
 import java.io.PrintWriter
 import io.gatling.core_
 import io.netty.handler.codec.http.HttpMethod
-import io.gatling.core.Predef._
+import io.gatling.core.Predef.*
 import io.gatling.core.body.Body
 import io.gatling.core.structure.ChainBuilder
 import io.gatling.core.structure.PopulationBuilder
 import io.gatling.core.structure.ScenarioBuilder
-import scala.concurrent.duration._
-import scala.util.Random
+import io.gatling.http.Predef.{http, status}
 
-import util._
+import scala.concurrent.duration.*
+import scala.util.Random
+import util.*
 //import CheckersServiceSimulation._
 
 
@@ -209,7 +214,7 @@ trait CheckersServiceSimulation(
  *
  * @see [[https://gatling.io/docs/gatling/reference/current/session/feeder/]]
  */
-object ChessServiceSimulation:
+object CheckersServiceSimulation:
   /** List of HTTP status codes accepted by operations built with `buildOperation`
    *
    * Gatling will log an error if the response status code is not in this list.
@@ -231,8 +236,8 @@ object ChessServiceSimulation:
     Map("" -> "H5")
   }*/
 
-  val randomFeeder = jsonFile("resources/gameboard.json").eager.random
-  val randomFeeder = Iterator.continually{Map()}
+  val randomFeeder = jsonFile("resources/gameboard.json").random
+
 
   val randomTileFeeder = Iterator.continually {
     Map("tile" -> s"${Tile(scala.util.Random.nextInt(8) + 1, scala.util.Random.nextInt(8) + 1, 8).toString}")
@@ -242,4 +247,8 @@ object ChessServiceSimulation:
   }
   val passwordFeeder = Iterator.from(0).map { int =>
     Map("password" -> s"gatling$int")
+  }
+
+  val idFeeder = Iterator.from(1).map {
+    int => Map("id" -> int)
   }

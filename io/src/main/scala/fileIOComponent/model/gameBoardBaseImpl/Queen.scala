@@ -14,9 +14,10 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
   else "\u001B[30mQ\u001B[0m"//"\uD83D\uDFE3" //purple/white
 
 
-  // ok
+  /** This method is a helper methode in order to check if a capture condition is met*/
   override def cap_cond(row_offset: Int, col_offset: Int, gameBoard: GameBoard): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isDefined && gameBoard.field(row + row_offset, col + col_offset).piece.get.getColor == (if (getColor == Black) White else Black)
 
+  /** This method is a helper in order to check the moving direction */
   override def getDirection(toRow: Int, toCol: Int): Direction = {
     (toRow < row, toCol < col) match {
       case (true, true) => UpLeft
@@ -26,6 +27,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
     }
   }
 
+  /** This method checks which stones are capturable*/
   override def capturable(to: String, direction: Direction, row_dist: Int, col_dist: Int, gameBoard: GameBoard): Boolean = {
     val Last: Int = gameBoard.size - 1
     val toRow: Int = Integer.parseInt(to.tail) - 1
@@ -44,6 +46,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
     }
   }
 
+  /** This method stores all capuring possibilies in a list*/
   override def fillList(to: String, gameBoard: GameBoard, direction: Direction, dist_count: Int): ListBuffer[String] = {
     // brauchen wir 2 unterschiedliche Listen? früher blackList
     val Last: Int = gameBoard.size - 1
@@ -59,21 +62,21 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
     fillList(to, gameBoard, direction, dist_count+1)
   }
 
-  // funktion höheren ordnungs // currying
+  /** This uses currying to calcuate the distance to the desired moving destination*/
   private def calcDist(direction: Direction): Int => (Int, Int) = dist_count => {
     val row_dist: Int = dist_count * direction.dir._1
     val col_dist: Int = dist_count * direction.dir._2
     (row_dist, col_dist)
   }
 
-  // pattern matching
+  /** This method uses passtern matching to increase the offset for border tiles*/
   private def increaseOffset(offset: Int): Int = offset match {
     case x if x > 0 => x + 1
     case x if x < 0 => x - 1
     case _ => 0
   }
 
-  // funktionale Komposition
+  /** This method uses functional composition to calculate next distamce*/
   private def calcNextDist(direction: Direction): Int => (Int, Int) =
     calcDist(direction) andThen { case (rd, cd) => (rd + increaseOffset(rd), cd + increaseOffset(cd)) }
 
