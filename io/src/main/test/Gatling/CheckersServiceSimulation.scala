@@ -231,7 +231,7 @@ object ChessServiceSimulation:
     Map("" -> "H5")
   }*/
 
-  val randomFeeder = jsonFile("gameboard.json").eager.random
+  val randomFeeder = jsonFile("resources/gameboard.json").eager.random
   val randomFeeder = Iterator.continually{Map()}
 
   val randomTileFeeder = Iterator.continually {

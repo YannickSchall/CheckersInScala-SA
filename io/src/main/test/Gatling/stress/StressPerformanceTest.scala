@@ -7,8 +7,9 @@ import org.testcontainers.containers.wait.strategy.Wait
 import scala.concurrent.duration._
 
 import util.data.Tile
-import ChessServiceSimulation._
+import CheckersServiceSimulation._
 import Database._
+
 
 abstract class StressPerformanceTest(database: Database) extends IOSimulation("Stress", database):
 
@@ -28,8 +29,8 @@ abstract class StressPerformanceTest(database: Database) extends IOSimulation("S
       ).disablePauses
 
 
-class MongoDbStressPersistenceSimulation extends StressPerformanceTest(MongoDb):
+class MongoDbLoadPerformanceTest extends StressPerformanceTest(MongoDb):
   setUp()
 
-class PostgresStressPersistenceSimulation extends StressPerformanceTest(MySQL):
+class MySqlLoadPerformanceTest extends StressPerformanceTest(MySQL):
   setUp()

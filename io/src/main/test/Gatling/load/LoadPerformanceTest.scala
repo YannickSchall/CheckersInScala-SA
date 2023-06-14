@@ -6,7 +6,7 @@ import org.testcontainers.containers.wait.strategy.Wait
 import scala.concurrent.duration._
 
 import util.data.Tile
-import ChessServiceSimulation._
+import CheckersServiceSimulation._
 import Database._
 
 abstract class LoadPerformanceTest(database: Database) extends IOSimulation("Load", database):
@@ -33,8 +33,8 @@ abstract class LoadPerformanceTest(database: Database) extends IOSimulation("Loa
     )
 
 
-class MongoDbLoadPersistenceSimulation extends LoadPerformanceTest(MongoDb):
+class MongoDbLoadPerformanceTest extends LoadPerformanceTest(MongoDb):
   setUp()
 
-class PostgresLoadPersistenceSimulation extends LoadPerformanceTest(MySQL):
+class MySqlLoadPerformanceTest extends LoadPerformanceTest(MySQL):
   setUp()

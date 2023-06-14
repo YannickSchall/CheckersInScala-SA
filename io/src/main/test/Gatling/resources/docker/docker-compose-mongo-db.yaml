@@ -1,4 +1,5 @@
 services:
+
   mongodb:
     image: mongo:6.0.5
     restart: always
@@ -17,30 +18,33 @@ services:
       retries: 10
       start_period: 50s
 
-  io:
+  persistence:
     image: checkers-io-image
     build:
-      context: ./../../../../../../io/
-      dockerfile: ./../../../../../../Dockerfile
-    ports:
-      - "8081:8081"
-    stdin_open: true
-    container_name: io-container
+      context: ../../../../../.
+      dockerfile: docker/service.Dockerfile
+      args:
+        - SERVICE=persistence
+        - SERVICE_API_PORT=8081
+      cache_from:
+        - checkers-io-image
+    networks:
+      - mongo
     environment:
-      FILEIO_SERVICE_HOST: io
-      FILEIO_SERVICE_PORT: 8081
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: mongo
-      MONGO_INITDB_DATABASE: Checkers
-      MONGO_INITDB_HOST: mongo-checkers
-      MONGO_INITDB_PORT: 27017
+      MONGO_INITDB_ROOT_PASSWORD: root
+      DATABASE_HOST: mongodb
+      DATABASE_PORT: 27017
+      DATABASE_CONFIG: mongodb
     depends_on:
-        mongodb:
-          condition: service_healthy
-    volumes:
-      - .:/var/lib/sql/checkers
-    tty: true
+      mongodb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'here'"]
+      interval: 5s
+      timeout: 30s
+      retries: 10
+      start_period: 50s
 
-
-  networks:
-    mongo:
+networks:
+  mongo:
