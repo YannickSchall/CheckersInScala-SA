@@ -24,7 +24,10 @@ object dependencies {
   val mysql = "mysql" % "mysql-connector-java" % "8.0.32"
   val mongoDB = ("org.mongodb.scala" %% "mongo-scala-driver" % "4.9.1").cross(CrossVersion.for3Use2_13)
   val mockito = "org.scalatestplus" %% "mockito-3-4" % "3.2.9.0" % Test
-  val gatlingExclude = Seq(("com.typesafe.akka", "akka-actor_2.13"), ("org.scala-lang.modules", "scala-java8-compat_2.13"), ("com.typesafe.akka", "akka-slf4j_2.13")).toVector.map((org_name: Tuple2[String, String]) => InclExclRule(org_name._1, org_name._2))
+  val gatlingExclude = Seq(("com.typesafe.akka", "akka-actor_2.13"), ("org.scala-lang.modules", "scala-java8-compat_2.13"),
+    ("com.typesafe.akka", "akka-slf4j_2.13")).toVector.map((org_name: Tuple2[String, String]) => InclExclRule(org_name._1, org_name._2))
   val gatlingHigh = ("io.gatling.highcharts" % "gatling-charts-highcharts" % "3.9.5" % "test").withExclusions(gatlingExclude)
   val gatlingTest = ("io.gatling" % "gatling-test-framework" % "3.9.5" % "test").withExclusions(gatlingExclude)
+  val testcontainer  = "com.dimafeng" %% "testcontainers-scala-scalatest" % "0.40.15"
+
 }
