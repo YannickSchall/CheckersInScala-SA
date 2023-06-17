@@ -1,7 +1,9 @@
-package fileIOComponent.model.gameBoardBaseImpl
+package model.gameBoardBaseImpl
 
-import fileIOComponent.model.gameBoardBaseImpl.Color.{Black, White}
 import fileIOComponent.model.GameBoardInterface
+import fileIOComponent.model.gameBoardBaseImpl.{GameBoard, Piece}
+import fileIOComponent.model.gameBoardBaseImpl.Color.*
+
 
 class GameBoardCreator(size: Int) {
   def createBoard(): GameBoardInterface = {
@@ -40,4 +42,22 @@ class GameBoardCreator(size: Int) {
 
     operations.foldLeft(gameBoard) { case (gb, op) => op(gb) }
   }
+
+  def createEmptyBoard(): GameBoard = {
+    val gameBoard: GameBoard = new GameBoard(size)
+
+    val nonePositions: List[(Int, Int)] = (for {
+      x <- 0 until size
+      y <- 0 until size
+    } yield (x, y)).toList
+
+    val noneOperations: List[GameBoard => GameBoard] = nonePositions.map {
+      case (x, y) => (gb: GameBoard) => gb.set(x, y, None)
+    }
+
+    val operations: List[GameBoard => GameBoard] = noneOperations
+
+    operations.foldLeft(gameBoard) { case (gb, op) => op(gb) }
+  }
+
 }

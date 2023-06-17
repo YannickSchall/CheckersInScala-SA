@@ -10,7 +10,7 @@ class IOModule extends AbstractModule {
   override def configure() = {
     bind(classOf[IOInterface]).to(classOf[fileIOJsonImpl.IO])
     //bind(classOf[FileIOInterface]).to(classOf[fileIOXmlImpl.FileIO])
-    //bind(classOf[DBInterface]).to(classOf[SlickDBCheckers])
-    bind(classOf[DBInterface]).to(classOf[MongoDBCheckers])
+    bind(classOf[DBInterface]).to(classOf[SlickDBCheckers])
+    //bind(classOf[DBInterface]).to(classOf[MongoDBCheckers])
   }
 }

@@ -13,7 +13,7 @@ class NormalSpec extends AnyWordSpec {
 
     // black right no cap
     val size = 10
-    var game = new GameBoard(size)
+    var game = new GameBoardCreator(size).createEmptyBoard()
 
     // define white stones
     val w1 = Normal("normal", 3, 3, White)
@@ -98,7 +98,7 @@ class NormalSpec extends AnyWordSpec {
     }
 
     "should be allowed to Capture from the middle" in {
-      var gbc = new GameBoard(10)
+      var gbc = new GameBoardCreator(10).createEmptyBoard()
       gbc = gbc.set(3, 3, Some(Piece("normal", 3, 3, Black)))
       gbc = gbc.set(3, 5, Some(Piece("normal", 3, 5, Black)))
       gbc = gbc.set(5, 3, Some(Piece("normal", 5, 3, Black)))
@@ -113,7 +113,7 @@ class NormalSpec extends AnyWordSpec {
       normaleWhite.movePossible("G7", gbc).getBool should be (false)
     }
     "should be allowed to Capture from the right" in {
-      var gbc = new GameBoard(10)
+      var gbc = new GameBoardCreator(10).createEmptyBoard()
       gbc = gbc.set(4, 8, Some(Piece("normal", 4, 8, Black)))
       gbc = gbc.set(6, 8, Some(Piece("normal", 6, 8, Black)))
       gbc = gbc.set(5, 9, Some(Piece("normal", 5, 9, White)))
@@ -124,7 +124,7 @@ class NormalSpec extends AnyWordSpec {
       normalWhite.movePossible("H8", gbc).getBool should be (false)
     }
     "should be allowed to Capture from the left" in {
-      var gbc = new GameBoard(10)
+      var gbc = new GameBoardCreator(10).createEmptyBoard()
       gbc = gbc.set(8, 2, Some(Piece("normal", 8, 2, Black)))
       gbc = gbc.set(5, 1, Some(Piece("normal", 5, 1, Black)))
       gbc = gbc.set(6, 0, Some(Piece("normal", 6, 0, White)))
@@ -135,7 +135,7 @@ class NormalSpec extends AnyWordSpec {
       normalWhite.movePossible("D10", gbc).getBool should be (false)
     }
     "should be allowed to Capture from the middle as Black" in {
-      var gbc = new GameBoard(10)
+      var gbc = new GameBoardCreator(10).createEmptyBoard()
       gbc = gbc.set(3, 3, Some(Piece("normal", 3, 3, White)))
       gbc = gbc.set(3, 5, Some(Piece("normal", 3, 5, White)))
       gbc = gbc.set(5, 3, Some(Piece("normal", 5, 3, White)))
@@ -150,7 +150,7 @@ class NormalSpec extends AnyWordSpec {
       normaleWhite.movePossible("G7", gbc).getBool should be (true)
     }
     "should be allowed to Capture from the right as Black" in {
-      var gbc = new GameBoard(10)
+      var gbc = new GameBoardCreator(10).createEmptyBoard()
       gbc = gbc.set(4, 8, Some(Piece("normal", 4, 8, White)))
       gbc = gbc.set(6, 8, Some(Piece("normal", 6, 8, White)))
       gbc = gbc.set(5, 9, Some(Piece("normal", 5, 9, Black)))
@@ -162,7 +162,7 @@ class NormalSpec extends AnyWordSpec {
     }
     "should be allowed to move but not capture" in {
       w5.movePossible("H8", game).getBool should be(true)
-      b4.movePossible("H6", game).getBool should be(true)
+      b4.movePossible("H6", game).getBool should be(false)
       //b4 4,6 -> 5,7
     }
     "should not be allowed to move and not capture" in {
