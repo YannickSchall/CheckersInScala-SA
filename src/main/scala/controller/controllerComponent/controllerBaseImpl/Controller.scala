@@ -100,7 +100,6 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
 
     if (gameState == WHITE_TURN && gameBoard.getField(start).getPiece.get.getColor == White) {
       cap = ""
-      gameBoard.getField(start).getPiece.get.sListBlack.clear
       gameBoard.getField(start).getPiece.get.sList.clear
       // case einbauen
       if (this.movePossible(start, dest).getRem.isEmpty) gameState = BLACK_TURN
@@ -108,7 +107,6 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
       undoManager.doStep(new MoveCommand(start, dest, this))
       if (!cap.isEmpty) {
         gameBoard.getField(dest).getPiece.get.sList.clear
-        gameBoard.getField(dest).getPiece.get.sListBlack.clear
         this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))
         this.movePossible(dest, dest)
         cap = ""
@@ -125,18 +123,16 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
 
     if (gameState == BLACK_TURN && gameBoard.getField(start).getPiece.get.getColor == Black) {
       cap = ""
-      gameBoard.getField(start).getPiece.get.sListBlack.clear
       gameBoard.getField(start).getPiece.get.sList.clear
       if (this.movePossible(start, dest).getRem.isEmpty) gameState = WHITE_TURN
       if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
       undoManager.doStep(new MoveCommand(start, dest, this))
       if (!cap.isEmpty) {
-        gameBoard.getField(dest).getPiece.get.sListBlack.clear
         gameBoard.getField(dest).getPiece.get.sList.clear
         this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))
         this.movePossible(dest, dest)
         cap = ""
-        if (gameBoard.getField(dest).getPiece.get.sListBlack.nonEmpty) {
+        if (gameBoard.getField(dest).getPiece.get.sList.nonEmpty) {
           gameState = BLACK_CAP
           destTemp = dest
         } else gameState = WHITE_TURN
@@ -150,13 +146,11 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     else if (gameState == WHITE_CAP && start == destTemp) {
       if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
       gameBoard.getField(start).getPiece.get.sList.clear
-      gameBoard.getField(start).getPiece.get.sListBlack.clear
       this.movePossible(start, start)
       if (gameBoard.getField(start).getPiece.get.sList.nonEmpty) {
         if (!this.movePossible(start, dest).getRem.isEmpty) {
           undoManager.doStep(new MoveCommand(start, dest, this))
           gameBoard.getField(dest).getPiece.get.sList.clear
-          gameBoard.getField(dest).getPiece.get.sListBlack.clear
           this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))
           this.movePossible(dest, dest)
           if (gameBoard.getField(dest).getPiece.get.sList.isEmpty) gameState = BLACK_TURN
@@ -172,16 +166,14 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     else if (gameState == BLACK_CAP && start == destTemp) {
       if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
       gameBoard.getField(start).getPiece.get.sList.clear
-      gameBoard.getField(start).getPiece.get.sListBlack.clear
       this.movePossible(start, start)
-      if (gameBoard.getField(start).getPiece.get.sListBlack.nonEmpty) {
+      if (gameBoard.getField(start).getPiece.get.sList.nonEmpty) {
         if (!this.movePossible(start, dest).getRem.isEmpty) {
           undoManager.doStep(new MoveCommand(start, dest, this))
           gameBoard.getField(dest).getPiece.get.sList.clear
-          gameBoard.getField(dest).getPiece.get.sListBlack.clear
           this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))
           this.movePossible(dest, dest)
-          if (gameBoard.getField(dest).getPiece.get.sListBlack.isEmpty) gameState = WHITE_TURN
+          if (gameBoard.getField(dest).getPiece.get.sList.isEmpty) gameState = WHITE_TURN
           destTemp = dest
           publish(new FieldChanged)
           publish(new PrintTui)

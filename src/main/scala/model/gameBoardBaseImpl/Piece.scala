@@ -9,7 +9,6 @@ import scala.collection.mutable.ListBuffer
 abstract class Piece @Inject() (state: String, row: Int, col: Int, color: Color) extends PieceInterface {
 
   def sList: ListBuffer[String]
-  def sListBlack: ListBuffer[String]
   def getColor: Color
   def posToStr(row: Int, col: Int): String = {(col + 65).toChar.toString + (row + 49).toChar.toString}
 

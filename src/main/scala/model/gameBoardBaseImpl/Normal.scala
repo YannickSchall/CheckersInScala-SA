@@ -8,7 +8,6 @@ import utils.Mover
 case class Normal(state: String = "normal", row: Int, col: Int, getColor: Color) extends Piece(state, row, col, getColor) {
 
   var sList: ListBuffer[String] = ListBuffer()
-  var sListBlack: ListBuffer[String] = ListBuffer()
   
   override def toString: String = if (getColor == Black) "\u001B[37mO\u001B[0m" //red
   else "\u001B[30mO\u001B[0m" //blue
