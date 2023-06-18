@@ -4,6 +4,8 @@ import fileIOComponent.model.gameBoardBaseImpl.{Color, Field, Piece}
 import fileIOComponent.utils.Mover
 import play.api.libs.json.*
 
+import scala.concurrent.Future
+
 
 trait GameBoardInterface {
 
@@ -35,9 +37,9 @@ trait GameBoardInterface {
   
   def toJson: JsValue
   
-  def jsonToGameBoard(source: String): GameBoardInterface
+  def jsonToGameBoard(source: String): Future[GameBoardInterface]
 
-  def jsonToGameBoardSQL(source: String): GameBoardInterface
+  def jsonToGameBoardSQL(source: String): Future[GameBoardInterface]
 
   implicit val pieceReads: Reads[Piece]
 

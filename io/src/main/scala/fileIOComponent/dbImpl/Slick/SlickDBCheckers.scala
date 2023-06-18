@@ -73,7 +73,7 @@ class SlickDBCheckers @Inject() extends DBInterface {
             e.printStackTrace()
             throw e
         }
-        res
+        Await.result(res, 5.seconds)
       }
     }
   }

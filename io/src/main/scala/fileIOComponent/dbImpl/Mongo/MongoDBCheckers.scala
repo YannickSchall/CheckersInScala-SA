@@ -77,7 +77,7 @@ class MongoDBCheckers @Inject() extends DBInterface {
         val res = slave.jsonToGameBoard(gameBoardDocument("gameBoard").asString().getValue)
 
         println("Game loaded from MongoDB")
-        res
+        Await.result(res, 5.seconds)
       }
     }
   }

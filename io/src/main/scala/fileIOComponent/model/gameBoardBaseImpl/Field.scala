@@ -13,4 +13,5 @@ case class Field (pos: String, piece: Option[Piece]) extends FieldInterface {
     case None => " "
   }
 
+  def cloneEmptyField: Field = Field(pos, None)
 }
