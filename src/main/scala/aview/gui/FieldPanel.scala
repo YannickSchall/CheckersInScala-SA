@@ -49,7 +49,7 @@ class FieldPanel(row: Int, col: Int, controller: ControllerInterface, background
   def pieceMatcher(labelX: Label): Unit = {
     var fcolor = ""
     var fstate = ""
-    if (myField.getPiece.isDefined) fcolor = myField.getPiece.get.getColor.toString
+    if (myField.getPiece.isDefined) fcolor = myField.getPiece.get.getColor.color
     if (myField.getPiece.isDefined) fstate = myField.getPiece.get.state
 
     fcolor match {
