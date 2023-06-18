@@ -1,4 +1,4 @@
-package model.gameBoardBaseImpl
+package fileIOComponent.model.gameBoardBaseImpl
 
 import fileIOComponent.model.GameBoardInterface
 import fileIOComponent.model.gameBoardBaseImpl.{GameBoard, Piece}

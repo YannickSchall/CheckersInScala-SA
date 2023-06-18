@@ -149,4 +149,20 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
     }
     gb
   }
+
+  override def jsonToGameBoardSQL(source: String): GameBoard = {
+    val json: JsValue = Json.parse(source)
+    val size = (json \ "size").get.toString.toInt
+    var gb: GameBoard = new GameBoard(size)
+
+    val fields = (json \ "fields").get
+    for (index <- 0 until size * size) {
+      val row = fields(index)("row").as[Int]
+      val col = fields(index)("col").as[Int]
+      val check = fields(index)("field")("piece")
+      val piece = if (check.toString != "null") check.as[Piece] else null
+      gb = gb.set(row, col, Option(piece))
+    }
+    gb
+  }
 }

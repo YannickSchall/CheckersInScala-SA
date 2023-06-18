@@ -13,10 +13,10 @@ import fileIOComponent.dbImpl.DBInterface
 import fileIOComponent.dbImpl.Slick.SlickDBCheckers
 import fileIOComponent.fileIOJsonImpl.IO
 import fileIOComponent.model.GameBoardInterface
-import fileIOComponent.model.gameBoardBaseImpl.GameBoard
+import fileIOComponent.model.gameBoardBaseImpl.{GameBoard, GameBoardCreator}
 import fileIOComponent.restAPI.IOController
-import scala.concurrent.duration.{Duration, DurationInt}
 
+import scala.concurrent.duration.{Duration, DurationInt}
 import scala.concurrent.{Await, ExecutionContextExecutor, Future}
 import scala.io.StdIn
 import scala.util.{Failure, Success}
@@ -65,7 +65,7 @@ object RestIO {
               case None => None
             }
           complete(HttpEntity(ContentTypes.`application/json`, fileIO.gameBoardToJson(
-            Await.result(db.load(id_updated), 5.seconds).getOrElse(new GameBoard(8))))
+            Await.result(db.load(id_updated), 5.seconds).getOrElse(new GameBoardCreator(8).createEmptyBoard())))
           )
         }
       }

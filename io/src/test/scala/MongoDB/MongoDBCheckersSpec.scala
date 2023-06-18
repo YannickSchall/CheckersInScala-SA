@@ -14,8 +14,9 @@ import scala.concurrent.duration.*
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
 import fileIOComponent.dbImpl.Mongo.MongoDBCheckers
-import fileIOComponent.model.gameBoardBaseImpl.{GameBoard, GameBoardCreator}
+import fileIOComponent.model.gameBoardBaseImpl.GameBoard
 import fileIOComponent.fileIOJsonImpl.IO
+import fileIOComponent.model.gameBoardBaseImpl.GameBoardCreator
 import org.scalatest.{BeforeAndAfter, PrivateMethodTester}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -23,7 +24,8 @@ import org.scalactic.Prettifier.default
 import org.mongodb.scala.ObservableFuture
 import org.mongodb.scala.gridfs.ObservableFuture
 import org.mongodb.scala.model.Filters
-import scala.concurrent.duration._
+
+import scala.concurrent.duration.*
 import scala.concurrent.{Await, Future}
 import org.mongodb.scala.Document
 import org.mongodb.scala.model.Filters.equal

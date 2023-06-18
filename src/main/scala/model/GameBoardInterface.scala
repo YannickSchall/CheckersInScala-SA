@@ -1,6 +1,6 @@
 package model
 
-import model.gameBoardBaseImpl.{Field, Color, Piece}
+import model.gameBoardBaseImpl.{Color, Field, Piece}
 import utils.Mover
 import play.api.libs.json.*
 
@@ -36,6 +36,8 @@ trait GameBoardInterface {
   def toJson: JsValue
   
   def jsonToGameBoard(source: String): GameBoardInterface
+
+  def jsonToGameBoardSQL(source: String): GameBoardInterface
 
   implicit val pieceReads: Reads[Piece]
 

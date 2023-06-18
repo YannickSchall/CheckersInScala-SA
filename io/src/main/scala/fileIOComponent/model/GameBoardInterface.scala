@@ -37,6 +37,8 @@ trait GameBoardInterface {
   
   def jsonToGameBoard(source: String): GameBoardInterface
 
+  def jsonToGameBoardSQL(source: String): GameBoardInterface
+
   implicit val pieceReads: Reads[Piece]
 
   implicit val fieldReads: Reads[Field]
