@@ -4,12 +4,13 @@ import com.google.inject.Guice
 import com.google.inject.name.Names
 import model.fileIoComponent.FileIOInterface
 import model.gameBoardComponent.{FieldInterface, GameBoardInterface, PieceInterface}
-import model.gameBoardComponent.gameBoardBaseImpl.{Field, Piece}
+import model.gameBoardComponent.gameBoardBaseImpl.{Color, Field, Piece}
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 
+
 import scala.io.Source
-import play.api.libs.json._
+import play.api.libs.json.*
 
 class FileIO extends FileIOInterface{
   override def load: GameBoardInterface = {
@@ -36,7 +37,7 @@ class FileIO extends FileIOInterface{
     import java.io._
     val pw = new PrintWriter(new File("gameBoard.json"))
     pw.write(Json.prettyPrint(gameBoardToJson(gameBoard)))
-    pw.close
+    pw.close()
   }
 
   implicit def optionFormat[T: Format]: Format[Option[T]] = new Format[Option[T]]{
@@ -53,32 +54,40 @@ class FileIO extends FileIOInterface{
     (JsPath \ "state").read[String] and
       (JsPath \ "prow").read[Int] and
       (JsPath \ "pcol").read[Int] and
-      (JsPath \ "color").read[String]
-    ) (Piece.apply _)
+      (JsPath \ "color").read[Color]
+    )(Piece.apply _)
 
   implicit val fieldReads: Reads[Field] = (
     (JsPath \ "pos").read[String] and
       (JsPath \ "piece").readNullable[Piece]
     ) (Field.apply _)
 
+  implicit val colorWrites: Writes[Color] = new Writes[Color] {
+    def writes(color: Color) = JsString(color.color)
+  }
 
+  implicit val colorReads: Reads[Color] = Reads { json =>
+    json.validate[String].flatMap {
+      case "white" => JsSuccess(Color.White)
+      case "black" => JsSuccess(Color.Black)
+      case other => JsError(s"Invalid color: $other")
+    }
+  }
 
   implicit val fieldWrites: Writes[FieldInterface] = new Writes[FieldInterface] {
     def writes(field: FieldInterface) = Json.obj(
-    "pos" -> field.getPos,
-      "piece" -> pieceWrites.writes(field.getPiece)
+      "pos" -> field.getPos,
+      "piece" -> pieceWrites.writes(field.getPiece.get)
     )
   }
 
-  implicit val pieceWrites: Writes[Option[Piece]] = new Writes[Option[Piece]] {
-    def writes(piece: Option[Piece]): JsValue = piece match {
-      case Some(t) => Json.obj(
-      "state" -> t.state,
-      "prow" -> t.row,
-      "pcol" -> t.col,
-      "color" -> t.getColor
-      ) case None => JsNull
-    }
+  implicit val pieceWrites: Writes[Piece] = new Writes[Piece] {
+    def writes(piece: Piece) = Json.obj(
+      "state" -> piece.state,
+      "prow" -> piece.row,
+      "pcol" -> piece.col,
+      "color" -> colorWrites.writes(piece.getColor)
+    )
   }
 
 

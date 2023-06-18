@@ -6,11 +6,11 @@ import util.Mover
 
 import scala.collection.mutable.ListBuffer
 
-abstract class Piece @Inject() (state: String, row: Int, col: Int, color: String) extends PieceInterface {
+abstract class Piece @Inject() (state: String, row: Int, col: Int, color: Color) extends PieceInterface {
 
   def sList: ListBuffer[String]
   def sListBlack: ListBuffer[String]
-  def getColor: String
+  def getColor: Color
   def posToStr(row: Int, col: Int): String = {(col + 65).toChar.toString + (row + 49).toChar.toString}
 
   def movePossible(to: String, gameBoard: GameBoard): Mover
@@ -25,7 +25,7 @@ abstract class Piece @Inject() (state: String, row: Int, col: Int, color: String
 }
 
 object Piece {
-  def apply(state: String, row: Int, col: Int, color: String): Piece = state match {
+  def apply(state: String, row: Int, col: Int, color: Color): Piece = state match {
     case "normal" => Normal("normal", row, col, color)
     case "queen" => Queen("queen", row, col, color)
   }

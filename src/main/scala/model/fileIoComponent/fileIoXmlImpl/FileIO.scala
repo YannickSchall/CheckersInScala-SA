@@ -4,8 +4,10 @@ import com.google.inject.Guice
 import com.google.inject.name.Names
 import model.fileIoComponent.FileIOInterface
 import model.gameBoardComponent.GameBoardInterface
+import model.gameBoardComponent.gameBoardBaseImpl.Color.*
 import model.gameBoardComponent.gameBoardBaseImpl.Piece
 import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
+
 import scala.xml.{Elem, PrettyPrinter}
 
 class FileIO extends FileIOInterface {
@@ -29,10 +31,10 @@ class FileIO extends FileIOInterface {
       val col: Int = pos.charAt(0).toInt - 65
       val piece = field.text
       piece match {
-        case " value = \uD83D\uDD34 " => gameBoard = gameBoard.set(row, col, Some(Piece("normal", row, col, "black")))
-        case " value = \uD83D\uDD35 " => gameBoard = gameBoard.set(row, col, Some(Piece("normal", row, col, "white")))
-        case " value = \uD83D\uDFE0 " => gameBoard = gameBoard.set(row, col, Some(Piece("queen", row, col, "black")))
-        case " value = \uD83D\uDFE3 " => gameBoard = gameBoard.set(row, col, Some(Piece("queen", row, col, "white")))
+        case " value = \uD83D\uDD34 " => gameBoard = gameBoard.set(row, col, Some(Piece("normal", row, col, Black)))
+        case " value = \uD83D\uDD35 " => gameBoard = gameBoard.set(row, col, Some(Piece("normal", row, col, White)))
+        case " value = \uD83D\uDFE0 " => gameBoard = gameBoard.set(row, col, Some(Piece("queen", row, col, Black)))
+        case " value = \uD83D\uDFE3 " => gameBoard = gameBoard.set(row, col, Some(Piece("queen", row, col, White)))
         case " value = " => gameBoard = gameBoard.remove(row, col)
       }
     }
@@ -62,7 +64,7 @@ class FileIO extends FileIOInterface {
         col <- 0 until gameBoard.size
       } yield {
         fieldToXml(gameBoard, row, col)
-        }
+      }
       }
     </gameBoard>
   }
@@ -73,10 +75,10 @@ class FileIO extends FileIOInterface {
     val xmlField = {
       <field pos={pos}>
         value = {
-          piece match {
-            case Some(value) => value.toString
-            case None => ""
-          }
+        piece match {
+          case Some(value) => value.toString
+          case None => ""
+        }
         }
       </field>
     }

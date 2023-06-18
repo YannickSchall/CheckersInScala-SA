@@ -35,18 +35,6 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
       col <- 0 until size
     } box = box.replaceFirst("o", field(row, col).toString)
     box
-
-    /*
-    // hier map
-    var box = "\n" + (lineSeparator + (line * size)) + lineSeparator
-    val updatedBox = (0 until size).flatMap { row =>
-      (0 until size).map { col =>
-        box.replaceFirst("o", field(row, col).toString)
-      }
-    }
-    box = updatedBox.last
-
-    * */
   }
 
 
