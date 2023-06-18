@@ -23,8 +23,8 @@ class Gui(controller: ControllerInterface) extends Frame {
   var colorFlag = new BoxPanel(Orientation.NoOrientation)
   var bgcol = "rb"
 
-  val dir: String = new File("").getAbsolutePath
-  iconImage = new ImageIcon(dir+"\\src\\main\\resources\\icon.png").getImage
+  iconImage = new ImageIcon(getClass.getResource("/icon.png")).getImage
+
 
   def gameBoardPanel = new GridPanel(controller.gameBoardSize, controller.gameBoardSize) {
     border = BorderFactory.createEmptyBorder(1, 1, 1, 1)

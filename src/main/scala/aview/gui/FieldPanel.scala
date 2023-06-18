@@ -18,17 +18,16 @@ class FieldPanel(row: Int, col: Int, controller: ControllerInterface, background
   var color: String = "white"
   def myField = controller.field(row, col)
 
-  val dir: String = new File("").getAbsolutePath
-  val pieceBlackS = new ImageIcon(dir+"\\src\\main\\resources\\pieceBlackSmall.png")
-  val pieceWhiteS = new ImageIcon(dir+"\\src\\main\\resources\\pieceWhiteSmall.png")
-  val queenBlackS = new ImageIcon(dir+"\\src\\main\\resources\\queenBlackSmall.png")
-  val queenWhiteS = new ImageIcon(dir+"\\src\\main\\resources\\queenWhiteSmall.png")
-  val pieceBlack = new ImageIcon(dir+"\\src\\main\\resources\\pieceBlack.png")
-  val pieceWhite = new ImageIcon(dir+"\\src\\main\\resources\\pieceWhite.png")
-  val queenBlack = new ImageIcon(dir+"\\src\\main\\resources\\queenBlack.png")
-  val queenWhite = new ImageIcon(dir+"\\src\\main\\resources\\queenWhite.png")
-  val blankS = new ImageIcon(dir+"\\src\\main\\resources\\blankS.png")
-  val blank = new ImageIcon(dir+"\\src\\main\\resources\\blank.png")
+  val pieceBlackS = new ImageIcon(getClass.getResource("/pieceBlackSmall.png"))
+  val pieceWhiteS = new ImageIcon(getClass.getResource("/pieceWhiteSmall.png"))
+  val queenBlackS = new ImageIcon(getClass.getResource("/queenBlackSmall.png"))
+  val queenWhiteS = new ImageIcon(getClass.getResource("/queenWhiteSmall.png"))
+  val pieceBlack = new ImageIcon(getClass.getResource("/pieceBlack.png"))
+  val pieceWhite = new ImageIcon(getClass.getResource("/pieceWhite.png"))
+  val queenBlack = new ImageIcon(getClass.getResource("/queenBlack.png"))
+  val queenWhite = new ImageIcon(getClass.getResource("/queenWhite.png"))
+  val blankS = new ImageIcon(getClass.getResource("/blankS.png"))
+  val blank = new ImageIcon(getClass.getResource("/blank.png"))
 
 
   def fieldText(): String = {
