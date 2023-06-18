@@ -22,7 +22,7 @@ Please make sure to follow all steps closely, to get the game running on your sy
 
 2. Open terminal > enter xhost+
 
-3. Open your cmd > type ipconfig > look for your IPv4/6 > modify in CheckersInScala-SA/Dockerfile ENV DISPLAY=X.X.X.X:0.0
+3. Open your systemsettings > network > look for your IPv4/6 > modify in CheckersInScala-SA/Dockerfile ENV DISPLAY=X.X.X.X:0.0
 
 
 ## Game Instructions
