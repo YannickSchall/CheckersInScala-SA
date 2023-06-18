@@ -30,14 +30,6 @@ class FieldPanel(row: Int, col: Int, controller: ControllerInterface, background
   val blank = new ImageIcon(getClass.getResource("/blank.png"))
 
 
-  def fieldText(): String = {
-    color = "white"
-    if (myField.isSet) {
-      if (controller.getPiece(row, col).get.getColor == White) print("")
-      controller.getPiece(row, col).get.toString
-    } else " "
-  }
-
 
   val label: Label =
     new Label {
