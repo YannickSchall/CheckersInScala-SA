@@ -5,24 +5,24 @@
 ## Set Up
 
 ### Docker Compose Instruction:
-Please make sure to follow all steps closley, to get the GUI running on your system:
+Please make sure to follow all steps closely, to get the game running on your system:
 
 **Windows:**
-1. install X Launch https://sourceforge.net/projects/xming/
-   start > multiple windwos > start no client > tick **Disable Access cobtrol** > finish
+1. Install X Launch https://sourceforge.net/projects/xming/
+   start > multiple windows > start no client > tick **Disable Access control** > finish
 
-2. open your cmd > type ipconfig > look for your IPv6 > modify in CheckersInScala-SA/Dockerfile myIP:0:0
+2. Open your cmd > type ipconfig > look for your IPv4/6 > modify in CheckersInScala-SA/Dockerfile ENV DISPLAY=X.X.X.X:0.0
 
-3. run docker compose script
+3. Run docker compose script
 
 
 **MacOS:**
 
 1. Download XQuartz https://www.xquartz.org/
 
-2. open terminal > enter xhost+
+2. Open terminal > enter xhost+
 
-3. open your cmd > type ipconfig > look for your IPv6 > modify in CheckersInScala-SA/Dockerfile myIP:0:0
+3. Open your cmd > type ipconfig > look for your IPv4/6 > modify in CheckersInScala-SA/Dockerfile ENV DISPLAY=X.X.X.X:0.0
 
 
 ## Game Instructions
@@ -34,7 +34,7 @@ How to win:
 Preparation:
 - You are playing on a checkered board with the classic size 8 x 8 or the more common size 10 x 10
 - You can choose between white/black or red/black coloring
-- Only the non black fields are used
+- Only the non-black fields are used
 - Every player gets pieces on the first 3 rows on every other field
 
 <img src="/src/main/Resources/Bild1.png?raw=true" width = "275" height = "275"> <img src="/src/main/Resources/Bild2.png?raw=true" width = "275" height = "275"> <img src="/src/main/Resources/Bild3.png?raw=true" width = "275" height = "275">
