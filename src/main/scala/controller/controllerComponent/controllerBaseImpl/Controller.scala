@@ -81,7 +81,6 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
       cap = ""
       gameBoard.getField(start).getPiece.get.sListBlack.clear
       gameBoard.getField(start).getPiece.get.sList.clear
-      // case einbauen
       if (this.movePossible(start, dest).getRem.isEmpty) gameState = BLACK_TURN
       if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
       undoManager.doStep(new MoveCommand(start, dest, this))
