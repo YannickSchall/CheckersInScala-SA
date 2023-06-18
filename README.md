@@ -2,8 +2,31 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/simonwinter-git/CheckersInScala/badge.svg?branch=master)](https://coveralls.io/github/simonwinter-git/CheckersInScala?branch=master)
 
+## Set Up
+
+### Docker Compose Instruction:
+Please make sure to follow all steps closley, to get the GUI running on your system:
+
+**Windows:**
+1. install X Launch https://sourceforge.net/projects/xming/
+   start > multiple windwos > start no client > tick **Disable Access cobtrol** > finish
+
+2. open your cmd > type ipconfig > look for your IPv6 > modify in CheckersInScala-SA/Dockerfile myIP:0:0
+
+3. run docker compose script
+
+
+**MacOS:**
+
+1. Download XQuartz https://www.xquartz.org/
+
+2. open terminal > enter xhost+
+
+3. open your cmd > type ipconfig > look for your IPv6 > modify in CheckersInScala-SA/Dockerfile myIP:0:0
+
+
+## Game Instructions
 WELCOME TO CHECKERS
--
 
 How to win:
 - The game ends if one player has less than 2 pieces or is unable to move with any of their pieces
@@ -30,7 +53,7 @@ The moves:
 <img src="/src/main/Resources/Bild7.png?raw=true" width = "275" height = "275"> <img src="/src/main/Resources/Bild8.png?raw=true" width = "275" height = "275"> <img src="/src/main/Resources/Bild9.png?raw=true" width = "275" height = "275">
 <br />
 
-- Once a piece reaches the other end of the board, it turns into a queen. However, you can only move with it when it's your turn again 
+- Once a piece reaches the other end of the board, it turns into a queen. However, you can only move with it when it's your turn again
 - The queen can move into every diagonal direction and travel as many fields as you want, as long as the fields are empty
 - If there is an opponent's piece in the queen's way, the queen can capture it over the whole distance of its move, assuming the piece behind it is empty:
 
