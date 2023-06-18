@@ -1,16 +1,19 @@
 package model
-import model.gameBoardComponent.gameBoardBaseImpl.GameBoardCreator
-import org.scalatest._
-import org.scalatest.matchers.should.Matchers._
-import org.scalatest.wordspec._
+
+import org.scalatest.*
+import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.wordspec.*
+import model.gameBoardBaseImpl.GameBoardCreator
+
 class GameBoardCreatorSpec extends AnyWordSpec {
   "A Creator" should {
     val gbc = new GameBoardCreator(8).createBoard()
     "have a size" in {
       gbc.size should be (8)
-    } /*
-    "have white corners at " in {
-      gbc.field(0,0).piece.toString should be ("Some(O)")
-    } */
+    } 
+    "create an empty board" in {
+      val egbc = new GameBoardCreator(10).createEmptyBoard()
+      egbc.size should be (10)
+    } 
   }
 }

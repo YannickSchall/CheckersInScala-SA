@@ -1,0 +1,53 @@
+services:
+  database:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3306:3306"
+    container_name: checkers-database-gatling
+    environment:
+      MYSQL_HOST: checkers-database
+      MYSQL_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: checkers
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+    volumes:
+      - .:/var/lib/sql/checkers
+    healthcheck:
+      test: [ "CMD-SHELL", "echo 'here'" ]
+      interval: 5s
+      timeout: 30s
+      retries: 10
+      start_period: 35s
+
+  io:
+      image: checkers-io-image
+      build:
+        context: ../../../../../../io
+        dockerfile: ./../../../../../Dockerfile
+      ports:
+        - "8081:8081"
+      stdin_open: true
+      container_name: io-container-gatling
+      networks:
+        - database
+      environment:
+        FILEIO_SERVICE_HOST: io
+        FILEIO_SERVICE_PORT: 8081
+        MYSQL_HOST: checkers-database
+        MYSQL_PORT: 3306
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: checkers
+        MYSQL_USER: user
+        MYSQL_PASSWORD: root
+      depends_on:
+        database:
+          condition: service_healthy
+
+      volumes:
+        - .:/var/lib/sql/checkers
+      tty: true
+
+networks:
+  database:

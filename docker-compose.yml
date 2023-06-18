@@ -1,0 +1,79 @@
+version: "3.9"
+
+services:
+  mongo-checkers:
+    image: mongo
+    restart: always
+    container_name: mongo-checkers
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: Checkers
+      MONGO_INITDB_HOST: mongo-checkers
+      MONGO_INITDB_PORT: 27017
+  database:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - "3306:3306"
+    container_name: checkers-database
+    environment:
+      MYSQL_HOST: checkers-database
+      MYSQL_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: checkers
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+    volumes:
+      - .:/var/lib/sql/checkers
+  io:
+    image: checkers-io-image
+    build:
+      context: ./io/
+      dockerfile: ./Dockerfile
+    ports:
+      - "8081:8081"
+    stdin_open: true
+    container_name: io-container
+    environment:
+      FILEIO_SERVICE_HOST: io
+      FILEIO_SERVICE_PORT: 8081
+      MYSQL_HOST: checkers-database
+      MYSQL_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: checkers
+      MYSQL_USER: user
+      MYSQL_PASSWORD: root
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: Checkers
+      MONGO_INITDB_HOST: mongo-checkers
+      MONGO_INITDB_PORT: 27017
+    depends_on:
+      - database
+    volumes:
+          - .:/var/lib/sql/checkers
+    tty: true
+
+
+  checkers:
+    image: checkers-image
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    depends_on:
+      - "io"
+    ports:
+      - "8080:8080"
+    stdin_open: true
+    container_name: checkers-container
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    environment:
+      CHECKERS_SERVICE_HOST: checkers
+      CHECKERS_SERVICE_PORT: 8080
+      FILEIO_SERVICE_HOST: io
+      FILEIO_SERVICE_PORT: 8081
+    tty: true

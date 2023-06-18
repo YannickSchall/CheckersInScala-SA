@@ -1,8 +1,9 @@
 package model
-import org.scalatest._
-import org.scalatest.matchers.should.Matchers._
-import org.scalatest.wordspec._
-import model.gameBoardComponent.gameBoardBaseImpl.GameBoard
+
+import org.scalatest.*
+import org.scalatest.matchers.should.Matchers.*
+import org.scalatest.wordspec.*
+import model.gameBoardBaseImpl.GameBoard
 class GameBoardSpec extends AnyWordSpec {
   "A GameBoard" should {
     val board = new GameBoard(3)
@@ -23,10 +24,10 @@ class GameBoardSpec extends AnyWordSpec {
       board.toString should be ("\n+-------+\n|       |\n|       |\n|       |\n+-------+\n")
     } */
     "have no possible black move" in {
-      boardGross.blackMovePossible("A8", "B7").getBool should be (false)
+      boardGross.movePossible("A8", "B7").getBool should be (false)
     }
     "have no possible white move" in {
-      boardGross.whiteMovePossible("H1", "G2").getBool should be (false)
+      boardGross.movePossible("H1", "G2").getBool should be (false)
     }
   }
 }

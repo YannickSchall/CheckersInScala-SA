@@ -2,8 +2,31 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/simonwinter-git/CheckersInScala/badge.svg?branch=master)](https://coveralls.io/github/simonwinter-git/CheckersInScala?branch=master)
 
+## Set Up
+
+### Docker Compose Instruction:
+Please make sure to follow all steps closely, to get the game running on your system:
+
+**Windows:**
+1. Install X Launch https://sourceforge.net/projects/xming/
+   start > multiple windows > start no client > tick **Disable Access control** > finish
+
+2. Open your cmd > type ipconfig > look for your IPv4/6 > modify in CheckersInScala-SA/Dockerfile ENV DISPLAY=X.X.X.X:0.0
+
+3. Run docker compose script
+
+
+**MacOS:**
+
+1. Download XQuartz https://www.xquartz.org/
+
+2. Open terminal > enter xhost+
+
+3. Open your systemsettings > network > look for your IPv4/6 > modify in CheckersInScala-SA/Dockerfile ENV DISPLAY=X.X.X.X:0.0
+
+
+## Game Instructions
 WELCOME TO CHECKERS
--
 
 How to win:
 - The game ends if one player has less than 2 pieces or is unable to move with any of their pieces
@@ -11,7 +34,7 @@ How to win:
 Preparation:
 - You are playing on a checkered board with the classic size 8 x 8 or the more common size 10 x 10
 - You can choose between white/black or red/black coloring
-- Only the non black fields are used
+- Only the non-black fields are used
 - Every player gets pieces on the first 3 rows on every other field
 
 <img src="/src/main/Resources/Bild1.png?raw=true" width = "275" height = "275"> <img src="/src/main/Resources/Bild2.png?raw=true" width = "275" height = "275"> <img src="/src/main/Resources/Bild3.png?raw=true" width = "275" height = "275">
@@ -30,7 +53,7 @@ The moves:
 <img src="/src/main/Resources/Bild7.png?raw=true" width = "275" height = "275"> <img src="/src/main/Resources/Bild8.png?raw=true" width = "275" height = "275"> <img src="/src/main/Resources/Bild9.png?raw=true" width = "275" height = "275">
 <br />
 
-- Once a piece reaches the other end of the board, it turns into a queen. However, you can only move with it when it's your turn again 
+- Once a piece reaches the other end of the board, it turns into a queen. However, you can only move with it when it's your turn again
 - The queen can move into every diagonal direction and travel as many fields as you want, as long as the fields are empty
 - If there is an opponent's piece in the queen's way, the queen can capture it over the whole distance of its move, assuming the piece behind it is empty:
 

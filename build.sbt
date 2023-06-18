@@ -1,14 +1,68 @@
-name := "CheckersInScala"
+import sbt.Keys.libraryDependencies
+import dependencies._
 
-version := "0.1"
-libraryDependencies += "org.scalactic" %% "scalactic" % "3.2.15"
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.15" % "test"
-libraryDependencies += "org.scala-lang.modules" %% "scala-swing" % "3.0.0"
-libraryDependencies += "com.google.inject" % "guice" % "5.1.0"
-libraryDependencies += "net.codingwell" %% "scala-guice" % "5.1.1"
-libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "2.0.0"
-libraryDependencies += "com.typesafe.play" %% "play-json" % "2.10.0-RC7"
-libraryDependencies += "org.scalafx" %% "scalafx" % "16.0.0-R24"
-scalaVersion := "3.2.0"
+/** ScalaVersion */
+val scala3Version = "3.2.0"
 
-//comment
+/** Dependencies */
+lazy val allDependencies = Seq(
+  scalatic,
+  scalatest,
+  swing,
+  ginject,
+  well,
+  xml,
+  json,
+  scalafx,
+  akkaHttp,
+  akkaHttpSpray,
+  akkaHttpCore,
+  akkaActorTyped,
+  akkaStream,
+  akkaActor,
+  slf4jNop,
+  slick,
+  hikarislick,
+  mysql,
+  mongoDB,
+  mockito,
+  gatlingTest,
+  gatlingHigh,
+  testcontainer
+)
+
+/** Root Module */
+lazy val root: Project = Project(id = "Checkers", base = file("."))
+  .settings(
+    name := "Checkers",
+    version := "0.5.0-SNAPSHOT",
+    commonSettings,
+    libraryDependencies ++= allDependencies,
+  ).enablePlugins(GatlingPlugin)
+
+/** IO Module */
+lazy val io: Project = Project(id = "Checkers-IO", base = file("io"))
+  .settings(
+    name := "Checkers-IO",
+    version := "0.5.0-SNAPSHOT",
+    commonSettings,
+    libraryDependencies ++= allDependencies,
+  ).enablePlugins(GatlingPlugin)
+
+
+/** Common Settings */
+lazy val commonSettings: Seq[Def.Setting[_]] = Seq(
+  scalaVersion := scala3Version,
+  libraryDependencies ++= {
+    // Determine OS version of JavaFX binaries
+    lazy val osName = System.getProperty("os.name") match {
+      case n if n.startsWith("Linux") => "linux"
+      case n if n.startsWith("Mac") => "mac"
+      case n if n.startsWith("Windows") => "win"
+      case _ => throw new Exception("Unknown platform!")
+    }
+
+    Seq("base", "controls", "fxml", "graphics", "media", "swing", "web")
+      .map(m => "org.openjfx" % s"javafx-$m" % "17.0.1" classifier osName)
+  }
+)

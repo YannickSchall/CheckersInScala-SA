@@ -2,14 +2,31 @@ package controller.controllerComponent.controllerBaseImpl
 
 import com.google.inject.name.Names
 import com.google.inject.{Guice, Inject}
-import net.codingwell.scalaguice.InjectorExtensions._
-import controller.controllerComponent.GameState._
+import net.codingwell.scalaguice.InjectorExtensions.*
+import controller.controllerComponent.GameState.*
 import controller.controllerComponent.{ControllerInterface, FieldChanged, GBSizeChanged, GameState}
-import model.fileIoComponent.FileIOInterface
-import model.gameBoardComponent.{FieldInterface, GameBoardInterface, PieceInterface}
-import model.gameBoardComponent.gameBoardBaseImpl.{Field, GameBoard, GameBoardCreator, Piece}
-import util.{Mover, UndoManager}
+
+import scala.concurrent.{Await, ExecutionContextExecutor, Future}
+import akka.http.scaladsl.server.Directives.{complete, concat, get, path}
+import akka.actor.typed.ActorSystem
+import akka.actor.typed.scaladsl.Behaviors
+import akka.http.scaladsl.Http
+import akka.http.scaladsl.server.Directives.*
+import akka.http.scaladsl.model.{ContentTypes, HttpEntity, HttpMethods, HttpRequest, HttpResponse, StatusCode, StatusCodes}
+import akka.http.scaladsl.server.{ExceptionHandler, Route}
+import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.util.Timeout
+import model.{FieldInterface, GameBoardInterface, PieceInterface}
+import model.gameBoardBaseImpl.{GameBoardCreator, Piece}
+import model.gameBoardBaseImpl.Color.{Black, White}
+import play.api.libs.json.Json
+import utils.{Mover, UndoManager}
+import concurrent.duration.DurationInt
+
+import java.util.concurrent.TimeUnit
+import scala.concurrent.duration.TimeUnit
 import scala.Checkers.{controller, gui}
+import scala.util.{Failure, Success, Try}
 import scala.swing.Publisher
 
 class Controller @Inject() (var gameBoard: GameBoardInterface) extends ControllerInterface with Publisher {
@@ -17,9 +34,14 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
   private val undoManager = new UndoManager
   var gameState: GameState = WHITE_TURN
   val injector = Guice.createInjector(new CheckersModule)
-  val fileIo = injector.instance[FileIOInterface]
+  //val fileIo = injector.instance[FileIOInterface]
   var cap: String = ""
   var destTemp: String = ""
+  val IOServer = "http://localhost:8081/io"
+  val IOIP = sys.env.getOrElse("FILEIO_SERVICE_HOST", "localhost").toString
+  val IOPort = sys.env.getOrElse("FILEIO_SERVICE_PORT", 8081).toString.toInt
+
+  val IOURI = "http://" + IOIP + ":" + IOPort + "/io"
 
   def createNewGameBoard(): Unit = {
     gameBoard.size match {
@@ -76,16 +98,15 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
 
   def move(start: String, dest: String): Unit = {
 
-    if (gameState == WHITE_TURN && gameBoard.getField(start).getPiece.get.getColor == "white") {
+    if (gameState == WHITE_TURN && gameBoard.getField(start).getPiece.get.getColor == White) {
       cap = ""
-      gameBoard.getField(start).getPiece.get.sListBlack.clear
       gameBoard.getField(start).getPiece.get.sList.clear
+      // case einbauen
       if (this.movePossible(start, dest).getRem.isEmpty) gameState = BLACK_TURN
       if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
       undoManager.doStep(new MoveCommand(start, dest, this))
       if (!cap.isEmpty) {
         gameBoard.getField(dest).getPiece.get.sList.clear
-        gameBoard.getField(dest).getPiece.get.sListBlack.clear
         this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))
         this.movePossible(dest, dest)
         cap = ""
@@ -100,20 +121,18 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
       return
     }
 
-    if (gameState == BLACK_TURN && gameBoard.getField(start).getPiece.get.getColor == "black") {
+    if (gameState == BLACK_TURN && gameBoard.getField(start).getPiece.get.getColor == Black) {
       cap = ""
-      gameBoard.getField(start).getPiece.get.sListBlack.clear
       gameBoard.getField(start).getPiece.get.sList.clear
       if (this.movePossible(start, dest).getRem.isEmpty) gameState = WHITE_TURN
       if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
       undoManager.doStep(new MoveCommand(start, dest, this))
       if (!cap.isEmpty) {
-        gameBoard.getField(dest).getPiece.get.sListBlack.clear
         gameBoard.getField(dest).getPiece.get.sList.clear
         this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))
         this.movePossible(dest, dest)
         cap = ""
-        if (gameBoard.getField(dest).getPiece.get.sListBlack.nonEmpty) {
+        if (gameBoard.getField(dest).getPiece.get.sList.nonEmpty) {
           gameState = BLACK_CAP
           destTemp = dest
         } else gameState = WHITE_TURN
@@ -127,13 +146,11 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     else if (gameState == WHITE_CAP && start == destTemp) {
       if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
       gameBoard.getField(start).getPiece.get.sList.clear
-      gameBoard.getField(start).getPiece.get.sListBlack.clear
       this.movePossible(start, start)
       if (gameBoard.getField(start).getPiece.get.sList.nonEmpty) {
         if (!this.movePossible(start, dest).getRem.isEmpty) {
           undoManager.doStep(new MoveCommand(start, dest, this))
           gameBoard.getField(dest).getPiece.get.sList.clear
-          gameBoard.getField(dest).getPiece.get.sListBlack.clear
           this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))
           this.movePossible(dest, dest)
           if (gameBoard.getField(dest).getPiece.get.sList.isEmpty) gameState = BLACK_TURN
@@ -149,16 +166,14 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     else if (gameState == BLACK_CAP && start == destTemp) {
       if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
       gameBoard.getField(start).getPiece.get.sList.clear
-      gameBoard.getField(start).getPiece.get.sListBlack.clear
       this.movePossible(start, start)
-      if (gameBoard.getField(start).getPiece.get.sListBlack.nonEmpty) {
+      if (gameBoard.getField(start).getPiece.get.sList.nonEmpty) {
         if (!this.movePossible(start, dest).getRem.isEmpty) {
           undoManager.doStep(new MoveCommand(start, dest, this))
           gameBoard.getField(dest).getPiece.get.sList.clear
-          gameBoard.getField(dest).getPiece.get.sListBlack.clear
           this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))
           this.movePossible(dest, dest)
-          if (gameBoard.getField(dest).getPiece.get.sListBlack.isEmpty) gameState = WHITE_TURN
+          if (gameBoard.getField(dest).getPiece.get.sList.isEmpty) gameState = WHITE_TURN
           destTemp = dest
           publish(new FieldChanged)
           publish(new PrintTui)
@@ -179,9 +194,9 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
       row <- 0 until gameBoard.size
       col <- 0 until gameBoard.size
     } {
-      if (field(row, col).isSet && field(row, col).getPiece.get.getColor == "white") {
+      if (field(row, col).isSet && field(row, col).getPiece.get.getColor == White) {
         white += 1
-      } else if (field(row, col).isSet && field(row, col).getPiece.get.getColor == "black") {
+      } else if (field(row, col).isSet && field(row, col).getPiece.get.getColor == Black) {
         black += 1
       }
     }
@@ -196,31 +211,97 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     }
 
     if (gameBoard.getField(start).piece.isDefined) {
-      if (gameBoard.getField(start).piece.get.getColor == "black") gameBoard.blackMovePossible(start, dest)
-      else gameBoard.whiteMovePossible(start, dest)
+      gameBoard.movePossible(start, dest)
     } else new Mover(false, "", false)
   }
 
-  def save: Unit = {
-    fileIo.save(gameBoard)
+  def save(): Unit = {
+    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+    implicit val executionContext: ExecutionContextExecutor = system.executionContext
+
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
+      method = HttpMethods.POST,
+      uri = IOURI + "/save",
+      entity = gameBoard.jsonToString
+    ))
     publish(new FieldChanged)
   }
 
-  def load: Unit = {
-    val oldSize = gameBoard.size
-    gameBoard = fileIo.load
-    if (gameBoard.size != oldSize) publish(new GBSizeChanged(gameBoard.size))
+  def dbsave(): Unit = {
+    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+    implicit val executionContext: ExecutionContextExecutor = system.executionContext
+
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
+      method = HttpMethods.PUT,
+      uri = IOURI + "/dbsave",
+      entity = gameBoard.jsonToString
+    ))
     publish(new FieldChanged)
-    publish(new PrintTui)
   }
 
-  def undo: Unit = {
+  def load(): Unit = {
+
+    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+    implicit val executionContext: ExecutionContextExecutor = system.executionContext
+
+
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
+      method = HttpMethods.GET,
+      uri = IOURI + "/load",
+    ))
+
+
+    responseFuture
+      .onComplete {
+        case Failure(_) => sys.error("Failed getting Json")
+        case Success(value) => {
+          Unmarshal(value.entity).to[String].onComplete {
+            case Failure(_) => sys.error("Failed unmarshalling")
+            case Success(value) => {
+              this.gameBoard = gameBoard.jsonToGameBoard(value)
+              publish(new FieldChanged)
+              publish(new PrintTui)
+            }
+          }
+        }
+      }
+  }
+
+  def dbload(): Unit = {
+
+    implicit val system: ActorSystem[Nothing] = ActorSystem(Behaviors.empty, "SingleRequest")
+    implicit val executionContext: ExecutionContextExecutor = system.executionContext
+
+
+    val responseFuture: Future[HttpResponse] = Http().singleRequest(HttpRequest(
+      method = HttpMethods.GET,
+      uri = IOURI + "/dbload",
+    ))
+
+
+    responseFuture
+      .onComplete {
+        case Failure(_) => sys.error("Failed getting Json")
+        case Success(value) => {
+          Unmarshal(value.entity).to[String].onComplete {
+            case Failure(_) => sys.error("Failed unmarshalling")
+            case Success(value) => {
+              this.gameBoard = gameBoard.jsonToGameBoard(value)
+              publish(new FieldChanged)
+              publish(new PrintTui)
+            }
+          }
+        }
+      }
+  }
+
+  def undo(): Unit = {
     undoManager.undoStep
     publish(new FieldChanged)
     publish(new PrintTui)
   }
 
-  def redo: Unit = {
+  def redo(): Unit = {
     undoManager.redoStep
     publish(new FieldChanged)
     publish(new PrintTui)
@@ -233,4 +314,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
   def gameBoardSize: Int = gameBoard.size
 
   def statusText: String = GameState.message(gameState)
+
+
+
 }

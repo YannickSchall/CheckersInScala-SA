@@ -8,6 +8,7 @@ import scala.swing.event._
 import javax.swing.{BorderFactory, Icon, ImageIcon, JButton, JOptionPane, JPanel}
 import controller.controllerComponent._
 
+
 class Gui(controller: ControllerInterface) extends Frame {
 
   listenTo(controller)
@@ -22,8 +23,7 @@ class Gui(controller: ControllerInterface) extends Frame {
   var colorFlag = new BoxPanel(Orientation.NoOrientation)
   var bgcol = "rb"
 
-  val dir: String = new File("").getAbsolutePath
-  iconImage = new ImageIcon(dir+"\\src\\main\\resources\\icon.png").getImage
+  iconImage = new ImageIcon(getClass.getResource("/icon.png")).getImage
 
   def gameBoardPanel = new GridPanel(controller.gameBoardSize, controller.gameBoardSize) {
     border = BorderFactory.createEmptyBorder(1, 1, 1, 1)
@@ -112,10 +112,10 @@ class Gui(controller: ControllerInterface) extends Frame {
     }
     contents += new Menu("Edit") {
 
-        contents += new Menu("Debugging") {
-          contents += new MenuItem(Action("Undo") { controller.undo })
-          contents += new MenuItem(Action("Redo") { controller.redo })
-        }
+      contents += new Menu("Debugging") {
+        contents += new MenuItem(Action("Undo") { controller.undo() })
+        contents += new MenuItem(Action("Redo") { controller.redo() })
+      }
     }
     contents += new Menu("Options") {
       mnemonic = Key.O
@@ -178,5 +178,4 @@ class Gui(controller: ControllerInterface) extends Frame {
       controller.resize(size)
     }
   }
-
 }
