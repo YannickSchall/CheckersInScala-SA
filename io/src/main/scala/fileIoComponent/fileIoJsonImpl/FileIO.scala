@@ -11,6 +11,7 @@ import fileIoComponent.FileIOInterface
 
 import scala.io.Source
 import play.api.libs.json.*
+/*
 
 class FileIO extends FileIOInterface{
   override def load: GameBoardInterface = {
@@ -111,3 +112,4 @@ class FileIO extends FileIOInterface{
     )
   }
 }
+*/

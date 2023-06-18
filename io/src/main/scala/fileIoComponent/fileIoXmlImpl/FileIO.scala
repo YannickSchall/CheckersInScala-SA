@@ -11,7 +11,7 @@ import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import util.*
 
 import scala.xml.{Elem, PrettyPrinter}
-
+/*
 class FileIO extends FileIOInterface {
   override def load: GameBoardInterface = {
     var gameBoard: GameBoardInterface = null
@@ -89,3 +89,4 @@ class FileIO extends FileIOInterface {
 
 
 }
+*/
