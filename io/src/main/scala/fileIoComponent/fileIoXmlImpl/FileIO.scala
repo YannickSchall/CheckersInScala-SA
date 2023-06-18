@@ -12,7 +12,7 @@ import net.codingwell.scalaguice.InjectorExtensions.ScalaInjector
 import java.io.{File, PrintWriter}
 import util.*
 import scala.xml.{Elem, PrettyPrinter}
-
+/*
 class FileIO extends FileIOInterface {
   def load(): String = {
     val file = scala.io.Source.fromFile("game.xml")
@@ -28,3 +28,4 @@ class FileIO extends FileIOInterface {
 
 
 }
+*/
