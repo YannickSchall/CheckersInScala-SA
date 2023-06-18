@@ -18,7 +18,6 @@ class FieldPanel(row: Int, col: Int, controller: ControllerInterface, background
   var color: String = "white"
   def myField = controller.field(row, col)
 
-  val dir: String = new File("").getAbsolutePath
   val pieceBlackS = new ImageIcon(getClass.getResource("/pieceBlackSmall.png"))
   val pieceWhiteS = new ImageIcon(getClass.getResource("/pieceWhiteSmall.png"))
   val queenBlackS = new ImageIcon(getClass.getResource("/queenBlackSmall.png"))
