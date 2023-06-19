@@ -1,4 +1,5 @@
 package MongoDB
+
 import org.mongodb.scala.Document
 import org.mongodb.scala.bson.collection.immutable.Document
 import org.mongodb.scala.MongoClient
