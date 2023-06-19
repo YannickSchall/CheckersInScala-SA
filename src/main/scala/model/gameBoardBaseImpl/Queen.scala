@@ -39,7 +39,6 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
   }
 
   override def fillList(to: String, gameBoard: GameBoard, direction: Direction, dist_count: Int): ListBuffer[String] = {
-    // brauchen wir 2 unterschiedliche Listen? früher blackList
 
     val Last: Int = gameBoard.size - 1
     val row_dist: Int = dist_count * direction.dir._1
@@ -89,10 +88,9 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
       val dist: Int = if (ls.isEmpty) 1 else ls.size+1
       val vector = calcDist(direction)(dist) // Richtungsvektor aus direction und dist
       val row_vector: Int = vector(0)
-      //println("_result1 now: " + row_vector)
       val col_vector: Int = vector(1)
-      //println("_result2 now: " + col_vector)
-      if(!((col + col_vector <= Last) && (col + col_vector >= 0) && (row + row_vector <= Last) && (row + row_vector >= 0))) { // Guard Statement Schleifenabbruchbedingung: Rand des Spielfelds erreicht
+      // Guard Statement Schleifenabbruchbedingung: Rand des Spielfelds erreicht
+      if(!((col + col_vector <= Last) && (col + col_vector >= 0) && (row + row_vector <= Last) && (row + row_vector >= 0))) {
         return ls
       }
 
@@ -110,10 +108,9 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
     def getLegalCaps(dist: Int = 1): Option[String] = { // Gibt legalen Schlag aus
       val vector = calcDist(direction)(dist) // Richtungsvektor aus direction und dist
       val row_vector: Int = vector(0)
-      //println("_result1 now: " + row_vector)
       val col_vector: Int = vector(1)
-      //println("_result2 now: " + col_vector)
-      if (!((col + col_vector <= Last) && (col + col_vector >= 0) && (row + row_vector <= Last) && (row + row_vector >= 0))) { // Guard Statement Schleifenabbruchbedingung: Rand des Spielfelds erreicht
+      // Guard Statement Schleifenabbruchbedingung: Rand des Spielfelds erreicht
+      if (!((col + col_vector <= Last) && (col + col_vector >= 0) && (row + row_vector <= Last) && (row + row_vector >= 0))) {
         return None
       }
 
