@@ -49,7 +49,6 @@ class SlickDBCheckers @Inject() extends DBInterface {
 
   override def save(gameBoard: GameBoardInterface): Unit = {
     Try {
-      println("saving game in DB")
       val jsonGb = parse(io.gameBoardToJson(gameBoard)) 
       val gbFromJson = (jsonGb \ "gameBoard").get.toString()
       val gb = (0, gbFromJson)
@@ -60,7 +59,6 @@ class SlickDBCheckers @Inject() extends DBInterface {
   override def load(id: Option[Int] = None): Future[Try[GameBoardInterface]]  = {
     Future {
       Try {
-        println("storing game in DB")
         val loadQuery = id.map(id => gameBoardTable.filter(_.id === id))
           .getOrElse(gameBoardTable.filter(_.id === gameBoardTable.map(_.id).max))
 
