@@ -8,7 +8,6 @@ import fileIOComponent.utils.Mover
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import play.api.libs.json.*
 
-import scala.concurrent.Future
 import scala.io.Source
 import scala.util.*
 
@@ -20,7 +19,7 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
   val size: Int = fields.size
 
   override def getField(pos: String): Field = {
-    field(Integer.parseInt(pos.tail) - 1, pos.charAt(0).toInt - 65)
+    field(Integer.parseInt(pos.tail)-1, pos.charAt(0).toInt - 65)
   }
 
   override def remove(row: Int, col: Int): GameBoard = copy(fields.replaceField(row, col, Field(posToStr(row, col), None)))
@@ -33,11 +32,11 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
 
   override def rowToInt(pos: String): Int = Integer.parseInt(pos.tail) - 1
 
-  override def posToStr(row: Int, col: Int): String = (col + 65).toChar.toString + (row + 1).toString
+  override def posToStr(row: Int, col: Int): String = (col + 65).toChar.toString + (row+1).toString
 
 
   override def toString: String = {
-    val lineSeparator = ("+-" + ("--" * (size + 1))) + "+\n"
+    val lineSeparator = ("+-" + ("--" * (size+1))) + "+\n"
     val line = ("| " + ("o " * size)) + "|\n"
     var box = "\n" + (lineSeparator + (line * size)) + lineSeparator
     for {
@@ -50,13 +49,12 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
 
   override def getPiece(row: Int, col: Int): Option[Piece] = {
     def pos = posToStr(row, col)
-
     getField(pos).piece
   }
 
   override def move(start: String, dest: String): GameBoard = {
     getField(start).piece match {
-      case Some(piece) => remove(Integer.parseInt(start.tail) - 1, start.charAt(0).toInt - 65).set(Integer.parseInt(dest.tail) - 1, dest.charAt(0).toInt - 65, Some(Piece(piece.state, Integer.parseInt(dest.tail) - 1, dest.charAt(0).toInt - 65, piece.getColor)))
+      case Some(piece) => remove(Integer.parseInt(start.tail)-1, start.charAt(0).toInt - 65).set(Integer.parseInt(dest.tail)-1, dest.charAt(0).toInt - 65, Some(Piece(piece.state, Integer.parseInt(dest.tail)-1, dest.charAt(0).toInt - 65, piece.getColor)))
       case None => print("Field " + start + " is empty"); this
     }
   }
@@ -136,10 +134,10 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
   override def toJson: JsValue =
     gameBoardToJson
 
-  override def jsonToGameBoard(source: String): Future[GameBoard] = {
+  override def jsonToGameBoard(source: String): GameBoard = {
     val json: JsValue = Json.parse(source)
     val size = (json \ "gameBoard" \ "size").get.toString.toInt
-    val gb: GameBoard = new GameBoard(size)
+    var gb: GameBoard = new GameBoard(size)
 
     val fields = (json \ "gameBoard" \ "fields").get
     for (index <- 0 until size * size) {
@@ -147,16 +145,15 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
       val col = fields(index)("col").as[Int]
       val check = fields(index)("field")("piece")
       val piece = if (check.toString != "null") check.as[Piece] else null
-      gb.set(row, col, Option(piece))
+      gb = gb.set(row, col, Option(piece))
     }
-
-    Future.successful(gb) // Wrap the result in a successful Future
+    gb
   }
 
-  override def jsonToGameBoardSQL(source: String): Future[GameBoard] = {
+  override def jsonToGameBoardSQL(source: String): GameBoard = {
     val json: JsValue = Json.parse(source)
     val size = (json \ "size").get.toString.toInt
-    val gb: GameBoard = new GameBoard(size)
+    var gb: GameBoard = new GameBoard(size)
 
     val fields = (json \ "fields").get
     for (index <- 0 until size * size) {
@@ -164,10 +161,8 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
       val col = fields(index)("col").as[Int]
       val check = fields(index)("field")("piece")
       val piece = if (check.toString != "null") check.as[Piece] else null
-      gb.set(row, col, Option(piece))
+      gb = gb.set(row, col, Option(piece))
     }
-
-    Future.successful(gb) // Wrap the result in a successful Future
+    gb
   }
 }
-  

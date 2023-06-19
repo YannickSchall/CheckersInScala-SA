@@ -65,7 +65,7 @@ object RestIO {
               case None => None
             }
           complete(HttpEntity(ContentTypes.`application/json`, fileIO.gameBoardToJson(
-            Await.result(db.load(id_updated), 5.seconds).getOrElse(new GameBoardCreator(8).createEmptyBoard())))
+            db.load(id_updated).getOrElse(new GameBoardCreator(8).createEmptyBoard())))
           )
         }
       }

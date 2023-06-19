@@ -53,7 +53,6 @@ class MongoDBCheckers @Inject() extends DBInterface {
 
 
   override def save(gameBoard: GameBoardInterface): Unit = {
-    println("Saving game in MongoDB")
     val jsonGb = io.gameBoardToJson(gameBoard)
     val gbID = getNewestId(gameBoardCollection)+1
     val gameBoardDocument: Document = Document(
@@ -61,24 +60,15 @@ class MongoDBCheckers @Inject() extends DBInterface {
       "gameBoard" -> jsonGb
     )
     Await.result(gameBoardCollection.insertOne(gameBoardDocument).asInstanceOf[SingleObservable[Unit]].head(), 5.seconds)
-    println("Game saved in MongoDB")
   }
 
-  override def load(id: Option[Int] = None): Future[Try[GameBoardInterface]] = {
-    Future {
-      Try {
-        println("Loading game from MongoDB")
-
-        val newID = id.getOrElse(getNewestId(gameBoardCollection))
-
-        val gameBoardDocument = Await.result(gameBoardCollection.find(equal("_id", newID)).first().head(), 5.seconds)
-
-        val slave = new GameBoard(8)
-        val res = slave.jsonToGameBoard(gameBoardDocument("gameBoard").asString().getValue)
-
-        println("Game loaded from MongoDB")
-        Await.result(res, 5.seconds)
-      }
+  override def load(id: Option[Int] = None): Try[GameBoardInterface] = {
+    Try {
+      val newID = id.getOrElse(getNewestId(gameBoardCollection))
+      val gameBoardDocument = Await.result(gameBoardCollection.find(equal("_id", newID)).first().head(), 5.seconds)
+      val slave = new GameBoard(8)
+      val res = slave.jsonToGameBoard(gameBoardDocument("gameBoard").asString().getValue)
+      res
     }
   }
 

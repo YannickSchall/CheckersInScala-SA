@@ -76,8 +76,8 @@ class MongoDBCheckersSpec extends AnyWordSpec with Matchers with BeforeAndAfter 
       val gameBoard = new GameBoardCreator(8).createBoard()
       mongoDBCheckers.save(gameBoard)
       val loadedGameBoard = mongoDBCheckers.load()
-      Await.result(loadedGameBoard, 5.seconds).isSuccess shouldEqual true
-      Await.result(loadedGameBoard, 5.seconds).get.toJson shouldEqual gameBoard.toJson
+      loadedGameBoard.isSuccess shouldEqual true
+      loadedGameBoard.get.toJson shouldEqual gameBoard.toJson
     }
 
     "update the game board in the MongoDB collection" in {

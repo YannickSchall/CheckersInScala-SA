@@ -43,38 +43,32 @@ class SlickDBCheckers @Inject() extends DBInterface {
   val setup: DBIOAction[Unit, NoStream, Effect.Schema] = DBIO.seq(
     gameBoardTable.schema.createIfNotExists
   )
-  println("creating tables")
   Await.result(database.run(setup), 15.seconds)
-  println("tables created")
 
   override def save(gameBoard: GameBoardInterface): Unit = {
     Try {
-      println("saving game in DB")
-      val jsonGb = parse(io.gameBoardToJson(gameBoard)) 
+      val jsonGb = parse(io.gameBoardToJson(gameBoard))
       val gbFromJson = (jsonGb \ "gameBoard").get.toString()
       val gb = (0, gbFromJson)
       Await.result(database.run(gameBoardTable returning gameBoardTable.map(_.id) += gb), 15.seconds)
     }
   }
 
-  override def load(id: Option[Int] = None): Future[Try[GameBoardInterface]]  = {
-    Future {
-      Try {
-        println("storing game in DB")
-        val loadQuery = id.map(id => gameBoardTable.filter(_.id === id))
-          .getOrElse(gameBoardTable.filter(_.id === gameBoardTable.map(_.id).max))
+  override def load(id: Option[Int] = None): Try[GameBoardInterface]  = {
+    Try {
+      val loadQuery = id.map(id => gameBoardTable.filter(_.id === id))
+        .getOrElse(gameBoardTable.filter(_.id === gameBoardTable.map(_.id).max))
 
-        val answer = Await.result(database.run(loadQuery.result), 5.seconds)
-        val slave = new GameBoard(8)
-        val res = try {
-          slave.jsonToGameBoard(answer.head(1))
-        } catch {
-          case e: Exception =>
-            e.printStackTrace()
-            throw e
-        }
-        Await.result(res, 5.seconds)
+      val answer = Await.result(database.run(loadQuery.result), 5.seconds)
+      val slave = new GameBoard(8)
+      val res = try {
+        slave.jsonToGameBoard(answer.head(1))
+      } catch {
+        case e: Exception =>
+          e.printStackTrace()
+          throw e
       }
+      res
     }
   }
 
