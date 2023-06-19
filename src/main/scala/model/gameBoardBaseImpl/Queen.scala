@@ -7,6 +7,8 @@ import model.gameBoardBaseImpl.Color.{Black, White}
 import utils.Mover
 import model.gameBoardBaseImpl.Direction.{DownLeft, DownRight, Left, Right, UpLeft, UpRight}
 
+import scala.concurrent.Future
+
 
 case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) extends Piece(state, row, col, getColor) {
 
@@ -75,7 +77,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
     calcDist(direction) andThen { case (rd, cd) => (rd + increaseOffset(rd), cd + increaseOffset(cd)) }
 
 
-  override def getMover(to: String, gameBoard: GameBoard): Mover = {
+  override def getMover(to: String, gameBoard: GameBoard): Future[Mover] = {
     val Last: Int = gameBoard.size - 1
     val toRow: Int = Integer.parseInt(to.tail) - 1
     val toCol: Int = to.charAt(0).toInt - 65
@@ -91,7 +93,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
       val col_vector: Int = vector(1)
       // Guard Statement Schleifenabbruchbedingung: Rand des Spielfelds erreicht
       if(!((col + col_vector <= Last) && (col + col_vector >= 0) &&
-           (row + row_vector <= Last) && (row + row_vector >= 0))) {
+        (row + row_vector <= Last) && (row + row_vector >= 0))) {
         return ls
       }
 
@@ -112,7 +114,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
       val col_vector: Int = vector(1)
       // Guard Statement Schleifenabbruchbedingung: Rand des Spielfelds erreicht
       if (!((col + col_vector <= Last) && (col + col_vector >= 0) &&
-            (row + row_vector <= Last) && (row + row_vector >= 0))) {
+        (row + row_vector <= Last) && (row + row_vector >= 0))) {
         return None
       }
 
@@ -131,32 +133,36 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
 
     val can_capture = sList.nonEmpty
     if (!can_capture) {
-      val legals = getLegalMoves(List[String]())
-      direction match {
-        case UpLeft | DownLeft if col == 0 => new Mover(false, "", false)
-        case UpRight | DownRight if col == Last => new Mover(false, "", false)
-        case UpLeft | UpRight if row == 0 => new Mover(false, "", false)
-        case DownLeft | DownRight if row == Last => new Mover(false, "", false)
-        case UpLeft if legals.contains(to) => Mover(true, "", false)
-        case UpRight if legals.contains(to) => Mover(true, "", false)
-        case DownLeft if legals.contains(to) => Mover(true, "", false)
-        case DownRight if legals.contains(to) => Mover(true, "", false)
-        case _ => new Mover(false, "", false)
+      Future.successful{
+        val legals = getLegalMoves(List[String]())
+        direction match {
+          case UpLeft | DownLeft if col == 0 => new Mover(false, "", false)
+          case UpRight | DownRight if col == Last => new Mover(false, "", false)
+          case UpLeft | UpRight if row == 0 => new Mover(false, "", false)
+          case DownLeft | DownRight if row == Last => new Mover(false, "", false)
+          case UpLeft if legals.contains(to) => Mover(true, "", false)
+          case UpRight if legals.contains(to) => Mover(true, "", false)
+          case DownLeft if legals.contains(to) => Mover(true, "", false)
+          case DownRight if legals.contains(to) => Mover(true, "", false)
+          case _ => new Mover(false, "", false)
+        }
       }
     } else {
-      val legal = getLegalCaps()
-      direction match {
-        case UpLeft | DownLeft if col == 0 || col == 1 => new Mover(false, "", false)
-        case UpRight | DownRight if col == Last || col == Last-1 => new Mover(false, "", false)
-        case UpLeft | UpRight if row == 0 || col == 1 => new Mover(false, "", false)
-        case DownLeft | DownRight if row == Last || row == Last-1 => new Mover(false, "", false)
-        case UpLeft|UpRight|DownLeft|DownRight if legal.isDefined => Mover(true, legal.get, false)
-        case _ => new Mover(false, "", false)
+      Future.successful {
+        val legal = getLegalCaps()
+        direction match {
+          case UpLeft | DownLeft if col == 0 || col == 1 => new Mover(false, "", false)
+          case UpRight | DownRight if col == Last || col == Last - 1 => new Mover(false, "", false)
+          case UpLeft | UpRight if row == 0 || col == 1 => new Mover(false, "", false)
+          case DownLeft | DownRight if row == Last || row == Last - 1 => new Mover(false, "", false)
+          case UpLeft | UpRight | DownLeft | DownRight if legal.isDefined => Mover(true, legal.get, false)
+          case _ => new Mover(false, "", false)
+        }
       }
     }
   }
 
-  override def movePossible(to: String, gameBoard: GameBoard): Mover = {
+  override def movePossible(to: String, gameBoard: GameBoard): Future[Mover] = {
     val dist: Int = 1
     val Last: Int = gameBoard.size - 1
 

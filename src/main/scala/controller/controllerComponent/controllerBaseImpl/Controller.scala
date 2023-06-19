@@ -258,7 +258,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
           Unmarshal(value.entity).to[String].onComplete {
             case Failure(_) => sys.error("Failed unmarshalling")
             case Success(value) => {
-              this.gameBoard = gameBoard.jsonToGameBoard(value)
+              this.gameBoard = Await.result(gameBoard.jsonToGameBoard(value), 5.seconds)
               publish(new FieldChanged)
               publish(new PrintTui)
             }
@@ -286,7 +286,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
           Unmarshal(value.entity).to[String].onComplete {
             case Failure(_) => sys.error("Failed unmarshalling")
             case Success(value) => {
-              this.gameBoard = gameBoard.jsonToGameBoard(value)
+              this.gameBoard = Await.result(gameBoard.jsonToGameBoard(value), 5.seconds)
               publish(new FieldChanged)
               publish(new PrintTui)
             }
@@ -309,7 +309,7 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
 
   def isSet(row: Int, col: Int): Boolean = gameBoard.field(row, col).isSet
 
-  def field(row: Int, col: Int):FieldInterface = gameBoard.field(row,col)
+  def field(row: Int, col: Int): FieldInterface = gameBoard.field(row,col)
 
   def gameBoardSize: Int = gameBoard.size
 

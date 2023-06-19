@@ -67,7 +67,7 @@ class SlickDBCheckers @Inject() extends DBInterface {
         val answer = Await.result(database.run(loadQuery.result), 5.seconds)
         val slave = new GameBoard(8)
         val res = try {
-          slave.jsonToGameBoard(answer.head(1))
+          slave.jsonToGameBoardSQL(answer.head(1))
         } catch {
           case e: Exception =>
             e.printStackTrace()

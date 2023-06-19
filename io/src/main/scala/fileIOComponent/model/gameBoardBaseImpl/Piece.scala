@@ -3,7 +3,9 @@ package fileIOComponent.model.gameBoardBaseImpl
 import com.google.inject.Inject
 import fileIOComponent.model.PieceInterface
 import fileIOComponent.utils.Mover
+
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.Future
 
 abstract class Piece @Inject() (state: String, row: Int, col: Int, color: Color) extends PieceInterface {
 
@@ -12,7 +14,7 @@ abstract class Piece @Inject() (state: String, row: Int, col: Int, color: Color)
   def getColor: Color
   def posToStr(row: Int, col: Int): String = {(col + 65).toChar.toString + (row + 49).toChar.toString}
 
-  def movePossible(to: String, gameBoard: GameBoard): Mover
+  def movePossible(to: String, gameBoard: GameBoard): Future[Mover]
 
   def movStrToInt(s: String): (Int, Int, Int, Int) = {
     val startCol = col

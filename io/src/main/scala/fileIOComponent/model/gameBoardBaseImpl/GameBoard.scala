@@ -8,9 +8,10 @@ import fileIOComponent.utils.Mover
 import play.api.libs.functional.syntax.{toFunctionalBuilderOps, unlift}
 import play.api.libs.json.*
 
-import scala.concurrent.Future
+import scala.concurrent.{Await, Future}
 import scala.io.Source
 import scala.util.*
+import concurrent.duration.DurationInt
 
 case class
 GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
@@ -63,7 +64,7 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
 
   override def movePossible(start: String, dest: String): Mover = {
     getField(start).piece match {
-      case Some(piece) => piece.movePossible(dest, this)
+      case Some(piece) => Await.result(piece.movePossible(dest, this), 5.seconds)
       case _ => new Mover(false, "", false)
     }
   }
@@ -170,4 +171,3 @@ GameBoard @Inject() (fields: Matrix[Field]) extends GameBoardInterface {
     Future.successful(gb) // Wrap the result in a successful Future
   }
 }
-  

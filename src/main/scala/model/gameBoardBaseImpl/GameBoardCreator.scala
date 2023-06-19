@@ -41,7 +41,7 @@ class GameBoardCreator(size: Int) {
 
     operations.foldLeft(gameBoard) { case (gb, op) => op(gb) }
   }
-  
+
   def createEmptyBoard(): GameBoard = {
     val gameBoard: GameBoard = new GameBoard(size)
 
@@ -49,7 +49,7 @@ class GameBoardCreator(size: Int) {
       x <- 0 until size
       y <- 0 until size
     } yield (x, y)).toList
-    
+
     val noneOperations: List[GameBoard => GameBoard] = nonePositions.map {
       case (x, y) => (gb: GameBoard) => gb.set(x, y, None)
     }
@@ -58,5 +58,5 @@ class GameBoardCreator(size: Int) {
 
     operations.foldLeft(gameBoard) { case (gb, op) => op(gb) }
   }
-  
+
 }

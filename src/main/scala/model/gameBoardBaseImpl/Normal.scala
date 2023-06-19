@@ -5,10 +5,12 @@ import Color.{Black, White}
 import Direction.{Left, Right, UpLeft, UpRight}
 import utils.Mover
 
+import scala.concurrent.Future
+
 case class Normal(state: String = "normal", row: Int, col: Int, getColor: Color) extends Piece(state, row, col, getColor) {
 
   var sList: ListBuffer[String] = ListBuffer()
-  
+
   override def toString: String = if (getColor == Black) "\u001B[37mO\u001B[0m" //red
   else "\u001B[30mO\u001B[0m" //blue
   override def posToStr(row: Int, col: Int): String = {
@@ -18,7 +20,7 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: Color)
   override def getDirection(toRow: Int, toCol: Int): Direction = {
     if toCol < col then Left else Right
   }
-  
+
   override def fillList(to: String, gameBoard: GameBoard, direction: Direction, dist_count: Int): ListBuffer[String] = {
     val row_offset: Int = if (getColor == Black) 2 else -2
     val col_offset: Int = if (direction == Right) 2 else -2
@@ -45,9 +47,9 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: Color)
       case _ => false
     }
   }
-  
-  override def getMover(to: String, gameBoard: GameBoard): Mover = {
-    
+
+  override def getMover(to: String, gameBoard: GameBoard): Future[Mover] = {
+
     val Last: Int = gameBoard.size - 1
     val toRow: Int = Integer.parseInt(to.tail) - 1
     val toCol: Int = to.charAt(0).toInt - 65
@@ -57,37 +59,41 @@ case class Normal(state: String = "normal", row: Int, col: Int, getColor: Color)
     def cap(row_offset: Int, col_offset: Int): Boolean = cap_cond(row_offset, col_offset, gameBoard) && to == gameBoard.posToStr(row + row_offset * 2, col + col_offset * 2)
 
     def no_cap(row_offset: Int, col_offset: Int): Boolean = gameBoard.field(row + row_offset, col + col_offset).piece.isEmpty && to == gameBoard.posToStr(row + row_offset, col + col_offset)
-    
+
     if (!can_capture) {
-      (getColor, direction) match {
-        case (White, _) if row == 0 => new Mover(false, "", false)
-        case (Black, _) if row == Last => new Mover(false, "", false)
-        case (_, Left) if col == 0 => new Mover(false, "", false)
-        case (_, Right) if col == Last => new Mover(false, "", false)
-        case (White, Left) if no_cap(-1, -1) => new Mover(true, "", if toRow == 0 then true else false)
-        case (White, Right) if no_cap(-1, 1) => new Mover(true, "", if toRow == 0 then true else false)
-        case (Black, Left) if no_cap(1, -1) => new Mover(true, "", if toRow == Last then true else false)
-        case (Black, Right) if no_cap(1, 1) => new Mover(true, "", if toRow == Last then true else false)
-        case _ => new Mover(false, "", false)
+      Future.successful {
+        (getColor, direction) match {
+          case (White, _) if row == 0 => new Mover(false, "", false)
+          case (Black, _) if row == Last => new Mover(false, "", false)
+          case (_, Left) if col == 0 => new Mover(false, "", false)
+          case (_, Right) if col == Last => new Mover(false, "", false)
+          case (White, Left) if no_cap(-1, -1) => new Mover(true, "", if toRow == 0 then true else false)
+          case (White, Right) if no_cap(-1, 1) => new Mover(true, "", if toRow == 0 then true else false)
+          case (Black, Left) if no_cap(1, -1) => new Mover(true, "", if toRow == Last then true else false)
+          case (Black, Right) if no_cap(1, 1) => new Mover(true, "", if toRow == Last then true else false)
+          case _ => new Mover(false, "", false)
+        }
       }
     } else {
-      (getColor, direction) match {
-        case (White, _) if row == 0 || row == 1 => new Mover(false, "", false)
-        case (Black, _) if row == Last || row == Last-1 => new Mover(false, "", false)
-        case (_, Left) if col == 0 || col == 1 => new Mover(false, "", false)
-        case (_, Right) if col == Last || col == Last-1 => new Mover(false, "", false)
-        case (White, Left) if cap(-1, -1) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
-        case (White, Right) if cap(-1, 1) => new Mover(true, posToStr(row - 1, col + 1), if toRow == 0 then true else false)
-        case (Black, Left) if cap(1, -1) => new Mover(true, posToStr(row + 1, col - 1), if toRow == Last then true else false)
-        case (Black, Right) if cap(1, 1) => new Mover(true, posToStr(row + 1, col + 1), if toRow == Last then true else false)
-        case _ => new Mover(false, "", false)
+      Future.successful {
+        (getColor, direction) match {
+          case (White, _) if row == 0 || row == 1 => new Mover(false, "", false)
+          case (Black, _) if row == Last || row == Last - 1 => new Mover(false, "", false)
+          case (_, Left) if col == 0 || col == 1 => new Mover(false, "", false)
+          case (_, Right) if col == Last || col == Last - 1 => new Mover(false, "", false)
+          case (White, Left) if cap(-1, -1) => new Mover(true, posToStr(row - 1, col - 1), if toRow == 0 then true else false)
+          case (White, Right) if cap(-1, 1) => new Mover(true, posToStr(row - 1, col + 1), if toRow == 0 then true else false)
+          case (Black, Left) if cap(1, -1) => new Mover(true, posToStr(row + 1, col - 1), if toRow == Last then true else false)
+          case (Black, Right) if cap(1, 1) => new Mover(true, posToStr(row + 1, col + 1), if toRow == Last then true else false)
+          case _ => new Mover(false, "", false)
+        }
       }
     }
   }
 
 
 
-  override def movePossible(to: String, gameBoard: GameBoard): Mover = {
+  override def movePossible(to: String, gameBoard: GameBoard): Future[Mover] = {
     val Last: Int = gameBoard.size - 1
 
     col match {

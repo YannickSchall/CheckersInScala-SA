@@ -6,7 +6,10 @@ import org.scalatest.wordspec.*
 import model.gameBoardBaseImpl.*
 import model.gameBoardBaseImpl.Color.*
 import model.gameBoardBaseImpl.Direction.*
+
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.Await
+import scala.concurrent.duration.DurationInt
 
 class NormalSpec extends AnyWordSpec {
   "A Piece called Normal" should {
@@ -107,10 +110,10 @@ class NormalSpec extends AnyWordSpec {
       val color = gbc.getPiece(4, 4).get.getColor
       val normaleWhite = gbc.getPiece(4, 4).get //E5
       color should be (White)
-      normaleWhite.movePossible("C3", gbc).getBool should be (true)
-      normaleWhite.movePossible("G3", gbc).getBool should be (true)
-      normaleWhite.movePossible("C7", gbc).getBool should be (false)
-      normaleWhite.movePossible("G7", gbc).getBool should be (false)
+      Await.result(normaleWhite.movePossible("C3", gbc), 5.seconds).getBool should be (true)
+      Await.result(normaleWhite.movePossible("G3", gbc), 5.seconds).getBool should be (true)
+      Await.result(normaleWhite.movePossible("C7", gbc), 5.seconds).getBool should be (false)
+      Await.result(normaleWhite.movePossible("G7", gbc), 5.seconds).getBool should be (false)
     }
     "should be allowed to Capture from the right" in {
       var gbc = new GameBoardCreator(10).createEmptyBoard()
@@ -120,8 +123,8 @@ class NormalSpec extends AnyWordSpec {
       val color = gbc.getPiece(5, 9).get.getColor
       val normalWhite = gbc.getPiece(5, 9).get //E5
       color should be (White)
-      normalWhite.movePossible("H4", gbc).getBool should be (true)
-      normalWhite.movePossible("H8", gbc).getBool should be (false)
+      Await.result(normalWhite.movePossible("H4", gbc), 5.seconds).getBool should be (true)
+      Await.result(normalWhite.movePossible("H8", gbc), 5.seconds).getBool should be (false)
     }
     "should be allowed to Capture from the left" in {
       var gbc = new GameBoardCreator(10).createEmptyBoard()
@@ -131,8 +134,8 @@ class NormalSpec extends AnyWordSpec {
       val color = gbc.getPiece(6, 0).get.getColor
       val normalWhite = gbc.getPiece(6, 0).get //E5
       color should be (White)
-      normalWhite.movePossible("C5", gbc).getBool should be (true)
-      normalWhite.movePossible("D10", gbc).getBool should be (false)
+      Await.result(normalWhite.movePossible("C5", gbc), 5.seconds).getBool should be (true)
+      Await.result(normalWhite.movePossible("D10", gbc), 5.seconds).getBool should be (false)
     }
     "should be allowed to Capture from the middle as Black" in {
       var gbc = new GameBoardCreator(10).createEmptyBoard()
@@ -144,10 +147,10 @@ class NormalSpec extends AnyWordSpec {
       val color = gbc.getPiece(4, 4).get.getColor
       val normaleWhite = gbc.getPiece(4, 4).get //E5
       color should be (Black)
-      normaleWhite.movePossible("C3", gbc).getBool should be (false)
-      normaleWhite.movePossible("G3", gbc).getBool should be (false)
-      normaleWhite.movePossible("C7", gbc).getBool should be (true)
-      normaleWhite.movePossible("G7", gbc).getBool should be (true)
+      Await.result(normaleWhite.movePossible("C3", gbc), 5.seconds).getBool should be (false)
+      Await.result(normaleWhite.movePossible("G3", gbc), 5.seconds).getBool should be (false)
+      Await.result(normaleWhite.movePossible("C7", gbc), 5.seconds).getBool should be (true)
+      Await.result(normaleWhite.movePossible("G7", gbc), 5.seconds).getBool should be (true)
     }
     "should be allowed to Capture from the right as Black" in {
       var gbc = new GameBoardCreator(10).createEmptyBoard()
@@ -157,16 +160,27 @@ class NormalSpec extends AnyWordSpec {
       val color = gbc.getPiece(5, 9).get.getColor
       val black = gbc.getPiece(5, 9).get //E5
       color should be (Black)
-      black.movePossible("H8", gbc).getBool should be (true)
-      black.movePossible("H3", gbc).getBool should be (false)
+      Await.result(black.movePossible("H8", gbc), 5.seconds).getBool should be (true)
+      Await.result(black.movePossible("H3", gbc), 5.seconds).getBool should be (false)
+    }
+    "should be allowed to Capture from the left as Black" in {
+      var gbc = new GameBoardCreator(10).createEmptyBoard()
+      gbc = gbc.set(4, 1, Some(Piece("normal", 4, 1, White)))
+      gbc = gbc.set(6, 1, Some(Piece("normal", 6, 1, White)))
+      gbc = gbc.set(5, 0, Some(Piece("normal", 5, 0, Black)))
+      val color = gbc.getPiece(5, 0).get.getColor
+      val normalBlack = gbc.getPiece(5, 0).get //E5
+      color should be (Black)
+      Await.result(normalBlack.movePossible("C8", gbc), 5.seconds).getBool should be (true)
+      Await.result(normalBlack.movePossible("D1", gbc), 5.seconds).getBool should be (false)
     }
     "should be allowed to move but not capture" in {
-      w5.movePossible("H8", game).getBool should be(true)
-      b4.movePossible("H6", game).getBool should be(false)
+      Await.result(w5.movePossible("H8", game), 5.seconds).getBool should be(true)
+      Await.result(b4.movePossible("H6", game), 5.seconds).getBool should be(false)
       //b4 4,6 -> 5,7
     }
     "should not be allowed to move and not capture" in {
-      w5.movePossible("H9", game).getBool should be(false)
+      Await.result(w5.movePossible("H9", game), 5.seconds).getBool should be(false)
     }
     "get a direction" in {
       val n = Normal("normal", 0, 0, Black)

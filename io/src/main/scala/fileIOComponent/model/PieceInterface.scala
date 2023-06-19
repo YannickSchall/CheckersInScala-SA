@@ -2,9 +2,10 @@ package fileIOComponent.model
 
 import com.google.inject.ImplementedBy
 import fileIOComponent.utils.Mover
-import fileIOComponent.model.gameBoardBaseImpl.{Color, GameBoard, Piece, Direction}
+import fileIOComponent.model.gameBoardBaseImpl.{Color, Direction, GameBoard, Piece}
 
 import scala.collection.mutable.ListBuffer
+import scala.concurrent.Future
 
 @ImplementedBy(classOf[Piece])
 trait PieceInterface {
@@ -26,9 +27,9 @@ trait PieceInterface {
 
   def capturable(to: String, direction: Direction, row_dist: Int, col_dist: Int, gameBoard: GameBoard): Boolean
 
-  def getMover(to: String, gameBoard: GameBoard): Mover
+  def getMover(to: String, gameBoard: GameBoard): Future[Mover]
 
-  def movePossible(to: String, gameBoard: GameBoard): Mover
+  def movePossible(to: String, gameBoard: GameBoard): Future[Mover]
 
   def posToStr(row: Int, col: Int): String
 
