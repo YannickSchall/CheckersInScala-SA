@@ -90,7 +90,8 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
       val row_vector: Int = vector(0)
       val col_vector: Int = vector(1)
       // Guard Statement Schleifenabbruchbedingung: Rand des Spielfelds erreicht
-      if(!((col + col_vector <= Last) && (col + col_vector >= 0) && (row + row_vector <= Last) && (row + row_vector >= 0))) {
+      if(!((col + col_vector <= Last) && (col + col_vector >= 0) &&
+           (row + row_vector <= Last) && (row + row_vector >= 0))) {
         return ls
       }
 
@@ -110,7 +111,8 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
       val row_vector: Int = vector(0)
       val col_vector: Int = vector(1)
       // Guard Statement Schleifenabbruchbedingung: Rand des Spielfelds erreicht
-      if (!((col + col_vector <= Last) && (col + col_vector >= 0) && (row + row_vector <= Last) && (row + row_vector >= 0))) {
+      if (!((col + col_vector <= Last) && (col + col_vector >= 0) &&
+            (row + row_vector <= Last) && (row + row_vector >= 0))) {
         return None
       }
 
