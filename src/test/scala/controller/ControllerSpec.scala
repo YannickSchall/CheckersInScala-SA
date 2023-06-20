@@ -1,7 +1,6 @@
 package controller
 
-import model.gameBoardBaseImpl.{Field, GameBoard, GameBoardCreator, Piece}
-import model.gameBoardBaseImpl.Color.*
+
 import org.scalatest.*
 import controller.controllerComponent.GameState
 import controller.controllerComponent.GameState.{BLACK_TURN, BLACK_WON, WHITE_TURN, WHITE_WON}
@@ -75,6 +74,12 @@ class ControllerSpec extends AnyWordSpec {
     "be unable to resize the Gameboard 10 to 12" in {
       controller.resize(12)
       controller.gameBoardSize should be (10)
+    }
+    "undo step" in {
+      val gb = new GameBoard(8)
+      val controller = new Controller(gb)
+      controller.set(0,0, Piece.apply("normal", 0, 0, White))
+      controller.move("A1", "C3")
     }
     "be able to move" in {
       val gb2 = new GameBoard(8)
