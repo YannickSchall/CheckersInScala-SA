@@ -19,6 +19,8 @@ import akka.http.scaladsl.Http
 import scala.swing.event.Event
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.Materializer
+import model.gameBoardBaseImpl.Color.{White, Black}
+import model.gameBoardBaseImpl.{GameBoardCreator, Piece}
 
 import scala.concurrent.Await
 import scala.concurrent.duration.*
