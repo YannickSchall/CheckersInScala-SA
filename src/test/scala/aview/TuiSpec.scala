@@ -6,7 +6,7 @@ import org.scalatest.*
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.*
 
-class TuiSpec extends  AnyWordSpec {
+class TuiSpec extends AnyWordSpec {
   "A tui" should {
     val controller = new Controller(new GameBoard(8))
     val tui = new Tui(controller)

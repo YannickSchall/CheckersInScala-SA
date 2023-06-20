@@ -6,7 +6,7 @@ import org.scalatest.*
 import controller.controllerComponent.GameState
 import controller.controllerComponent.GameState.{BLACK_TURN, BLACK_WON, WHITE_TURN, WHITE_WON}
 import controller.controllerComponent.controllerBaseImpl.Controller
-import controller.controllerComponent.FieldChanged
+import controller.controllerComponent.controllerBaseImpl.FieldChanged
 import org.scalatest.matchers.should.Matchers.*
 import org.scalatest.wordspec.*
 import utils.Mover
