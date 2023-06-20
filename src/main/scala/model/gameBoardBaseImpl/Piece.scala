@@ -15,13 +15,6 @@ abstract class Piece @Inject() (state: String, row: Int, col: Int, color: Color)
 
   def movePossible(to: String, gameBoard: GameBoard): Future[Mover]
 
-  def movStrToInt(s: String): (Int, Int, Int, Int) = {
-    val startCol = col
-    val startRow = row
-    val destRow = s.charAt(1).toInt - 49
-    val destCol = s.charAt(0).toInt - 65
-    (startRow, startCol, destRow, destCol)
-  }
 }
 
 object Piece {

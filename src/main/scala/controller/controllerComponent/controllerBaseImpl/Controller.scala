@@ -103,9 +103,9 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
       gameBoard.getField(start).getPiece.get.sList.clear
       // case einbauen
       if (this.movePossible(start, dest).getRem.isEmpty) gameState = BLACK_TURN
-      if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
+      if (this.movePossible(start, dest).getRem.nonEmpty) cap = this.movePossible(start, dest).getRem
       undoManager.doStep(new MoveCommand(start, dest, this))
-      if (!cap.isEmpty) {
+      if (cap.nonEmpty) {
         gameBoard.getField(dest).getPiece.get.sList.clear
         this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))
         this.movePossible(dest, dest)
@@ -125,9 +125,9 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
       cap = ""
       gameBoard.getField(start).getPiece.get.sList.clear
       if (this.movePossible(start, dest).getRem.isEmpty) gameState = WHITE_TURN
-      if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
+      if (this.movePossible(start, dest).getRem.nonEmpty) cap = this.movePossible(start, dest).getRem
       undoManager.doStep(new MoveCommand(start, dest, this))
-      if (!cap.isEmpty) {
+      if (cap.nonEmpty) {
         gameBoard.getField(dest).getPiece.get.sList.clear
         this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))
         this.movePossible(dest, dest)
@@ -144,11 +144,11 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     }
 
     else if (gameState == WHITE_CAP && start == destTemp) {
-      if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
+      if (this.movePossible(start, dest).getRem.nonEmpty) cap = this.movePossible(start, dest).getRem
       gameBoard.getField(start).getPiece.get.sList.clear
       this.movePossible(start, start)
       if (gameBoard.getField(start).getPiece.get.sList.nonEmpty) {
-        if (!this.movePossible(start, dest).getRem.isEmpty) {
+        if (this.movePossible(start, dest).getRem.nonEmpty) {
           undoManager.doStep(new MoveCommand(start, dest, this))
           gameBoard.getField(dest).getPiece.get.sList.clear
           this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))
@@ -164,11 +164,11 @@ class Controller @Inject() (var gameBoard: GameBoardInterface) extends Controlle
     }
 
     else if (gameState == BLACK_CAP && start == destTemp) {
-      if (!this.movePossible(start, dest).getRem.isEmpty) cap = this.movePossible(start, dest).getRem
+      if (this.movePossible(start, dest).getRem.nonEmpty) cap = this.movePossible(start, dest).getRem
       gameBoard.getField(start).getPiece.get.sList.clear
       this.movePossible(start, start)
       if (gameBoard.getField(start).getPiece.get.sList.nonEmpty) {
-        if (!this.movePossible(start, dest).getRem.isEmpty) {
+        if (this.movePossible(start, dest).getRem.nonEmpty) {
           undoManager.doStep(new MoveCommand(start, dest, this))
           gameBoard.getField(dest).getPiece.get.sList.clear
           this.gameBoard = gameBoard.remove(gameBoard.rowToInt(cap), gameBoard.colToInt(cap))

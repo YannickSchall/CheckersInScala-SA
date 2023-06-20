@@ -136,8 +136,9 @@ class QueenSpec extends AnyWordSpec {
       val color = gbc.getPiece(6, 0).get.getColor
       val dame2 = gbc.getPiece(6, 0).get //E5
       color should be (Black)
-      Await.result(dame2.movePossible("C5", gbc), 5.seconds).getBool should be(true)
-      Await.result(dame2.movePossible("D10", gbc), 5.seconds).getBool should be(true)
+      Await.result(dame2.movePossible("C5", gbc), 5.seconds).getBool should be (true)
+      Await.result(dame2.movePossible("C5", gbc), 5.seconds).getRem should be ("B6")
+      Await.result(dame2.movePossible("D10", gbc), 5.seconds).getBool should be (true)
     }
     "should not be allowed to Capture their own color" in {
       var gbc = new GameBoardCreator(10).createEmptyBoard()
@@ -145,8 +146,28 @@ class QueenSpec extends AnyWordSpec {
       gbc = gbc.set(5, 1, Some(Piece("queen", 5, 1, White)))
       gbc = gbc.set(6, 0, Some(Piece("queen", 6, 0, White)))
       val dame2 = gbc.getPiece(6, 0).get //E5
-      Await.result(dame2.movePossible("C5", gbc), 5.seconds).getBool should be(false)
-      Await.result(dame2.movePossible("D10", gbc), 5.seconds).getBool should be(false)
+      Await.result(dame2.movePossible("C5", gbc), 5.seconds).getBool should be (false)
+      Await.result(dame2.movePossible("D10", gbc), 5.seconds).getBool should be (false)
+    }
+    "should not be allowed to move incorrectly from the left" in {
+      var gbc = new GameBoardCreator(10).createEmptyBoard()
+      gbc = gbc.set(8, 2, Some(Piece("queen", 8, 2, Black)))
+      gbc = gbc.set(5, 1, Some(Piece("queen", 5, 1, Black)))
+      gbc = gbc.set(6, 0, Some(Piece("queen", 6, 0, White)))
+      val color = gbc.getPiece(6, 0).get.getColor
+      val dame2 = gbc.getPiece(6, 0).get //E5
+      color should be(White)
+      Await.result(dame2.movePossible("C5", gbc), 5.seconds).getBool should be (true)
+    }
+    "should not be allowed to Capture with invalid direction" in {
+      var gbc = new GameBoardCreator(10).createEmptyBoard()
+      gbc = gbc.set(8, 2, Some(Piece("queen", 8, 2, White)))
+      gbc = gbc.set(5, 1, Some(Piece("queen", 5, 1, White)))
+      gbc = gbc.set(6, 0, Some(Piece("queen", 6, 0, Black)))
+      val dame2 = gbc.getPiece(6, 0).get //A7
+      val dame3 = gbc.getPiece(5, 1).get
+      dame3.posToStr(5, 1) should be ("B6")
+      Await.result(dame2.movePossible("B6", gbc), 5.seconds).getBool should be (false)
     }
   }
 }

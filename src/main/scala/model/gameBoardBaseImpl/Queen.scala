@@ -32,12 +32,8 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
 
   override def capturable(to: String, direction: Direction, row_dist: Int, col_dist: Int, gameBoard: GameBoard): Boolean = {
     val Last: Int = gameBoard.size - 1
-    def help_bool(row_dist: Int, col_dist: Int): Boolean = (row + row_dist != 0 && row + row_dist != Last && col + col_dist != Last && col + col_dist != 0) && gameBoard.field(row + row_dist, col + col_dist).piece.isDefined && gameBoard.field(row + row_dist, col + col_dist).piece.get.getColor == (if (getColor == Black) White else Black) && gameBoard.field(row + (if row_dist < 0 then row_dist-1 else row_dist+1), col + (if col_dist < 0 then col_dist-1 else col_dist+1)).piece.isEmpty
+    (row + row_dist != 0 && row + row_dist != Last && col + col_dist != Last && col + col_dist != 0) && gameBoard.field(row + row_dist, col + col_dist).piece.isDefined && gameBoard.field(row + row_dist, col + col_dist).piece.get.getColor == (if (getColor == Black) White else Black) && gameBoard.field(row + (if row_dist < 0 then row_dist-1 else row_dist+1), col + (if col_dist < 0 then col_dist-1 else col_dist+1)).piece.isEmpty
 
-    (getColor, direction) match {
-      case (_, UpLeft|UpRight|DownLeft|DownRight) => help_bool(row_dist, col_dist)
-      case _ => false
-    }
   }
 
   override def fillList(to: String, gameBoard: GameBoard, direction: Direction, dist_count: Int): ListBuffer[String] = {
@@ -64,18 +60,6 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
     //println("result: "+(row_dist, col_dist))
     (row_dist, col_dist)
   }
-
-  // pattern matching
-  private def increaseOffset(offset: Int): Int = offset match {
-    case x if x > 0 => x + 1
-    case x if x < 0 => x - 1
-    case _ => 0
-  }
-
-  // funktionale Komposition
-  private def calcNextDist(direction: Direction): Int => (Int, Int) =
-    calcDist(direction) andThen { case (rd, cd) => (rd + increaseOffset(rd), cd + increaseOffset(cd)) }
-
 
   override def getMover(to: String, gameBoard: GameBoard): Future[Mover] = {
     val Last: Int = gameBoard.size - 1
@@ -115,6 +99,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
       // Guard Statement Schleifenabbruchbedingung: Rand des Spielfelds erreicht
       if (!((col + col_vector <= Last) && (col + col_vector >= 0) &&
         (row + row_vector <= Last) && (row + row_vector >= 0))) {
+        println("KASLKDhLÖASHLÖKASH")
         return None
       }
 
@@ -130,7 +115,12 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
 
     }
 
-
+    def getCapturedPos(move: String): String = {
+      val mRow = gameBoard.rowToInt(move)
+      val mCol = gameBoard.colToInt(move)
+      gameBoard.posToStr(mRow - direction.dir._1, mCol - direction.dir._2)
+    }
+    
     val can_capture = sList.nonEmpty
     if (!can_capture) {
       Future.successful{
@@ -155,7 +145,7 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
           case UpRight | DownRight if col == Last || col == Last - 1 => new Mover(false, "", false)
           case UpLeft | UpRight if row == 0 || col == 1 => new Mover(false, "", false)
           case DownLeft | DownRight if row == Last || row == Last - 1 => new Mover(false, "", false)
-          case UpLeft | UpRight | DownLeft | DownRight if legal.isDefined => Mover(true, legal.get, false)
+          case UpLeft | UpRight | DownLeft | DownRight if legal.isDefined && to == legal.get => Mover(true, getCapturedPos(legal.get), false)
           case _ => new Mover(false, "", false)
         }
       }

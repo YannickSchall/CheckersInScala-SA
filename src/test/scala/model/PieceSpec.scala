@@ -10,10 +10,6 @@ class PieceSpec extends AnyWordSpec {
   "A trait" should {
     val norm = Normal("normaL", 0, 0, White)
     val norm2 = Normal("normal", 0, 5, Black)
-    "make Integers out of a String " in {
-      norm.movStrToInt("B2") should be (0, 0, 1, 1) //C = Ascii 67, "2" =  50
-      norm2.movStrToInt("E2") should be (0, 5, 1, 4)
-    }
     "apply a Type to a Piece" in {
       val appl = Piece.apply("normal", 0, 1, White)
       val norm3 = Normal("normal", 0, 1,White)

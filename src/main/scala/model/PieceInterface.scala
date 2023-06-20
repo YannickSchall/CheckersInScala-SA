@@ -31,8 +31,6 @@ trait PieceInterface {
 
   def posToStr(row: Int, col: Int): String
 
-  def movStrToInt(s: String): (Int, Int, Int, Int)
-
   def getDirection(toRow: Int, toCol: Int): Direction
 
 }
