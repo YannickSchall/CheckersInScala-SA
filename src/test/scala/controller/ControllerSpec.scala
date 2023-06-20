@@ -1,6 +1,7 @@
 package controller
 
-
+import model.gameBoardBaseImpl.{Field, GameBoard, GameBoardCreator, Piece}
+import model.gameBoardBaseImpl.Color.*
 import org.scalatest.*
 import controller.controllerComponent.GameState
 import controller.controllerComponent.GameState.{BLACK_TURN, BLACK_WON, WHITE_TURN, WHITE_WON}
