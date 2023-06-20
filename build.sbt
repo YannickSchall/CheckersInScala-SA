@@ -28,7 +28,8 @@ lazy val allDependencies = Seq(
   mockito,
   gatlingTest,
   gatlingHigh,
-  testcontainer
+  testcontainer,
+  testkit
 )
 
 /** Root Module */

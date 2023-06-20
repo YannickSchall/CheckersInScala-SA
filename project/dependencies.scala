@@ -31,5 +31,6 @@ object dependencies {
   val gatlingHigh = ("io.gatling.highcharts" % "gatling-charts-highcharts" % "3.9.5" % "test").withExclusions(gatlingExclude)
   val gatlingTest = ("io.gatling" % "gatling-test-framework" % "3.9.5" % "test").withExclusions(gatlingExclude)
   val testcontainer  = "com.dimafeng" %% "testcontainers-scala-scalatest" % "0.40.15"
+  val testkit = ("com.typesafe.akka" %% "akka-actor-testkit-typed" % "2.6.19" % Test).cross(CrossVersion.for3Use2_13)
 
 }
