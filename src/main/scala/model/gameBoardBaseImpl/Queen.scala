@@ -57,7 +57,6 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
   private def calcDist(direction: Direction): Int => (Int, Int) = dist_count => {
     val row_dist: Int = dist_count * direction.dir._1
     val col_dist: Int = dist_count * direction.dir._2
-    //println("result: "+(row_dist, col_dist))
     (row_dist, col_dist)
   }
 
@@ -99,7 +98,6 @@ case class Queen(state: String = "queen", row: Int, col: Int, getColor: Color) e
       // Guard Statement Schleifenabbruchbedingung: Rand des Spielfelds erreicht
       if (!((col + col_vector <= Last) && (col + col_vector >= 0) &&
         (row + row_vector <= Last) && (row + row_vector >= 0))) {
-        println("KASLKDhLÖASHLÖKASH")
         return None
       }
 
