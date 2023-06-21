@@ -16,10 +16,10 @@ class DirectionSpec extends AnyWordSpec {
     "make Integers out of a String " in {
       left.dir should be ((0, -1))
       right.dir should be ((0, 1))
-      uleft.dir should be ((1, -1))
-      uright.dir should be ((1, 1))
-      dleft.dir should be ((-1, -1))
-      dright.dir should be ((-1, 1))
+      uleft.dir should be ((-1, -1))
+      uright.dir should be ((-1, 1))
+      dleft.dir should be ((1, -1))
+      dright.dir should be ((1, 1))
     }
   }
 }
